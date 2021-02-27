@@ -138,6 +138,6 @@ namespace cohen_chess
     {
         return piece_bitboards[pc];
     }
-};
+}
 
 #endif

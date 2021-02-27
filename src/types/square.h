@@ -6,6 +6,7 @@
 #include "file.h"
 #include "rank.h"
 
+#include <algorithm>
 #include <cstdint>
 
 namespace cohen_chess
@@ -94,9 +95,24 @@ namespace cohen_chess
         return Square(sq ^ (side * kH1));
     }
 
-    constexpr bool IsNormalSquare(Square sq)
+    constexpr bool IsNormal(Square sq)
     {
         return kA1 <= sq && sq < kSquareNB;
+    }
+
+    constexpr int8_t RankDistance(Square sq1, Square sq2)
+    {
+        return std::abs(RankOf(sq1) - RankOf(sq2));
+    }
+
+    constexpr int8_t FileDistance(Square sq1, Square sq2)
+    {
+        return std::abs(FileOf(sq1) - FileOf(sq2));
+    }
+
+    constexpr int8_t SquareDistance(Square sq1, Square sq2)
+    {
+        return RankDistance(sq1, sq2) + FileDistance(sq1, sq2);
     }
 
     inline Square& operator++(Square& op)

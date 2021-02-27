@@ -7,7 +7,7 @@ namespace cohen_chess
 {
     enum PieceType : uint8_t
     {
-        kTypeNone       = 0,
+        kPieceTypeNone  = 0,
         kPawn           = 1,
         kKnight         = 2,
         kBishop         = 3,
@@ -15,7 +15,7 @@ namespace cohen_chess
         kQueen          = 5,
         kKing           = 6,
         kPieceTypeAll   = 7,
-        kTypeNB         = 8,
+        kPieceTypeNB    = 8,
     };
 
     inline PieceType& operator++(PieceType& op)

@@ -26,8 +26,8 @@ namespace cohen_chess
         kBlackKing   = (kBlack << 3) | kKing,
         kBlackAll    = (kBlack << 3) | kPieceTypeAll,
 
-        kPieceNone   = (kWhite << 3) | kTypeNone,
-        kOccupancy   = (kBlack << 3) | kTypeNone,
+        kPieceNone   = (kWhite << 3) | kPieceTypeNone,
+        kOccupancy   = (kBlack << 3) | kPieceTypeNone,
 
         kPieceNB     = 16,
     };
