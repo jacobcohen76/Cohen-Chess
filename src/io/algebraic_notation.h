@@ -31,7 +31,7 @@ namespace cohen_chess
 
         constexpr char PieceTypeChar(PieceType pc_type)
         {
-            return (char[kTypeNB]) 
+            return (char[kPieceTypeNB]) 
             {
                 '?', //kTypeNone
                 'p', //kTypePawn
@@ -69,7 +69,7 @@ namespace cohen_chess
 
         inline std::string CoordinateString(Square sq)
         {
-            if(IsNormalSquare(sq))
+            if(IsNormal(sq))
             {
                 return std::string{ FileChar(File(sq)), RankChar(Rank(sq)) };
             }
@@ -116,7 +116,7 @@ namespace cohen_chess
                 case PieceTypeChar(kRook):      return kRook;
                 case PieceTypeChar(kQueen):     return kQueen;
                 case PieceTypeChar(kKing):      return kKing;
-                default:                        return kTypeNone;
+                default:                        return kPieceTypeNone;
             }
         }
 

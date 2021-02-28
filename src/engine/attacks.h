@@ -23,14 +23,16 @@ namespace cohen_chess
             Bitboard    attackable(Bitboard) const;
         };
 
-        extern Bitboard     kPseudoAttacks[kPieceTypeNB][kSquareNB];
         extern Bitboard     kPawnAttacks[kColorNB][kSquareNB];
-        extern Bitboard     kMagicAttackTable[];
+        extern Bitboard     kKnightAttacks[kSquareNB];
+        extern Bitboard     kKingAttacks[kSquareNB];
+        extern Bitboard     kMagicAttackTable[kSquareNB];
         extern FancyMagic   kBishopMagics[kSquareNB];
         extern FancyMagic   kRookMagics[kSquareNB];
 
-        void InitPseudoAttacks();
         void InitPawnAttacks();
+        void InitKnightAttacks();
+        void InitKingAttacks();
         void InitBishopMagics();
         void InitRookMagics();
 
@@ -45,14 +47,19 @@ namespace cohen_chess
         }
     }
 
-    inline Bitboard PseudoAttacks(PieceType pt, Square sq)
-    {
-        return attacks::kPseudoAttacks[pt][sq];
-    }
-
     inline Bitboard PawnAttacks(Color c, Square sq)
     {
         return attacks::kPawnAttacks[c][sq];
+    }
+
+    inline Bitboard KnightAttacks(Square sq)
+    {
+        return attacks::kKnightAttacks[sq];
+    }
+
+    inline Bitboard KingAttacks(Square sq)
+    {
+        return attacks::kKingAttacks[sq];
     }
 
     inline Bitboard BishopAttacks(Bitboard occ, Square sq)

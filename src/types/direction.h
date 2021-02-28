@@ -17,6 +17,14 @@ namespace cohen_chess
         kNorthWest      = kNorth + kWest,
         kSouthEast      = kSouth + kEast,
         kSouthWest      = kSouth + kWest,
+        kNorthNorthEast = kNorth + kNorth + kEast,
+        kNorthNorthWest = kNorth + kNorth + kWest,
+        kSouthSouthEast = kSouth + kSouth + kEast,
+        kSouthSouthWest = kSouth + kSouth + kWest,
+        kEastEastNorth  = kEast + kEast + kNorth,
+        kEastEastSouth  = kEast + kEast + kSouth,
+        kWestWestNorth  = kWest + kWest + kNorth,
+        kWestWestSouth  = kWest + kWest + kSouth,
         kDirectionNone  = 0,
     };
 

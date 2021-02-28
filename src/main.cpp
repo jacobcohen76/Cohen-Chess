@@ -11,8 +11,16 @@ using namespace cohen_chess;
 int main(int argc, char* argv[])
 {
     direction::InitRayBetween();
+
     bitboard::InitLineBitboards();
     bitboard::InitBetweenBitboards();
+
+    attacks::InitPawnAttacks();
+    attacks::InitKnightAttacks();
+    attacks::InitKingAttacks();
+    attacks::InitBishopMagics();
+    attacks::InitRookMagics();
+
 
     //int x = 0xFA;
     //std::cout << util::BinaryString<12>(x) << std::endl;
@@ -42,6 +50,6 @@ int main(int argc, char* argv[])
     board.put(kBlackPawn, kG7);
     board.put(kBlackPawn, kH7);
 
-    std::cout << io::AsciiBoard<kWhite>(board) << std::endl;
+    std::cout << io::AsciiBoard<kWhite>(KingAttacks(kE4)) << std::endl;
     return 0;
 }

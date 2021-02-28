@@ -39,7 +39,7 @@ namespace cohen_chess
                 }
             }
             return ascii_board;
-        }        
+        }
 
         template<Color side = kWhite>
         std::string AsciiBoard(const Board& board, const char* piece_chars = ".PNBRQKC1pnbrqkc")
