@@ -141,6 +141,6 @@ namespace cohen_chess
     {
         return lhs = File(int8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

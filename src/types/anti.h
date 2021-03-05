@@ -141,6 +141,6 @@ namespace cohen_chess
     {
         return lhs = Anti(int8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

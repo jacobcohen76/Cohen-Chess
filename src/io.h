@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_IO_H_INCLUDED
 #define COHEN_CHESS_IO_H_INCLUDED
 
+#include "io/algebraic_notation.h"
 #include "io/ascii_board.h"
 #include "io/cecp.h"
 #include "io/fen.h"

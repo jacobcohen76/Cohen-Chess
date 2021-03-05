@@ -141,6 +141,6 @@ namespace cohen_chess
     {
         return lhs = Rank(int8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

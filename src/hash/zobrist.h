@@ -36,6 +36,6 @@ namespace cohen_chess
     {
         return zobrist::kEnPassantFileTarget[f];
     }
-};
+}
 
 #endif

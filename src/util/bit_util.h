@@ -6,117 +6,123 @@
 
 namespace cohen_chess
 {
-    namespace util
+    namespace bit_util
     {
-        static constexpr const uint8_t kBytePopCounts[256] =
-        {
-            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
-            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
-            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
-            4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8,
-        };
+        extern uint8_t kU16PopCountTable[65536];
 
-        constexpr int PopCountLookup_Byte(uint8_t byte)
-        {
-            return  kBytePopCounts[byte];
-        }
-
-        constexpr int PopCountLookup_U16(uint16_t u16)
-        {
-            return  kBytePopCounts[(u16 >> 0) & 0xFF] +
-                    kBytePopCounts[(u16 >> 8) & 0xFF];
-        }
-
-        constexpr int PopCountLookup_U32(uint32_t u32)
-        {
-            return  kBytePopCounts[(u32 >>  0) & 0xFF] +
-                    kBytePopCounts[(u32 >>  8) & 0xFF] +
-                    kBytePopCounts[(u32 >> 16) & 0xFF] +
-                    kBytePopCounts[(u32 >> 24) & 0xFF];
-        }
-
-        constexpr int PopCountLookup_U64(uint64_t u64)
-        {
-            return  kBytePopCounts[(u64 >>  0) & 0xFF] +
-                    kBytePopCounts[(u64 >>  8) & 0xFF] +
-                    kBytePopCounts[(u64 >> 16) & 0xFF] +
-                    kBytePopCounts[(u64 >> 24) & 0xFF] +
-                    kBytePopCounts[(u64 >> 32) & 0xFF] +
-                    kBytePopCounts[(u64 >> 40) & 0xFF] +
-                    kBytePopCounts[(u64 >> 48) & 0xFF] +
-                    kBytePopCounts[(u64 >> 56) & 0xFF];
-        }
-
-        constexpr int PopCountLSB_Byte(uint8_t byte)
-        {
-            int pop_count = 0;
-            while(byte)
-            {
-                ++pop_count;
-                byte &= byte ^ -byte;
-            }
-            return pop_count;
-        }
-
-        constexpr int PopCountLSB_U16(uint16_t u16)
-        {
-            int pop_count = 0;
-            while(u16)
-            {
-                ++pop_count;
-                u16 &= u16 ^ -u16;
-            }
-            return pop_count;
-        }
-
-        constexpr int PopCountLSB_U32(uint32_t u32)
-        {
-            int pop_count = 0;
-            while(u32)
-            {
-                ++pop_count;
-                u32 &= u32 ^ -u32;
-            }
-            return pop_count;
-        }
-
-        constexpr int PopCountLSB_U64(uint64_t u64)
-        {
-            int pop_count = 0;
-            while(u64)
-            {
-                ++pop_count;
-                u64 &= u64 ^ -u64;
-            }
-            return pop_count;
-        }
-
-        template <size_t no_bits>
-        inline std::string BinaryString(uint64_t raw_bits)
-        {
-            std::string binary_string(no_bits, '0');
-            for(size_t i = 0; i < no_bits; ++i)
-            {
-                if((raw_bits >> i) & 1)
-                {
-                    binary_string[no_bits - i - 1] = '1';
-                }
-            }
-            return binary_string;
-        }
+        void InitPopCountTable(uint8_t[], size_t);
     };
+
+    template<typename T>
+    inline int PopCountLookup(T x)
+    {
+        int pop_count = 0;
+        while(x)
+        {
+            pop_count += bit_util::kU16PopCountTable[x & 0xFFFF];
+            x >>= 16;
+        }
+        return pop_count;
+    }
+
+    template <>
+    inline int PopCountLookup<uint8_t>(uint8_t x)
+    {
+        return  bit_util::kU16PopCountTable[x];
+    }
+
+    template <>
+    inline int PopCountLookup<uint16_t>(uint16_t x)
+    {
+        return  bit_util::kU16PopCountTable[x];
+    }
+
+    template<>
+    inline int PopCountLookup<uint32_t>(uint32_t x)
+    {
+        return  bit_util::kU16PopCountTable[(x >>  0) & 0xFFFF] +
+                bit_util::kU16PopCountTable[(x >> 16) & 0xFFFF];
+    }
+
+    template<>
+    inline int PopCountLookup<uint64_t>(uint64_t x)
+    {
+        return  bit_util::kU16PopCountTable[(x >>  0) & 0xFFFF] +
+                bit_util::kU16PopCountTable[(x >> 16) & 0xFFFF] +
+                bit_util::kU16PopCountTable[(x >> 32) & 0xFFFF] +
+                bit_util::kU16PopCountTable[(x >> 48) & 0xFFFF];
+    }
+
+    template<typename T>
+    constexpr int PopCountLSB(T x)
+    {
+        int pop_count = 0;
+        while(x)
+        {
+            ++pop_count;
+            x &= x ^ -x;
+        }
+        return pop_count;
+    }
+
+    template<typename T>
+    constexpr T FlipLSB(T x)
+    {
+        return x & (x ^ -x);
+    }
+
+    template<bool lowercase = false>
+    constexpr char HexChar(uint64_t nibble)
+    {
+        switch(nibble & 0xF)
+        {
+            case 0x0:   return '0';
+            case 0x1:   return '1';
+            case 0x2:   return '2';
+            case 0x3:   return '3';
+            case 0x4:   return '4';
+            case 0x5:   return '5';
+            case 0x6:   return '6';
+            case 0x7:   return '7';
+            case 0x8:   return '8';
+            case 0x9:   return '9';
+            case 0xA:   return 'A' + lowercase * 0x20;
+            case 0xB:   return 'B' + lowercase * 0x20;
+            case 0xC:   return 'C' + lowercase * 0x20;
+            case 0xD:   return 'D' + lowercase * 0x20;
+            case 0xE:   return 'E' + lowercase * 0x20;
+            case 0xF:   return 'F' + lowercase * 0x20;
+            default:    return '?';
+        }
+    }
+
+    template<size_t no_digits = 16, bool lowercase = false>
+    inline std::string HexString(uint64_t raw_bits)
+    {
+        std::string hex_string(no_digits, '0');
+        size_t i = 0;
+        while(raw_bits)
+        {
+            hex_string[no_digits - i - 1] = HexChar<lowercase>(raw_bits);
+            raw_bits >>= 4;
+            i += 1;
+        }
+        return hex_string;
+    }
+
+    template<size_t no_bits = 64>
+    inline std::string BinaryString(uint64_t raw_bits)
+    {
+        std::string binary_string(no_bits, '0');
+        size_t i = 0;
+        while(raw_bits)
+        {
+            binary_string[no_bits - i - 1] = (raw_bits & 1) + '1';
+            raw_bits >>= 1;
+            i += 1;
+        }
+        return binary_string;
+    }
 };
 
 #endif

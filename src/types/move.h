@@ -155,6 +155,6 @@ namespace cohen_chess
     {
         return lhs = Move(uint8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

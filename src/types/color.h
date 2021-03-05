@@ -21,6 +21,6 @@ namespace cohen_chess
     {
         return FlipColor(op);
     }
-};
+}
 
 #endif

@@ -31,6 +31,6 @@ namespace cohen_chess
         captured        = kPieceNone;
         in_check        = false;
     }
-};
+}
 
 #endif

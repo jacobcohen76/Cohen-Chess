@@ -226,6 +226,6 @@ namespace cohen_chess
     {
         return lhs = Square(int8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

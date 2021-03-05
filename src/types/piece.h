@@ -163,6 +163,6 @@ namespace cohen_chess
     {
         return lhs = Piece(uint8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

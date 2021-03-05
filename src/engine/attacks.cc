@@ -6,133 +6,70 @@ namespace cohen_chess
 {
     namespace attacks
     {
-        Bitboard    kPawnAttacks[kColorNB][kSquareNB];
-        Bitboard    kKnightAttacks[kSquareNB];
-        Bitboard    kKingAttacks[kSquareNB];
+        Bitboard    kPawnAttackTable[kColorNB][kSquareNB];
+        Bitboard    kKnightAttackTable[kSquareNB];
+        Bitboard    kKingAttackTable[kSquareNB];
         Bitboard    kMagicAttackTable[kSquareNB];
-        FancyMagic  kBishopMagics[kSquareNB];
-        FancyMagic  kRookMagics[kSquareNB];
+        FancyMagic  kBishopMagicTable[kSquareNB];
+        FancyMagic  kRookMagicTable[kSquareNB];
 
-        void InitPawnAttacks()
+        void InitPawnAttackTable(Bitboard attack_table[kColorNB][kSquareNB])
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                kPawnAttacks[kWhite][sq] = kEmptyBB;
-                if(IsNormal(sq + kNorthEast) && SquareDistance(sq, sq + kNorthEast) == 2)
-                {
-                    kPawnAttacks[kWhite][sq] |= SquareBB(sq + kNorthEast);
-                }
-                if(IsNormal(sq + kNorthWest) && SquareDistance(sq, sq + kNorthWest) == 2)
-                {
-                    kPawnAttacks[kWhite][sq] |= SquareBB(sq + kNorthWest);
-                }
-                kPawnAttacks[kBlack][sq] = kEmptyBB;
-                if(IsNormal(sq + kSouthEast) && SquareDistance(sq, sq + kSouthEast) == 2)
-                {
-                    kPawnAttacks[kBlack][sq] |= SquareBB(sq + kSouthEast);
-                }
-                if(IsNormal(sq + kSouthWest) && SquareDistance(sq, sq + kSouthWest) == 2)
-                {
-                    kPawnAttacks[kBlack][sq] |= SquareBB(sq + kSouthWest);
-                }
+                attack_table[kWhite][sq] = (CanStep(sq, kNorthEast) ? SquareBB(sq + kNorthEast) : kEmptyBB)
+                                         | (CanStep(sq, kNorthWest) ? SquareBB(sq + kNorthWest) : kEmptyBB);
+                
+                attack_table[kBlack][sq] = (CanStep(sq, kSouthEast) ? SquareBB(sq + kSouthEast) : kEmptyBB)
+                                         | (CanStep(sq, kSouthWest) ? SquareBB(sq + kSouthWest) : kEmptyBB);
             }
         }
 
-        void InitKnightAttacks()
+        void InitKnightAttackTable(Bitboard attack_table[kSquareNB])
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                kKnightAttacks[sq] = kEmptyBB;
-                if(IsNormal(sq + kNorthNorthEast) && SquareDistance(sq, sq + kNorthNorthEast) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kNorthNorthEast);
-                }
-                if(IsNormal(sq + kNorthNorthWest) && SquareDistance(sq, sq + kNorthNorthWest) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kNorthNorthWest);
-                }
-                if(IsNormal(sq + kSouthSouthEast) && SquareDistance(sq, sq + kSouthSouthEast) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kSouthSouthEast);
-                }
-                if(IsNormal(sq + kSouthSouthWest) && SquareDistance(sq, sq + kSouthSouthWest) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kSouthSouthWest);
-                }
-                if(IsNormal(sq + kEastEastNorth) && SquareDistance(sq, sq + kEastEastNorth) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kEastEastNorth);
-                }
-                if(IsNormal(sq + kEastEastSouth) && SquareDistance(sq, sq + kEastEastSouth) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kEastEastSouth);
-                }
-                if(IsNormal(sq + kWestWestNorth) && SquareDistance(sq, sq + kWestWestNorth) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kWestWestNorth);
-                }
-                if(IsNormal(sq + kWestWestSouth) && SquareDistance(sq, sq + kWestWestSouth) == 3)
-                {
-                    kKnightAttacks[sq] |= SquareBB(sq + kWestWestSouth);
-                }
+                attack_table[sq] = (CanStep(sq, kNorthNorthEast) ? SquareBB(sq + kNorthNorthEast) : kEmptyBB)
+                                 | (CanStep(sq, kNorthNorthWest) ? SquareBB(sq + kNorthNorthWest) : kEmptyBB)
+                                 | (CanStep(sq, kEastEastNorth)  ? SquareBB(sq + kEastEastNorth)  : kEmptyBB)
+                                 | (CanStep(sq, kEastEastSouth)  ? SquareBB(sq + kEastEastSouth)  : kEmptyBB)
+                                 | (CanStep(sq, kSouthSouthEast) ? SquareBB(sq + kSouthSouthEast) : kEmptyBB)
+                                 | (CanStep(sq, kSouthSouthWest) ? SquareBB(sq + kSouthSouthWest) : kEmptyBB)
+                                 | (CanStep(sq, kWestWestNorth)  ? SquareBB(sq + kWestWestNorth)  : kEmptyBB)
+                                 | (CanStep(sq, kWestWestSouth)  ? SquareBB(sq + kWestWestSouth)  : kEmptyBB);
             }
         }
 
-        void InitKingAttacks()
+        void InitKingAttackTable(Bitboard attack_table[kSquareNB])
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                kKingAttacks[sq] = kEmptyBB;
-                if(IsNormal(sq + kNorth) && SquareDistance(sq, sq + kNorth) == 1)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kNorth);
-                }
-                if(IsNormal(sq + kEast) && SquareDistance(sq, sq + kEast) == 1)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kEast);
-                }
-                if(IsNormal(sq + kSouth) && SquareDistance(sq, sq + kSouth) == 1)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kSouth);
-                }
-                if(IsNormal(sq + kWest) && SquareDistance(sq, sq + kWest) == 1)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kWest);
-                }
-                if(IsNormal(sq + kNorthEast) && SquareDistance(sq, sq + kNorthEast) == 2)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kNorthEast);
-                }
-                if(IsNormal(sq + kNorthWest) && SquareDistance(sq, sq + kNorthWest) == 2)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kNorthWest);
-                }
-                if(IsNormal(sq + kSouthEast) && SquareDistance(sq, sq + kSouthEast) == 2)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kSouthEast);
-                }
-                if(IsNormal(sq + kSouthWest) && SquareDistance(sq, sq + kSouthWest) == 2)
-                {
-                    kKingAttacks[sq] |= SquareBB(sq + kSouthWest);
-                }
+                attack_table[sq] = (CanStep(sq, kNorth)     ? SquareBB(sq + kNorth)     : kEmptyBB)
+                                 | (CanStep(sq, kEast)      ? SquareBB(sq + kEast)      : kEmptyBB)
+                                 | (CanStep(sq, kSouth)     ? SquareBB(sq + kSouth)     : kEmptyBB)
+                                 | (CanStep(sq, kWest)      ? SquareBB(sq + kWest)      : kEmptyBB)
+                                 | (CanStep(sq, kNorthEast) ? SquareBB(sq + kNorthEast) : kEmptyBB)
+                                 | (CanStep(sq, kSouthEast) ? SquareBB(sq + kSouthEast) : kEmptyBB)
+                                 | (CanStep(sq, kSouthWest) ? SquareBB(sq + kSouthWest) : kEmptyBB)
+                                 | (CanStep(sq, kNorthWest) ? SquareBB(sq + kNorthWest) : kEmptyBB);
             }
         }
 
-        void InitBishopMagics()
+        void InitBishopMagicTable()
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                FancyMagic& fm = kBishopMagics[sq];
-                fm.mask = DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~kEdgesBB;
+                FancyMagic& fm = kBishopMagicTable[sq];
+                fm.mask = DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq) & ~kEdgesBB;
             }
         }
 
-        void InitRookMagics()
+        void InitRookMagicTable()
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                FancyMagic& fm = kRookMagics[sq];
-                fm.mask = RankBB(RankOf(sq)) | FileBB(FileOf(sq)) & ~kEdgesBB;
+                FancyMagic& fm = kBishopMagicTable[sq];
+                fm.mask = RankBB(RankOf(sq)) | FileBB(FileOf(sq)) & ~SquareBB(sq) & ~kEdgesBB;
             }
         }
     }

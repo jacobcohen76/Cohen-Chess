@@ -137,6 +137,6 @@ namespace cohen_chess
     {
         return lhs = CastlingRights(uint8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

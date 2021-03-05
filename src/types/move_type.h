@@ -14,6 +14,6 @@ namespace cohen_chess
         kEnPassant = 0x2000,
         kCastling  = 0x3000,
     };
-};
+}
 
 #endif

@@ -122,6 +122,6 @@ namespace cohen_chess
     {
         return lhs = Key(uint64_t(lhs) | rhs);
     }
-};
+}
 
 #endif

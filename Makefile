@@ -1,6 +1,7 @@
 all:
 	g++                               \
 		src/main.cpp                  \
+		src/engine/attacks.cc         \
 		src/engine/board.cc           \
 		src/engine/move_generation.cc \
 		src/hash/zobrist.cc           \

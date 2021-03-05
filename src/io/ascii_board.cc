@@ -3,4 +3,4 @@
 namespace cohen_chess
 {
     
-};
+}

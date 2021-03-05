@@ -11,7 +11,7 @@ namespace cohen_chess
         Bitboard    kLineBitboards[kSquareNB][kSquareNB];
         Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
 
-        void InitLineBitboards()
+        void InitLineBitboards(Bitboard line_bitboards[kSquareNB][kSquareNB])
         {
             for(Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
             {
@@ -29,13 +29,13 @@ namespace cohen_chess
                         }
                         bb |= SquareBB(sq2);
                     }
-                    kLineBitboards[sq1][sq2] = bb;
-                    kLineBitboards[sq2][sq1] = bb;
+                    line_bitboards[sq1][sq2] = bb;
+                    line_bitboards[sq2][sq1] = bb;
                 }
             }
         }
 
-        void InitBetweenBitboards()
+        void InitBetweenBitboards(Bitboard between_bitboards[kSquareNB][kSquareNB])
         {
             for(Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
             {
@@ -52,10 +52,10 @@ namespace cohen_chess
                             itr += dir;
                         }
                     }
-                    kBetweenBitboards[sq1][sq2] = bb;
-                    kBetweenBitboards[sq2][sq1] = bb;
+                    between_bitboards[sq1][sq2] = bb;
+                    between_bitboards[sq2][sq1] = bb;
                 }
             }
         }
     }
-};
+}

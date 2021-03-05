@@ -13,42 +13,28 @@ namespace cohen_chess
         kEast           = +1,
         kSouth          = -kNorth,
         kWest           = -kEast,
+
         kNorthEast      = kNorth + kEast,
-        kNorthWest      = kNorth + kWest,
         kSouthEast      = kSouth + kEast,
         kSouthWest      = kSouth + kWest,
-        kNorthNorthEast = kNorth + kNorth + kEast,
-        kNorthNorthWest = kNorth + kNorth + kWest,
-        kSouthSouthEast = kSouth + kSouth + kEast,
-        kSouthSouthWest = kSouth + kSouth + kWest,
-        kEastEastNorth  = kEast + kEast + kNorth,
-        kEastEastSouth  = kEast + kEast + kSouth,
-        kWestWestNorth  = kWest + kWest + kNorth,
-        kWestWestSouth  = kWest + kWest + kSouth,
+        kNorthWest      = kNorth + kWest,
+
+        kNorthNorth     = kNorth + kNorth,
+        kEastEast       = kEast + kEast,
+        kSouthSouth     = kSouth + kSouth,
+        kWestWest       = kWest + kWest,
+
+        kNorthNorthEast = kNorthNorth + kEast,
+        kNorthNorthWest = kNorthNorth + kWest,
+        kEastEastNorth  = kEastEast + kNorth,
+        kEastEastSouth  = kEastEast + kSouth,
+        kSouthSouthEast = kSouthSouth + kEast,
+        kSouthSouthWest = kSouthSouth + kWest,
+        kWestWestNorth  = kWestWest + kNorth,
+        kWestWestSouth  = kWestWest + kSouth,
+
         kDirectionNone  = 0,
     };
-
-    namespace direction
-    {
-        extern Direction kRayBetween[kSquareNB][kSquareNB];
-        
-        void InitRayBetween();
-    };
-
-    inline Direction RayBetween(Square sq1, Square sq2)
-    {
-        return direction::kRayBetween[sq1][sq2];
-    }
-
-    inline Direction& operator++(Direction& op)
-    {
-        return op = Direction(int8_t(op) + 1);
-    }
-
-    inline Direction& operator--(Direction& op)
-    {
-        return op = Direction(int8_t(op) - 1);
-    }
 
     constexpr Direction operator+(Direction op)
     {
@@ -80,91 +66,26 @@ namespace cohen_chess
         return Square(int8_t(sq) - int8_t(dir));
     }
 
-    template<typename Integral>
-    constexpr Direction operator<<(Direction op1, Integral op2)
+    namespace direction
     {
-        return Direction(int8_t(op1) << op2);
+        extern Direction kRayBetween[kSquareNB][kSquareNB];
+
+        void InitRayBetween(Direction[kSquareNB][kSquareNB]);
+    };
+
+    inline Direction RayBetween(Square sq1, Square sq2)
+    {
+        return direction::kRayBetween[sq1][sq2];
     }
 
-    template<typename Integral>
-    constexpr Direction operator>>(Direction op1, Integral op2)
+    constexpr int8_t Magnitude(Direction dir)
     {
-        return Direction(int8_t(op1) >> op2);
+        return SquareDistance(kE4, kE4 + dir);
     }
 
-    constexpr Direction operator&(Direction op1, Direction op2)
+    constexpr bool CanStep(Square sq, Direction step)
     {
-        return Direction(int8_t(op1) & int8_t(op2));
-    }
-
-    constexpr Direction operator^(Direction op1, Direction op2)
-    {
-        return Direction(int8_t(op1) ^ int8_t(op2));
-    }
-
-    constexpr Direction operator|(Direction op1, Direction op2)
-    {
-        return Direction(int8_t(op1) ^ int8_t(op2));
-    }
-
-    template<typename Integral>
-    inline Direction& operator+=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator-=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator*=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator/=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator%=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator<<=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator>>=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator&=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator^=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    inline Direction& operator|=(Direction& lhs, Integral rhs)
-    {
-        return lhs = Direction(int8_t(lhs) | rhs);
+        return IsNormal(sq) && IsNormal(sq + step) && SquareDistance(sq, sq + step) == Magnitude(step);
     }
 };
 

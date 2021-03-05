@@ -8,48 +8,43 @@
 
 using namespace cohen_chess;
 
+void BootEngine()
+{
+    bit_util::InitPopCountTable(bit_util::kU16PopCountTable, sizeof(bit_util::kU16PopCountTable) / sizeof(uint8_t));
+    direction::InitRayBetween(direction::kRayBetween);
+
+    bitboard::InitLineBitboards(bitboard::kLineBitboards);
+    bitboard::InitBetweenBitboards(bitboard::kBetweenBitboards);
+
+    attacks::InitPawnAttackTable(attacks::kPawnAttackTable);
+    attacks::InitKnightAttackTable(attacks::kKnightAttackTable);
+    attacks::InitKingAttackTable(attacks::kKingAttackTable);
+    attacks::InitBishopMagicTable();
+    attacks::InitRookMagicTable();
+}
+
 int main(int argc, char* argv[])
 {
-    direction::InitRayBetween();
+    BootEngine();
+    for(Square sq = kA1; sq < kSquareNB; ++sq)
+    {
+        //Bitboard bb = KingAttacks(sq);
+        //std::string hex_string = util::HexString(bb);
+        //std::string ascii_board = io::AsciiBoard<kWhite>(bb);
+        //std::cout << "0x" << hex_string << std::endl;
+        //std::cout << ascii_board << std::endl;
+        //std::cout << std::endl;
 
-    bitboard::InitLineBitboards();
-    bitboard::InitBetweenBitboards();
-
-    attacks::InitPawnAttacks();
-    attacks::InitKnightAttacks();
-    attacks::InitKingAttacks();
-    attacks::InitBishopMagics();
-    attacks::InitRookMagics();
-
-
-    //int x = 0xFA;
-    //std::cout << util::BinaryString<12>(x) << std::endl;
-    //std::cout << io::AsciiBoard<kWhite>(RankBB(kRank4) | DiagBB(kDiag4)) << std::endl << std::endl;
-
-    Board board;
-
-    board.put(kWhiteRook, kA1);
-
-    board.put(kWhitePawn, kA2);
-    board.put(kWhitePawn, kB2);
-    board.put(kWhitePawn, kC2);
-    board.put(kWhitePawn, kD2);
-    board.put(kWhitePawn, kE2);
-    board.put(kWhitePawn, kF2);
-    board.put(kWhitePawn, kG2);
-    board.put(kWhitePawn, kH2);
-
-    board.put(kBlackRook, kA8);
-
-    board.put(kBlackPawn, kA7);
-    board.put(kBlackPawn, kB7);
-    board.put(kBlackPawn, kC7);
-    board.put(kBlackPawn, kD7);
-    board.put(kBlackPawn, kE7);
-    board.put(kBlackPawn, kF7);
-    board.put(kBlackPawn, kG7);
-    board.put(kBlackPawn, kH7);
-
-    std::cout << io::AsciiBoard<kWhite>(KingAttacks(kE4)) << std::endl;
+        std::string white_pawn_attacks_ascii_board = io::AsciiBoard<kWhite>(PawnAttacks(kWhite, sq));
+        std::string black_pawn_attacks_ascii_board = io::AsciiBoard<kWhite>(PawnAttacks(kBlack, sq));
+        std::string knight_attacks_ascii_board = io::AsciiBoard<kWhite>(KnightAttacks(sq));
+        std::string king_attacks_ascii_board = io::AsciiBoard<kWhite>(KingAttacks(sq));
+        
+        std::string gap(3, ' '), str;
+        str = util::HorizontalMerge(white_pawn_attacks_ascii_board, black_pawn_attacks_ascii_board, gap);
+        str = util::HorizontalMerge(str, knight_attacks_ascii_board, gap);
+        str = util::HorizontalMerge(str, king_attacks_ascii_board, gap);
+        std::cout << str << std::endl << std::endl;
+    }
     return 0;
 }

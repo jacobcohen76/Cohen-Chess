@@ -66,5 +66,5 @@ namespace cohen_chess
                 kEnPassantFileTarget[f] = Key(randomizer());
             }
         }
-    };
-};
+    }
+}

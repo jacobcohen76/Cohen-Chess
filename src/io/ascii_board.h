@@ -65,6 +65,6 @@ namespace cohen_chess
             return ascii_board;
         }
     };
-};
+}
 
 #endif

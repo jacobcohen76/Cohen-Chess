@@ -71,7 +71,7 @@ namespace cohen_chess
         {
             if(IsNormal(sq))
             {
-                return std::string{ FileChar(File(sq)), RankChar(Rank(sq)) };
+                return std::string{ FileChar(FileOf(sq)), RankChar(RankOf(sq)) };
             }
             else
             {

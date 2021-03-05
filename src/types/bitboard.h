@@ -20,15 +20,6 @@ namespace cohen_chess
         kEdgesBB        = 0xFF818181818181FF,
     };
 
-    namespace bitboard
-    {
-        extern Bitboard    kLineBitboards[kSquareNB][kSquareNB];
-        extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
-        
-        void InitLineBitboards();
-        void InitBetweenBitboards();
-    };
-
     inline Bitboard& operator++(Bitboard& op)
     {
         return op = Bitboard(uint64_t(op) + 1ull);
@@ -141,16 +132,6 @@ namespace cohen_chess
         return lhs = Bitboard(uint64_t(lhs) | rhs);
     }
 
-    inline Bitboard LineBB(Square sq1, Square sq2)
-    {
-        return bitboard::kLineBitboards[sq1][sq2];
-    }
-
-    inline Bitboard BetweenBB(Square sq1, Square sq2)
-    {
-        return bitboard::kBetweenBitboards[sq1][sq2];
-    }
-
     constexpr Bitboard SquareBB(Square sq)
     {
         return Bitboard(0x0000000000000001) << sq;
@@ -208,6 +189,25 @@ namespace cohen_chess
             Bitboard(0x4080000000000000),
             Bitboard(0x8000000000000000),
         }[anti];
+    }
+
+    namespace bitboard
+    {
+        extern Bitboard    kLineBitboards[kSquareNB][kSquareNB];
+        extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
+        
+        void InitLineBitboards(Bitboard[kSquareNB][kSquareNB]);
+        void InitBetweenBitboards(Bitboard[kSquareNB][kSquareNB]);
+    };
+
+    inline Bitboard LineBB(Square sq1, Square sq2)
+    {
+        return bitboard::kLineBitboards[sq1][sq2];
+    }
+
+    inline Bitboard BetweenBB(Square sq1, Square sq2)
+    {
+        return bitboard::kBetweenBitboards[sq1][sq2];
     }
 
     constexpr int PopCount(Bitboard bb)
@@ -282,6 +282,6 @@ namespace cohen_chess
         bb =  ((tr >>  9) ^ tr) ^ bb;
         return bb;
     }
-};
+}
 
 #endif

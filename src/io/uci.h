@@ -4,6 +4,6 @@
 namespace cohen_chess
 {
 
-};
+}
 
 #endif

@@ -141,6 +141,6 @@ namespace cohen_chess
     {
         return lhs = Diag(int8_t(lhs) | rhs);
     }
-};
+}
 
 #endif

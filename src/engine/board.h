@@ -41,7 +41,7 @@ namespace cohen_chess
         Color       side;
     };
 
-    inline Board::Board() : piece_bitboards(), piece_on_square(), info()
+    inline Board::Board() : piece_bitboards(), piece_on_square(), info(), side()
     {
         
     }
