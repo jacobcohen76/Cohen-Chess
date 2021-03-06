@@ -58,30 +58,41 @@ namespace cohen_chess
 
         void InitBishopMagicTable(Bitboard magics[kSquareNB], FancyMagic magic_table[kSquareNB], Bitboard* attack_table)
         {
-            Bitboard* attacks = attack_table;
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = kBishopMagicTable[sq];
                 fm.mask     = (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
                 fm.magic    = magics[sq];
-                fm.attacks  = attacks;
+                fm.attacks  = attack_table;
                 fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
                 do
                 {
-                    *attacks++ = IterativeBishopAttacks(occ, sq);
-                    occ = (occ - fm.mask) & fm.mask; 
-                } while(occ);
+                    *attack_table++ = IterativeBishopAttacks(occ, sq);
+                }
+                while(occ = (occ - fm.mask) & fm.mask);
             }
         }
 
-        void InitRookMagicTable(Bitboard magics[kSquareNB], FancyMagic magic_table[kSquareNB], Bitboard* attacks)
+        void InitRookMagicTable(Bitboard magics[kSquareNB], FancyMagic magic_table[kSquareNB], Bitboard* attack_table)
         {
+            Bitboard occupancy[4096], occupancy[4096];
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = kBishopMagicTable[sq];
-                fm.mask = (RankBB(RankOf(sq)) | FileBB(FileOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
+                fm.mask     = ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
+                fm.magic    = magics[sq];
+                fm.attacks  = attack_table;
+                fm.shift    = kSquareNB - PopCount(fm.mask);
+
+                Bitboard occ = kEmptyBB;
+                do
+                {
+                    *attack_table++ = IterativeRookAttacks(occ, sq);
+                }
+                while(occ = (occ - fm.mask) & fm.mask);
+                
             }
         }
     }

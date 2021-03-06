@@ -18,6 +18,8 @@ namespace cohen_chess
         kUniverseBB     = 0xFFFFFFFFFFFFFFFF,
         kDarkSquaresBB  = 0xAA55AA55AA55AA55,
         kLightSquaresBB = 0x55AA55AA55AA55AA,
+        kRankEdgesBB    = 0x8181818181818181,
+        kFileEdgesBB    = 0xFF000000000000FF,
         kEdgesBB        = 0xFF818181818181FF,
     };
 
