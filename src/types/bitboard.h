@@ -3,6 +3,7 @@
 
 #include "anti.h"
 #include "diag.h"
+#include "direction.h"
 #include "file.h"
 #include "rank.h"
 #include "square.h"
@@ -55,6 +56,26 @@ namespace cohen_chess
     constexpr Bitboard operator>>(Bitboard op1, Integral op2)
     {
         return Bitboard(uint64_t(op1) >> op2);
+    }
+
+    constexpr Bitboard operator*(Bitboard op1, Bitboard op2)
+    {
+        return Bitboard(uint64_t(op1) * uint64_t(op2));
+    }
+
+    constexpr Bitboard operator/(Bitboard op1, Bitboard op2)
+    {
+        return Bitboard(uint64_t(op1) / uint64_t(op2));
+    }
+
+    constexpr Bitboard operator+(Bitboard op1, Bitboard op2)
+    {
+        return Bitboard(uint64_t(op1) + uint64_t(op2));
+    }
+
+    constexpr Bitboard operator-(Bitboard op1, Bitboard op2)
+    {
+        return Bitboard(uint64_t(op1) - uint64_t(op2));
     }
 
     constexpr Bitboard operator&(Bitboard op1, Bitboard op2)
@@ -191,9 +212,33 @@ namespace cohen_chess
         }[anti];
     }
 
+    inline Bitboard RayBB(Square sq, Direction dir)
+    {
+        Bitboard bb = kEmptyBB;
+        while(CanStep(sq, dir))
+        {
+            bb |= SquareBB(sq += dir);
+        }
+        return bb;
+    }
+
+    inline Bitboard RayBB(Bitboard occ, Square sq, Direction dir)
+    {
+        Bitboard bb = kEmptyBB;
+        while(CanStep(sq, dir) && !(SquareBB(sq + dir) & occ))
+        {
+            bb |= SquareBB(sq += dir);
+        }
+        if(CanStep(sq, dir))
+        {
+            bb |= SquareBB(sq + dir);
+        }
+        return bb;
+    }
+
     namespace bitboard
     {
-        extern Bitboard    kLineBitboards[kSquareNB][kSquareNB];
+        extern Bitboard kLineBitboards[kSquareNB][kSquareNB];
         extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
         
         void InitLineBitboards(Bitboard[kSquareNB][kSquareNB]);

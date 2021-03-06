@@ -66,6 +66,11 @@ namespace cohen_chess
         return Square(int8_t(sq) - int8_t(dir));
     }
 
+    inline Square& operator+=(Square& sq, Direction dir)
+    {
+        return sq = Square(int8_t(sq) + int8_t(dir));
+    }
+
     namespace direction
     {
         extern Direction kRayBetween[kSquareNB][kSquareNB];

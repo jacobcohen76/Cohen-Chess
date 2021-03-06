@@ -34,9 +34,8 @@ namespace cohen_chess
         void InitPawnAttackTable(Bitboard[kColorNB][kSquareNB]);
         void InitKnightAttackTable(Bitboard[kSquareNB]);
         void InitKingAttackTable(Bitboard[kSquareNB]);
-        void InitMagicAttackTable();
-        void InitBishopMagicTable();
-        void InitRookMagicTable();
+        void InitBishopMagicTable(FancyMagic[kSquareNB], Bitboard*);
+        void InitRookMagicTable(FancyMagic[kSquareNB], Bitboard*);
 
         inline size_t FancyMagic::index(Bitboard occ) const
         {
@@ -62,6 +61,27 @@ namespace cohen_chess
     inline Bitboard KingAttacks(Square sq)
     {
         return attacks::kKingAttackTable[sq];
+    }
+
+    inline Bitboard IterativeBishopAttacks(Bitboard occ, Square sq)
+    {
+        return  RayBB(occ, sq, kNorthEast) |
+                RayBB(occ, sq, kSouthWest) |
+                RayBB(occ, sq, kSouthEast) |
+                RayBB(occ, sq, kNorthWest);
+    }
+
+    inline Bitboard IterativeRookAttacks(Bitboard occ, Square sq)
+    {
+        return  RayBB(occ, sq, kNorth) |
+                RayBB(occ, sq, kEast)  |
+                RayBB(occ, sq, kSouth) |
+                RayBB(occ, sq, kWest);
+    }
+
+    inline Bitboard IterativeQueenAttacks(Bitboard occ, Square sq)
+    {
+        return IterativeBishopAttacks(occ, sq) | IterativeRookAttacks(occ, sq);
     }
 
     inline Bitboard BishopAttacks(Bitboard occ, Square sq)

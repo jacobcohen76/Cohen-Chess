@@ -54,7 +54,7 @@ namespace cohen_chess
         piece_bitboards[kOccupancy] |= sq_bb;
         piece_on_square[sq] = pc;
         info.zkey ^= ZobristKey(pc, sq);
-        if(TypeOf(pc) == kPawn)
+        if(PieceTypeOf(pc) == kPawn)
         {
             info.pawn_key ^= ZobristKey(pc, sq);
         }
@@ -68,7 +68,7 @@ namespace cohen_chess
         piece_bitboards[kOccupancy] &= not_sq_bb;
         piece_on_square[sq] = kPieceNone;
         info.zkey ^= ZobristKey(pc, sq);
-        if(TypeOf(pc) == kPawn)
+        if(PieceTypeOf(pc) == kPawn)
         {
             info.pawn_key ^= ZobristKey(pc, sq);
         }
@@ -92,10 +92,10 @@ namespace cohen_chess
         //if moving from or to a8 flip BlackOO
         //if moving from or to h8 flip BlackOOO
         //if moving King remove the current sides castling rights
-        MoveType flags = TypeOf(move);
+        MoveType mv_type = MoveTypeOf(move);
         Square from = FromSquare(move), to = ToSquare(move);
         Piece on_from = on(from), on_to = on(to);
-        if(TypeOf(on_from) == kPawn)
+        if(PieceTypeOf(on_from) == kPawn)
         {
             if(to - from == 2 * kNorth || to - from == 2 * kSouth)
             {
@@ -103,11 +103,11 @@ namespace cohen_chess
             }
             else
             {
-                if(flags == kEnPassant)
+                if(mv_type == kEnPassant)
                 {
                     info.captured = this->capture(info.ep_target);
                 }
-                else if(flags == kPromotion)
+                else if(mv_type == kPromotion)
                 {
                     put(MakePiece(side, PromotedTo(move)), to);
                 }

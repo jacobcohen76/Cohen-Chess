@@ -1,14 +1,10 @@
 #include "bitboard.h"
 
-#include "direction.h"
-
-#include <iostream>
-
 namespace cohen_chess
 {
     namespace bitboard
     {
-        Bitboard    kLineBitboards[kSquareNB][kSquareNB];
+        Bitboard kLineBitboards[kSquareNB][kSquareNB];
         Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
 
         void InitLineBitboards(Bitboard line_bitboards[kSquareNB][kSquareNB])

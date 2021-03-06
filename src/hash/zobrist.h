@@ -13,13 +13,13 @@ namespace cohen_chess
 {
     namespace zobrist
     {
-        extern Key   kPieceOnSquareKeys[kPieceNB][kSquareNB];
-        extern Key  kCastlingRightsKeys[kCastlingNB];
-        extern Key kEnPassantFileTarget[kFileNB];
+        extern Key kPieceOnSquareKeys[kPieceNB][kSquareNB];
+        extern Key kCastlingRightsKeys[kCastlingNB];
+        extern Key kEnPassantFileTargetKeys[kFileNB];
 
-        void InitPieceOnSquareKeys(uint64_t (*)());
-        void InitCastlingRightsKeys(uint64_t (*)());
-        void InitEnPassantFileTargetKeys(uint64_t (*)());
+        void InitPieceOnSquareKeys(Key[kPieceNB][kSquareNB], uint64_t (*)());
+        void InitCastlingRightsKeys(Key[kCastlingNB], uint64_t (*)());
+        void InitEnPassantFileTargetKeys(Key[kFileNB], uint64_t (*)());
     };
 
     inline Key ZobristKey(Piece pc, Square sq)
@@ -34,7 +34,7 @@ namespace cohen_chess
 
     inline Key ZobristKey(File f)
     {
-        return zobrist::kEnPassantFileTarget[f];
+        return zobrist::kEnPassantFileTargetKeys[f];
     }
 }
 

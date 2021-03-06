@@ -34,7 +34,7 @@ namespace cohen_chess
         return Square((uint16_t(move) >> 6) & 0x3F);
     }
 
-    constexpr MoveType TypeOf(Move move)
+    constexpr MoveType MoveTypeOf(Move move)
     {
         return MoveType(uint16_t(move) & 0xF000);
     }

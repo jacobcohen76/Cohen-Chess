@@ -37,7 +37,7 @@ namespace cohen_chess
         return Piece((uint8_t(side) << 3) | uint8_t(type));
     }
 
-    constexpr PieceType TypeOf(Piece pc)
+    constexpr PieceType PieceTypeOf(Piece pc)
     {
         return PieceType(pc & kPieceTypeAll);
     }
