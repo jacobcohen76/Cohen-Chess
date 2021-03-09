@@ -16,9 +16,9 @@ void InitEngine()
 
     direction::InitRayBetween(direction::kRayBetween);
 
-    //zobrist::InitPieceOnSquareKeys(zobrist::kPieceOnSquareKeys, );
-    //zobrist::InitCastlingRightsKeys(zobrist::kCastlingRightsKeys, );
-    //zobrist::InitEnPassantFileTargetKeys(zobrist::kEnPassantFileTargetKeys, )
+    // zobrist::InitPieceOnSquareKeys(zobrist::kPieceOnSquareKeys, );
+    // zobrist::InitCastlingRightsKeys(zobrist::kCastlingRightsKeys, );
+    // zobrist::InitEnPassantFileTargetKeys(zobrist::kEnPassantFileTargetKeys, )
 
     bitboard::InitLineBitboards(bitboard::kLineBitboards);
     bitboard::InitBetweenBitboards(bitboard::kBetweenBitboards);
@@ -26,8 +26,8 @@ void InitEngine()
     attacks::InitPawnAttackTable(attacks::kPawnAttackTable);
     attacks::InitKnightAttackTable(attacks::kKnightAttackTable);
     attacks::InitKingAttackTable(attacks::kKingAttackTable);
-    //attacks::InitBishopMagicTable(attacks::kBishopMagicTable, attacks::kMagicAttackTable);
-    //attacks::InitRookMagicTable(attacks::kRookMagicTable, attacks::kMagicAttackTable);
+    // attacks::InitBishopMagicTable(attacks::kBishopMagicTable, attacks::kMagicAttackTable);
+    // attacks::InitRookMagicTable(attacks::kRookMagicTable, attacks::kMagicAttackTable);
 }
 
 int main(int argc, char* argv[])
@@ -49,6 +49,13 @@ int main(int argc, char* argv[])
     }
 
     // std::chrono::nanoseconds sleep_time(0);
+    uint64_t n = 0xF8;
+    std::cout << BinaryString(     n) << std::endl;
+    std::cout << BinaryString(    -n) << std::endl;
+    std::cout << BinaryString(n & -n) << std::endl;
+
+
+    exit(1);
 
     Bitboard mask, occ, attacks;
     for(Square sq = kA1; sq < kSquareNB; ++sq)

@@ -117,7 +117,7 @@ namespace cohen_chess
         size_t i = 0;
         while(raw_bits)
         {
-            binary_string[no_bits - i - 1] = (raw_bits & 1) + '1';
+            binary_string[no_bits - i - 1] = (raw_bits & 1) + '0';
             raw_bits >>= 1;
             i += 1;
         }

@@ -56,7 +56,7 @@ namespace cohen_chess
             }
         }
 
-        void InitBishopMagicTable(Bitboard magics[kSquareNB], FancyMagic magic_table[kSquareNB], Bitboard* attack_table)
+        void InitBishopMagicTable(FancyMagic magic_table[kSquareNB], Bitboard magics[kSquareNB], Bitboard* attack_table)
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
@@ -67,17 +67,19 @@ namespace cohen_chess
                 fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
+                size_t max_index = 0;
                 do
                 {
-                    *attack_table++ = IterativeBishopAttacks(occ, sq);
+                    max_index = std::max(fm.index(occ), max_index);
+                    fm.attacks[fm.index(occ)] = IterativeRookAttacks(occ, sq);
                 }
                 while(occ = (occ - fm.mask) & fm.mask);
+                attack_table += max_index + 1;
             }
         }
 
-        void InitRookMagicTable(Bitboard magics[kSquareNB], FancyMagic magic_table[kSquareNB], Bitboard* attack_table)
+        void InitRookMagicTable(FancyMagic magic_table[kSquareNB], Bitboard magics[kSquareNB], Bitboard* attack_table)
         {
-            Bitboard occupancy[4096], occupancy[4096];
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = kBishopMagicTable[sq];
@@ -87,12 +89,14 @@ namespace cohen_chess
                 fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
+                size_t max_index = 0;
                 do
                 {
-                    *attack_table++ = IterativeRookAttacks(occ, sq);
+                    max_index = std::max(fm.index(occ), max_index);
+                    fm.attacks[fm.index(occ)] = IterativeRookAttacks(occ, sq);
                 }
                 while(occ = (occ - fm.mask) & fm.mask);
-                
+                attack_table += max_index + 1;
             }
         }
     }

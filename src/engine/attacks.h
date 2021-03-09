@@ -27,15 +27,16 @@ namespace cohen_chess
         extern Bitboard     kPawnAttackTable[kColorNB][kSquareNB];
         extern Bitboard     kKnightAttackTable[kSquareNB];
         extern Bitboard     kKingAttackTable[kSquareNB];
-        extern Bitboard     kMagicAttackTable[kSquareNB];
+        extern Bitboard     kMagicBishopAttackTable[kSquareNB];
+        extern Bitboard     kMagicRookAttackTable[kSquareNB];
         extern FancyMagic   kBishopMagicTable[kSquareNB];
         extern FancyMagic   kRookMagicTable[kSquareNB];
 
         void InitPawnAttackTable(Bitboard[kColorNB][kSquareNB]);
         void InitKnightAttackTable(Bitboard[kSquareNB]);
         void InitKingAttackTable(Bitboard[kSquareNB]);
-        void InitBishopMagicTable(FancyMagic[kSquareNB], Bitboard*);
-        void InitRookMagicTable(FancyMagic[kSquareNB], Bitboard*);
+        void InitBishopMagicTable(FancyMagic[kSquareNB], Bitboard[kSquareNB], Bitboard*);
+        void InitRookMagicTable(FancyMagic[kSquareNB], Bitboard[kSquareNB], Bitboard*);
 
         inline size_t FancyMagic::index(Bitboard occ) const
         {
