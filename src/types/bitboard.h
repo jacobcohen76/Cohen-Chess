@@ -214,6 +214,132 @@ namespace cohen_chess
         }[anti];
     }
 
+    template<Direction dir>
+    constexpr Bitboard ShiftBB(Bitboard bb)
+    {
+        return bb;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorth>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8)) << +kNorth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kEast>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileH)) << +kEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouth>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1)) >> -kSouth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kWest>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileA)) >> -kWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorthEast>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8) & ~FileBB(kFileH)) << +kNorthEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorthWest>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8) & ~FileBB(kFileA)) << +kNorthWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouthEast>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1) & ~FileBB(kFileH)) >> -kSouthEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouthWest>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1) & ~FileBB(kFileA)) >> -kSouthWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorthNorth>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8) & ~RankBB(kRank7)) << +kNorthNorth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kEastEast>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileH) & ~FileBB(kFileG)) << +kEastEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouthSouth>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1) & ~RankBB(kRank2)) >> -kSouthSouth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kWestWest>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileA) & ~FileBB(kFileB)) >> -kWestWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorthNorthEast>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileH)) << +kNorthNorthEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kNorthNorthWest>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileA)) << +kNorthNorthWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kEastEastNorth>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileH) & ~FileBB(kFileG) & ~RankBB(kRank8)) << +kEastEastNorth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kEastEastSouth>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileH) & ~FileBB(kFileG) & ~RankBB(kRank1)) >> -kEastEastSouth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouthSouthEast>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileH)) >> -kSouthSouthEast;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kSouthSouthWest>(Bitboard bb)
+    {
+        return (bb & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileA)) >> -kSouthSouthWest;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kWestWestNorth>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileA) & ~FileBB(kFileB) & ~RankBB(kRank8)) << +kWestWestNorth;
+    }
+
+    template<>
+    constexpr Bitboard ShiftBB<kWestWestSouth>(Bitboard bb)
+    {
+        return (bb & ~FileBB(kFileA) & ~FileBB(kFileB) & ~RankBB(kRank1)) >> -kWestWestSouth;
+    }
+
     inline Bitboard RayBB(Square sq, Direction dir)
     {
         Bitboard bb = kEmptyBB;

@@ -10,7 +10,8 @@ namespace cohen_chess
         Bitboard    kPawnAttackTable[kColorNB][kSquareNB];
         Bitboard    kKnightAttackTable[kSquareNB];
         Bitboard    kKingAttackTable[kSquareNB];
-        Bitboard    kMagicAttackTable[kSquareNB];
+        // Bitboard    kMagicBishopAttackTable[kSquareNB];
+        // Bitboard    kMagicRookAttackTable[kSquareNB];
         FancyMagic  kBishopMagicTable[kSquareNB];
         FancyMagic  kRookMagicTable[kSquareNB];
 
@@ -30,14 +31,7 @@ namespace cohen_chess
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                attack_table[sq] = (CanStep(sq, kNorthNorthEast) ? SquareBB(sq + kNorthNorthEast) : kEmptyBB)
-                                 | (CanStep(sq, kNorthNorthWest) ? SquareBB(sq + kNorthNorthWest) : kEmptyBB)
-                                 | (CanStep(sq, kEastEastNorth)  ? SquareBB(sq + kEastEastNorth)  : kEmptyBB)
-                                 | (CanStep(sq, kEastEastSouth)  ? SquareBB(sq + kEastEastSouth)  : kEmptyBB)
-                                 | (CanStep(sq, kSouthSouthEast) ? SquareBB(sq + kSouthSouthEast) : kEmptyBB)
-                                 | (CanStep(sq, kSouthSouthWest) ? SquareBB(sq + kSouthSouthWest) : kEmptyBB)
-                                 | (CanStep(sq, kWestWestNorth)  ? SquareBB(sq + kWestWestNorth)  : kEmptyBB)
-                                 | (CanStep(sq, kWestWestSouth)  ? SquareBB(sq + kWestWestSouth)  : kEmptyBB);
+                attack_table[sq] = ComputeKnightAttacks(sq);
             }
         }
 
@@ -45,58 +39,53 @@ namespace cohen_chess
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                attack_table[sq] = (CanStep(sq, kNorth)     ? SquareBB(sq + kNorth)     : kEmptyBB)
-                                 | (CanStep(sq, kEast)      ? SquareBB(sq + kEast)      : kEmptyBB)
-                                 | (CanStep(sq, kSouth)     ? SquareBB(sq + kSouth)     : kEmptyBB)
-                                 | (CanStep(sq, kWest)      ? SquareBB(sq + kWest)      : kEmptyBB)
-                                 | (CanStep(sq, kNorthEast) ? SquareBB(sq + kNorthEast) : kEmptyBB)
-                                 | (CanStep(sq, kSouthEast) ? SquareBB(sq + kSouthEast) : kEmptyBB)
-                                 | (CanStep(sq, kSouthWest) ? SquareBB(sq + kSouthWest) : kEmptyBB)
-                                 | (CanStep(sq, kNorthWest) ? SquareBB(sq + kNorthWest) : kEmptyBB);
+                attack_table[sq] = ComputeKingAttacks(sq);
             }
         }
 
         void InitBishopMagicTable(FancyMagic magic_table[kSquareNB], Bitboard magics[kSquareNB], Bitboard* attack_table)
         {
+            size_t max_index, occ_index;
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                FancyMagic& fm = kBishopMagicTable[sq];
-                fm.mask     = (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
+                FancyMagic& fm = magic_table[sq];
+                fm.mask     = RelevantOccBishop(sq);
                 fm.magic    = magics[sq];
-                fm.attacks  = attack_table;
+                fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
                 fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
-                size_t max_index = 0;
+                max_index = 0;
                 do
                 {
-                    max_index = std::max(fm.index(occ), max_index);
-                    fm.attacks[fm.index(occ)] = IterativeRookAttacks(occ, sq);
+                    occ_index = fm.index(occ);
+                    max_index = occ_index > max_index ? occ_index : max_index;
+                    fm.attacks[occ_index] = IterativeBishopAttacks(occ, sq);
                 }
                 while(occ = (occ - fm.mask) & fm.mask);
-                attack_table += max_index + 1;
             }
         }
 
         void InitRookMagicTable(FancyMagic magic_table[kSquareNB], Bitboard magics[kSquareNB], Bitboard* attack_table)
         {
+            size_t max_index, occ_index;
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = kBishopMagicTable[sq];
-                fm.mask     = ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
+                fm.mask     = RelevantOccRook(sq);
                 fm.magic    = magics[sq];
-                fm.attacks  = attack_table;
+                fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
                 fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
-                size_t max_index = 0;
+                max_index = 0;
                 do
                 {
-                    max_index = std::max(fm.index(occ), max_index);
-                    fm.attacks[fm.index(occ)] = IterativeRookAttacks(occ, sq);
+                    occ_index = fm.index(occ);
+                    max_index = occ_index > max_index ? occ_index : max_index;
+                    fm.attacks[occ_index] = IterativeRookAttacks(occ, sq);
                 }
                 while(occ = (occ - fm.mask) & fm.mask);
-                attack_table += max_index + 1;
             }
         }
     }
