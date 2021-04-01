@@ -13,7 +13,7 @@ namespace cohen_chess
         void InitPopCountTable(uint8_t[], size_t);
     };
 
-    template<typename T>
+    template <typename T>
     inline int PopCountLookup(T x)
     {
         int pop_count = 0;
@@ -37,14 +37,14 @@ namespace cohen_chess
         return  bit_util::kU16PopCountTable[x];
     }
 
-    template<>
+    template <>
     inline int PopCountLookup<uint32_t>(uint32_t x)
     {
         return  bit_util::kU16PopCountTable[(x >>  0) & 0xFFFF] +
                 bit_util::kU16PopCountTable[(x >> 16) & 0xFFFF];
     }
 
-    template<>
+    template <>
     inline int PopCountLookup<uint64_t>(uint64_t x)
     {
         return  bit_util::kU16PopCountTable[(x >>  0) & 0xFFFF] +
@@ -53,7 +53,7 @@ namespace cohen_chess
                 bit_util::kU16PopCountTable[(x >> 48) & 0xFFFF];
     }
 
-    template<typename T>
+    template <typename T>
     constexpr int PopCountLSB(T x)
     {
         int pop_count = 0;
@@ -65,14 +65,14 @@ namespace cohen_chess
         return pop_count;
     }
 
-    template<typename T>
+    template <typename T>
     constexpr T FlipLSB(T x)
     {
         return x & (x ^ -x);
     }
 
-    template<bool lowercase = false>
-    constexpr char HexChar(uint64_t nibble)
+    template <bool lowercase = false>
+    constexpr char HexCharacter(uint64_t nibble)
     {
         switch(nibble & 0xF)
         {
@@ -96,21 +96,21 @@ namespace cohen_chess
         }
     }
 
-    template<size_t no_digits = 16, bool lowercase = false>
+    template <size_t no_digits = 16, bool lowercase = false>
     inline std::string HexString(uint64_t raw_bits)
     {
         std::string hex_string(no_digits, '0');
         size_t i = 0;
         while(raw_bits)
         {
-            hex_string[no_digits - i - 1] = HexChar<lowercase>(raw_bits);
+            hex_string[no_digits - i - 1] = HexCharacter<lowercase>(raw_bits);
             raw_bits >>= 4;
             i += 1;
         }
         return hex_string;
     }
 
-    template<size_t no_bits = 64>
+    template <size_t no_bits = 64>
     inline std::string BinaryString(uint64_t raw_bits)
     {
         std::string binary_string(no_bits, '0');

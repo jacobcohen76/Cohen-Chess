@@ -23,12 +23,12 @@ namespace cohen_chess
         kEdgesBB        = 0xFF818181818181FF,
     };
 
-    inline Bitboard& operator++(Bitboard& op)
+    constexpr Bitboard& operator++(Bitboard& op)
     {
         return op = Bitboard(uint64_t(op) + 1ull);
     }
 
-    inline Bitboard& operator--(Bitboard& op)
+    constexpr Bitboard& operator--(Bitboard& op)
     {
         return op = Bitboard(uint64_t(op) - 1ull);
     }
@@ -96,61 +96,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline Bitboard& operator+=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator+=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator-=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator-=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator*=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator*=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator/=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator/=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator%=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator%=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator<<=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator<<=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator>>=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator>>=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator&=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator&=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator^=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator^=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline Bitboard& operator|=(Bitboard& lhs, Integral rhs)
+    constexpr Bitboard& operator|=(Bitboard& lhs, Integral rhs)
     {
         return lhs = Bitboard(uint64_t(lhs) | rhs);
     }
@@ -214,152 +214,151 @@ namespace cohen_chess
         }[anti];
     }
 
-    template<Direction dir>
+    template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb)
     {
         return bb;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorth>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8)) << +kNorth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kEast>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileH)) << +kEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouth>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1)) >> -kSouth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kWest>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileA)) >> -kWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorthEast>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8) & ~FileBB(kFileH)) << +kNorthEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorthWest>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8) & ~FileBB(kFileA)) << +kNorthWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouthEast>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1) & ~FileBB(kFileH)) >> -kSouthEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouthWest>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1) & ~FileBB(kFileA)) >> -kSouthWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorthNorth>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8) & ~RankBB(kRank7)) << +kNorthNorth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kEastEast>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileH) & ~FileBB(kFileG)) << +kEastEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouthSouth>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1) & ~RankBB(kRank2)) >> -kSouthSouth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kWestWest>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileA) & ~FileBB(kFileB)) >> -kWestWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorthNorthEast>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileH)) << +kNorthNorthEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kNorthNorthWest>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileA)) << +kNorthNorthWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kEastEastNorth>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileH) & ~FileBB(kFileG) & ~RankBB(kRank8)) << +kEastEastNorth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kEastEastSouth>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileH) & ~FileBB(kFileG) & ~RankBB(kRank1)) >> -kEastEastSouth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouthSouthEast>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileH)) >> -kSouthSouthEast;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kSouthSouthWest>(Bitboard bb)
     {
         return (bb & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileA)) >> -kSouthSouthWest;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kWestWestNorth>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileA) & ~FileBB(kFileB) & ~RankBB(kRank8)) << +kWestWestNorth;
     }
 
-    template<>
+    template <>
     constexpr Bitboard ShiftBB<kWestWestSouth>(Bitboard bb)
     {
         return (bb & ~FileBB(kFileA) & ~FileBB(kFileB) & ~RankBB(kRank1)) >> -kWestWestSouth;
     }
 
-    inline Bitboard RayBB(Square sq, Direction dir)
+    template <Direction dir>
+    constexpr Bitboard RayBB(Bitboard bb)
     {
-        Bitboard bb = kEmptyBB;
-        while(CanStep(sq, dir))
+        Bitboard shift;
+        while((shift = ShiftBB<dir>(bb) | bb) != bb)
         {
-            bb |= SquareBB(sq += dir);
+            bb = shift;
         }
         return bb;
     }
 
-    inline Bitboard RayBB(Bitboard occ, Square sq, Direction dir)
+    template <Direction dir>
+    constexpr Bitboard RayBB(Bitboard occ, Bitboard bb)
     {
-        Bitboard bb = kEmptyBB;
-        while(CanStep(sq, dir) && !(SquareBB(sq + dir) & occ))
+        Bitboard shift;
+        occ = ShiftBB<dir>(occ);
+        while((shift = ShiftBB<dir>(bb) | bb) != bb && !(shift & occ))
         {
-            bb |= SquareBB(sq += dir);
-        }
-        if(CanStep(sq, dir))
-        {
-            bb |= SquareBB(sq + dir);
+            bb = shift;
         }
         return bb;
     }

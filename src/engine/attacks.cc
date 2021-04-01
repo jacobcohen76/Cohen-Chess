@@ -19,11 +19,8 @@ namespace cohen_chess
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                attack_table[kWhite][sq] = (CanStep(sq, kNorthEast) ? SquareBB(sq + kNorthEast) : kEmptyBB)
-                                         | (CanStep(sq, kNorthWest) ? SquareBB(sq + kNorthWest) : kEmptyBB);
-                
-                attack_table[kBlack][sq] = (CanStep(sq, kSouthEast) ? SquareBB(sq + kSouthEast) : kEmptyBB)
-                                         | (CanStep(sq, kSouthWest) ? SquareBB(sq + kSouthWest) : kEmptyBB);
+                attack_table[kWhite][sq] = SetwisePawnAttacks(kWhite, SquareBB(sq)); 
+                attack_table[kBlack][sq] = SetwisePawnAttacks(kBlack, SquareBB(sq)); 
             }
         }
 
@@ -31,7 +28,7 @@ namespace cohen_chess
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                attack_table[sq] = ComputeKnightAttacks(sq);
+                attack_table[sq] = SetwiseKnightAttacks(SquareBB(sq));
             }
         }
 
@@ -39,7 +36,7 @@ namespace cohen_chess
         {
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                attack_table[sq] = ComputeKingAttacks(sq);
+                attack_table[sq] = SetwiseKingAttacks(SquareBB(sq));
             }
         }
 

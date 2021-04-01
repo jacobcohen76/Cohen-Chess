@@ -44,12 +44,12 @@ namespace cohen_chess
         return PieceType(((uint16_t(move) >> 12) & 0x3) + kKnight);
     }
 
-    inline Move& operator++(Move& op)
+    constexpr Move& operator++(Move& op)
     {
         return op = Move(uint8_t(op) + 1);
     }
 
-    inline Move& operator--(Move& op)
+    constexpr Move& operator--(Move& op)
     {
         return op = Move(uint8_t(op) - 1);
     }
@@ -97,61 +97,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline Move& operator+=(Move& lhs, Integral rhs)
+    constexpr Move& operator+=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline Move& operator-=(Move& lhs, Integral rhs)
+    constexpr Move& operator-=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline Move& operator*=(Move& lhs, Integral rhs)
+    constexpr Move& operator*=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline Move& operator/=(Move& lhs, Integral rhs)
+    constexpr Move& operator/=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline Move& operator%=(Move& lhs, Integral rhs)
+    constexpr Move& operator%=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline Move& operator<<=(Move& lhs, Integral rhs)
+    constexpr Move& operator<<=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline Move& operator>>=(Move& lhs, Integral rhs)
+    constexpr Move& operator>>=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline Move& operator&=(Move& lhs, Integral rhs)
+    constexpr Move& operator&=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline Move& operator^=(Move& lhs, Integral rhs)
+    constexpr Move& operator^=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline Move& operator|=(Move& lhs, Integral rhs)
+    constexpr Move& operator|=(Move& lhs, Integral rhs)
     {
         return lhs = Move(uint8_t(lhs) | rhs);
     }

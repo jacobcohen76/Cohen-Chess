@@ -30,12 +30,12 @@ namespace cohen_chess
         return Rank(r ^ (side * kRank8));
     }
 
-    inline Rank& operator++(Rank& op)
+    constexpr Rank& operator++(Rank& op)
     {
         return op = Rank(int8_t(op) + 1);
     }
 
-    inline Rank& operator--(Rank& op)
+    constexpr Rank& operator--(Rank& op)
     {
         return op = Rank(int8_t(op) - 1);
     }
@@ -83,61 +83,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline Rank& operator+=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator+=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator-=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator-=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator*=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator*=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator/=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator/=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator%=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator%=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator<<=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator<<=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator>>=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator>>=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator&=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator&=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator^=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator^=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline Rank& operator|=(Rank& lhs, Integral rhs)
+    constexpr Rank& operator|=(Rank& lhs, Integral rhs)
     {
         return lhs = Rank(int8_t(lhs) | rhs);
     }

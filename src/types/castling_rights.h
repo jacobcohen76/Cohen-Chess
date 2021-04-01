@@ -26,12 +26,12 @@ namespace cohen_chess
         kCastlingNB     = 16,
     };
 
-    inline CastlingRights& operator++(CastlingRights& op)
+    constexpr CastlingRights& operator++(CastlingRights& op)
     {
         return op = CastlingRights(uint8_t(op) + 1);
     }
 
-    inline CastlingRights& operator--(CastlingRights& op)
+    constexpr CastlingRights& operator--(CastlingRights& op)
     {
         return op = CastlingRights(uint8_t(op) - 1);
     }
@@ -79,61 +79,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline CastlingRights& operator+=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator+=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator-=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator-=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator*=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator*=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator/=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator/=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator%=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator%=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator<<=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator<<=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator>>=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator>>=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator&=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator&=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator^=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator^=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline CastlingRights& operator|=(CastlingRights& lhs, Integral rhs)
+    constexpr CastlingRights& operator|=(CastlingRights& lhs, Integral rhs)
     {
         return lhs = CastlingRights(uint8_t(lhs) | rhs);
     }

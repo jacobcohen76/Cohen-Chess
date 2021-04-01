@@ -30,12 +30,12 @@ namespace cohen_chess
         return File(f ^ (side * kFileH));
     }
 
-    inline File& operator++(File& op)
+    constexpr File& operator++(File& op)
     {
         return op = File(int8_t(op) + 1);
     }
 
-    inline File& operator--(File& op)
+    constexpr File& operator--(File& op)
     {
         return op = File(int8_t(op) - 1);
     }
@@ -83,61 +83,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline File& operator+=(File& lhs, Integral rhs)
+    constexpr File& operator+=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline File& operator-=(File& lhs, Integral rhs)
+    constexpr File& operator-=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline File& operator*=(File& lhs, Integral rhs)
+    constexpr File& operator*=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline File& operator/=(File& lhs, Integral rhs)
+    constexpr File& operator/=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline File& operator%=(File& lhs, Integral rhs)
+    constexpr File& operator%=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline File& operator<<=(File& lhs, Integral rhs)
+    constexpr File& operator<<=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline File& operator>>=(File& lhs, Integral rhs)
+    constexpr File& operator>>=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline File& operator&=(File& lhs, Integral rhs)
+    constexpr File& operator&=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline File& operator^=(File& lhs, Integral rhs)
+    constexpr File& operator^=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline File& operator|=(File& lhs, Integral rhs)
+    constexpr File& operator|=(File& lhs, Integral rhs)
     {
         return lhs = File(int8_t(lhs) | rhs);
     }

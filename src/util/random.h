@@ -9,6 +9,6 @@ namespace cohen_chess
     {
         return 0;
     };
-};
+}
 
 #endif

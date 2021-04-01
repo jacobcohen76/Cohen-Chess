@@ -11,12 +11,12 @@ namespace cohen_chess
         kKeyAll     = 0xFFFFFFFFFFFFFFFF,
     };
 
-    inline Key& operator++(Key& op)
+    constexpr Key& operator++(Key& op)
     {
         return op = Key(uint64_t(op) + 1ull);
     }
 
-    inline Key& operator--(Key& op)
+    constexpr Key& operator--(Key& op)
     {
         return op = Key(uint64_t(op) - 1ull);
     }
@@ -64,61 +64,61 @@ namespace cohen_chess
     }
 
     template<typename Integral>
-    inline Key& operator+=(Key& lhs, Integral rhs)
+    constexpr Key& operator+=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) + rhs);
     }
 
     template<typename Integral>
-    inline Key& operator-=(Key& lhs, Integral rhs)
+    constexpr Key& operator-=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) - rhs);
     }
 
     template<typename Integral>
-    inline Key& operator*=(Key& lhs, Integral rhs)
+    constexpr Key& operator*=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) * rhs);
     }
 
     template<typename Integral>
-    inline Key& operator/=(Key& lhs, Integral rhs)
+    constexpr Key& operator/=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) / rhs);
     }
 
     template<typename Integral>
-    inline Key& operator%=(Key& lhs, Integral rhs)
+    constexpr Key& operator%=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) % rhs);
     }
 
     template<typename Integral>
-    inline Key& operator<<=(Key& lhs, Integral rhs)
+    constexpr Key& operator<<=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) << rhs);
     }
 
     template<typename Integral>
-    inline Key& operator>>=(Key& lhs, Integral rhs)
+    constexpr Key& operator>>=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) >> rhs);
     }
 
     template<typename Integral>
-    inline Key& operator&=(Key& lhs, Integral rhs)
+    constexpr Key& operator&=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) & rhs);
     }
 
     template<typename Integral>
-    inline Key& operator^=(Key& lhs, Integral rhs)
+    constexpr Key& operator^=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) ^ rhs);
     }
 
     template<typename Integral>
-    inline Key& operator|=(Key& lhs, Integral rhs)
+    constexpr Key& operator|=(Key& lhs, Integral rhs)
     {
         return lhs = Key(uint64_t(lhs) | rhs);
     }

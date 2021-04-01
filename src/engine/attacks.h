@@ -59,45 +59,38 @@ namespace cohen_chess
         return ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
     }
 
-    constexpr Bitboard ComputePawnAttacks(Color c, Square sq)
+    constexpr Bitboard SetwisePawnAttacks(Color side, Bitboard pawn_set)
     {
-        if(c == kWhite)
+        if(side == kWhite)
         {
-
+            return ShiftBB<kNorthEast>(pawn_set) | ShiftBB<kNorthWest>(pawn_set);
         }
         else
         {
-
+            return ShiftBB<kSouthEast>(pawn_set) | ShiftBB<kSouthWest>(pawn_set);
         }
     }
 
-    constexpr Bitboard ComputeKnightAttacks(Square sq)
+    constexpr Bitboard SetwiseKnightAttacks(Bitboard knight_set)
     {
-        return  ((SquareBB(sq) & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileH)) << +(kNorth + kNorth + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank8) & ~RankBB(kRank7) & ~FileBB(kFileA)) << +(kNorth + kNorth + kWest)) |
-                ((SquareBB(sq) & ~RankBB(kRank8) & ~FileBB(kFileH) & ~FileBB(kFileG)) << +(kNorth + kEast  + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank8) & ~FileBB(kFileA) & ~FileBB(kFileB)) << +(kNorth + kWest  + kWest)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileH)) >> -(kSouth + kSouth + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~RankBB(kRank2) & ~FileBB(kFileA)) >> -(kSouth + kSouth + kWest)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~FileBB(kFileH) & ~FileBB(kFileG)) >> -(kSouth + kEast  + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~FileBB(kFileA) & ~FileBB(kFileB)) >> -(kSouth + kWest  + kWest));
+        return  ShiftBB<kNorthNorthEast>(knight_set) | ShiftBB<kEastEastNorth>(knight_set) |
+                ShiftBB<kNorthNorthWest>(knight_set) | ShiftBB<kEastEastSouth>(knight_set) |
+                ShiftBB<kSouthSouthEast>(knight_set) | ShiftBB<kWestWestNorth>(knight_set) |
+                ShiftBB<kSouthSouthWest>(knight_set) | ShiftBB<kWestWestSouth>(knight_set);
     }
 
-    constexpr Bitboard ComputeKingAttacks(Square sq)
+    constexpr Bitboard SetwiseKingAttacks(Bitboard king_set)
     {
-        return  ((SquareBB(sq) & ~RankBB(kRank8))                   << +(kNorth))         |
-                ((SquareBB(sq) & ~FileBB(kFileH))                   << +(kEast))          |
-                ((SquareBB(sq) & ~RankBB(kRank1))                   >> -(kSouth))         |
-                ((SquareBB(sq) & ~FileBB(kFileA))                   >> -(kWest))          |
-                ((SquareBB(sq) & ~RankBB(kRank8) & ~FileBB(kFileH)) << +(kNorth + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank8) & ~FileBB(kFileA)) << +(kNorth + kWest)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~FileBB(kFileH)) >> -(kSouth + kEast)) |
-                ((SquareBB(sq) & ~RankBB(kRank1) & ~FileBB(kFileA)) >> -(kSouth + kWest));
+        Bitboard attacks = ShiftBB<kEast>(king_set) | ShiftBB<kWest>(king_set);
+        king_set |= attacks;
+        attacks  |= ShiftBB<kNorth>(king_set) | ShiftBB<kSouth>(king_set);
+        return attacks;
     }
 
     inline Bitboard IterativeBishopAttacks(Bitboard occ, Square sq)
     {
-        return  RayBB(occ, sq, kNorthEast) |
+        Bitboard sq_bb = SquareBB(sq);
+        return  RayBB(occ, sq) |
                 RayBB(occ, sq, kSouthWest) |
                 RayBB(occ, sq, kSouthEast) |
                 RayBB(occ, sq, kNorthWest);

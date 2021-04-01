@@ -1,45 +1,46 @@
 #include "string_util.h"
 
-#include <string>
-#include <vector>
-
-#include <iostream>
-
 namespace cohen_chess
 {
     namespace util
     {
-        std::string HorizontalMerge(const std::string& str1, const std::string& str2, const std::string& gap, char space)
+        template <>
+        std::string HorizontalMerge<false>(const std::string& lhs, const std::string& rhs, const std::string& gap, char space)
         {
-            std::vector<std::string> tokens1 = Tokenize(str1, '\n');
-            std::vector<std::string> tokens2 = Tokenize(str2, '\n');
+            std::vector<std::string> lines_lhs = Tokenize(lhs, '\n');
+            std::vector<std::string> lines_rhs = Tokenize(rhs, '\n');
             std::string merged;
-            size_t i, longest1 = LongestString(tokens1), longest2 = LongestString(tokens2);
-            PadRight(tokens1, longest1, space);
-            PadRight(tokens2, longest2, space);
-            for(i = 0; i < std::min(tokens1.size(), tokens2.size()); ++i)
+            size_t longest_line_lhs = LongestString(lines_lhs);
+            size_t longest_line_rhs = LongestString(lines_rhs);
+            size_t i;
+            PadLeft(lines_lhs, longest_line_lhs, space);
+            PadLeft(lines_rhs, longest_line_rhs, space);
+            for(i = 0; i < std::min(lines_lhs.size(), lines_rhs.size()); ++i)
             {
-                merged += tokens1.at(i);
+                merged += lines_lhs.at(i);
                 merged += gap;
-                merged += tokens2.at(i);
+                merged += lines_rhs.at(i);
                 merged += '\n';
             }
-            for(; i < tokens1.size(); ++i)
+            while(i < lines_lhs.size())
             {
-                merged += tokens1.at(i);
+                merged += lines_lhs.at(i++);
                 merged += gap;
-                merged += std::string(longest2, space);
+                merged += std::string(longest_line_rhs, space);
                 merged += '\n';
             }
-            for(; i < tokens2.size(); ++i)
+            while(i < lines_rhs.size())
             {
-                merged += std::string(longest1, space);
+                merged += std::string(longest_line_lhs, space);
                 merged += gap;
-                merged += tokens2.at(i);
+                merged += lines_rhs.at(i++);
                 merged += '\n';
             }
-            if(merged.size()) merged.pop_back();
+            if(merged.size())
+            {
+                merged.pop_back();
+            }
             return merged;
         }
-    };
-};
+    }
+}
