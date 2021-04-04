@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
     Bitboard bb = SquareBB(kC3);
     Bitboard occ = SquareBB(kC7);
-    std::cout << io::AsciiBoard(RayBB<kNorth>(bb, occ)) << std::endl;
+    std::cout << io::AsciiBoard(SetwiseRayBB<kNorth>(bb, occ)) << std::endl;
 
     return 0;
 }

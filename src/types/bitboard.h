@@ -341,7 +341,7 @@ namespace cohen_chess
     }
 
     template <Direction dir>
-    constexpr Bitboard RayBB(Bitboard bb)
+    constexpr Bitboard SetwiseRayBB(Bitboard bb)
     {
         Bitboard shift;
         while((shift = ShiftBB<dir>(bb) | bb) != bb)
@@ -352,7 +352,7 @@ namespace cohen_chess
     }
 
     template <Direction dir>
-    constexpr Bitboard RayBB(Bitboard occ, Bitboard bb)
+    constexpr Bitboard SetwiseRayBB(Bitboard occ, Bitboard bb)
     {
         Bitboard shift;
         occ = ShiftBB<dir>(occ);

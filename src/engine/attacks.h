@@ -90,18 +90,19 @@ namespace cohen_chess
     inline Bitboard IterativeBishopAttacks(Bitboard occ, Square sq)
     {
         Bitboard sq_bb = SquareBB(sq);
-        return  RayBB(occ, sq) |
-                RayBB(occ, sq, kSouthWest) |
-                RayBB(occ, sq, kSouthEast) |
-                RayBB(occ, sq, kNorthWest);
+        return  SetwiseRayBB<kNorthEast>(occ, sq_bb) |
+                SetwiseRayBB<kNorthWest>(occ, sq_bb) |
+                SetwiseRayBB<kSouthEast>(occ, sq_bb) |
+                SetwiseRayBB<kSouthWest>(occ, sq_bb);
     }
 
     inline Bitboard IterativeRookAttacks(Bitboard occ, Square sq)
     {
-        return  RayBB(occ, sq, kNorth) |
-                RayBB(occ, sq, kEast)  |
-                RayBB(occ, sq, kSouth) |
-                RayBB(occ, sq, kWest);
+        Bitboard sq_bb = SquareBB(sq);
+        return  SetwiseRayBB<kNorth>(occ, sq_bb) |
+                SetwiseRayBB<kEast> (occ, sq_bb) |
+                SetwiseRayBB<kSouth>(occ, sq_bb) |
+                SetwiseRayBB<kWest> (occ, sq_bb);
     }
 
     inline Bitboard IterativeQueenAttacks(Bitboard occ, Square sq)
