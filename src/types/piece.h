@@ -8,7 +8,9 @@
 
 namespace cohen_chess
 {
-    enum Piece : uint8_t
+    typedef uint8_t Piece;
+
+    enum : Piece
     {
         kWhitePawn   = (kWhite << 3) | kPawn,
         kWhiteKnight = (kWhite << 3) | kKnight,
@@ -50,118 +52,6 @@ namespace cohen_chess
     constexpr Piece AllColor(Piece pc)
     {
         return Piece(pc | kPieceTypeAll);
-    }
-
-    constexpr Piece& operator++(Piece& op)
-    {
-        return op = Piece(uint8_t(op) + 1);
-    }
-
-    constexpr Piece& operator--(Piece& op)
-    {
-        return op = Piece(uint8_t(op) - 1);
-    }
-
-    constexpr Piece operator+(Piece op)
-    {
-        return Piece(+uint8_t(op));
-    }
-
-    constexpr Piece operator-(Piece op)
-    {
-        return Piece(-uint8_t(op));
-    }
-
-    constexpr Piece operator~(Piece op)
-    {
-        return Piece(~uint8_t(op));
-    }
-
-    template<typename Integral>
-    constexpr Piece operator<<(Piece op1, Integral op2)
-    {
-        return Piece(uint8_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr Piece operator>>(Piece op1, Integral op2)
-    {
-        return Piece(uint8_t(op1) >> op2);
-    }
-
-    constexpr Piece operator&(Piece op1, Piece op2)
-    {
-        return Piece(uint8_t(op1) & uint8_t(op2));
-    }
-
-    constexpr Piece operator^(Piece op1, Piece op2)
-    {
-        return Piece(uint8_t(op1) ^ uint8_t(op2));
-    }
-
-    constexpr Piece operator|(Piece op1, Piece op2)
-    {
-        return Piece(uint8_t(op1) ^ uint8_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator+=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator-=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator*=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator/=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator%=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator<<=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator>>=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator&=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator^=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr Piece& operator|=(Piece& lhs, Integral rhs)
-    {
-        return lhs = Piece(uint8_t(lhs) | rhs);
     }
 }
 

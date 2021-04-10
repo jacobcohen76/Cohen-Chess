@@ -53,5 +53,16 @@ namespace cohen_chess
                 }
             }
         }
+
+        void Init()
+        {
+            static bool initialized = false;
+            if (!initialized)
+            {
+                InitLineBitboards(kLineBitboards);
+                InitBetweenBitboards(kBetweenBitboards);
+                initialized = true;
+            }
+        }
     }
 }

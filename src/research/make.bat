@@ -1,0 +1,1 @@
+g++ random.cpp -o random.exe

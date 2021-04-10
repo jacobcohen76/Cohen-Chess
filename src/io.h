@@ -3,6 +3,7 @@
 
 #include "io/algebraic_notation.h"
 #include "io/ascii_board.h"
+#include "io/bit_io.h"
 #include "io/cecp.h"
 #include "io/fen.h"
 #include "io/pgn.h"

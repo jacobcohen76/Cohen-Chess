@@ -5,7 +5,9 @@
 
 namespace cohen_chess
 {
-    enum PieceType : uint8_t
+    typedef uint8_t PieceType;
+
+    enum : PieceType
     {
         kPieceTypeNone  = 0,
         kPawn           = 1,
@@ -17,118 +19,6 @@ namespace cohen_chess
         kPieceTypeAll   = 7,
         kPieceTypeNB    = 8,
     };
-
-    constexpr PieceType& operator++(PieceType& op)
-    {
-        return op = PieceType(uint8_t(op) + 1);
-    }
-
-    constexpr PieceType& operator--(PieceType& op)
-    {
-        return op = PieceType(uint8_t(op) - 1);
-    }
-
-    constexpr PieceType operator+(PieceType op)
-    {
-        return PieceType(+uint8_t(op));
-    }
-
-    constexpr PieceType operator-(PieceType op)
-    {
-        return PieceType(-uint8_t(op));
-    }
-
-    constexpr PieceType operator~(PieceType op)
-    {
-        return PieceType(~uint8_t(op));
-    }
-
-    template<typename Integral>
-    constexpr PieceType operator<<(PieceType op1, Integral op2)
-    {
-        return PieceType(uint8_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr PieceType operator>>(PieceType op1, Integral op2)
-    {
-        return PieceType(uint8_t(op1) >> op2);
-    }
-
-    constexpr PieceType operator&(PieceType op1, PieceType op2)
-    {
-        return PieceType(uint8_t(op1) & uint8_t(op2));
-    }
-
-    constexpr PieceType operator^(PieceType op1, PieceType op2)
-    {
-        return PieceType(uint8_t(op1) ^ uint8_t(op2));
-    }
-
-    constexpr PieceType operator|(PieceType op1, PieceType op2)
-    {
-        return PieceType(uint8_t(op1) ^ uint8_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator+=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator-=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator*=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator/=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator%=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator<<=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator>>=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator&=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator^=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr PieceType& operator|=(PieceType& lhs, Integral rhs)
-    {
-        return lhs = PieceType(uint8_t(lhs) | rhs);
-    }
 }
 
 #endif

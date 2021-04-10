@@ -49,7 +49,7 @@ namespace cohen_chess
                 fm.mask     = RelevantOccBishop(sq);
                 fm.magic    = magics[sq];
                 fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
-                fm.shift    = kSquareNB - PopCount(fm.mask);
+                // fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
                 max_index = 0;
@@ -72,7 +72,7 @@ namespace cohen_chess
                 fm.mask     = RelevantOccRook(sq);
                 fm.magic    = magics[sq];
                 fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
-                fm.shift    = kSquareNB - PopCount(fm.mask);
+                // fm.shift    = kSquareNB - PopCount(fm.mask);
 
                 Bitboard occ = kEmptyBB;
                 max_index = 0;

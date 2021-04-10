@@ -5,7 +5,9 @@
 
 namespace cohen_chess
 {
-    enum Color : uint8_t
+    typedef uint8_t Color;
+
+    enum : Color
     {
         kWhite   = 0,
         kBlack   = 1,
@@ -14,12 +16,7 @@ namespace cohen_chess
 
     constexpr Color FlipColor(Color c)
     {
-        return Color(!uint8_t(c));
-    }
-
-    constexpr Color operator!(Color op)
-    {
-        return FlipColor(op);
+        return !c;
     }
 }
 

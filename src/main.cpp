@@ -34,17 +34,26 @@ void InitEngine()
 int main(int argc, char* argv[])
 {
     InitEngine();
-    Bitboard wpawn_bb = RankBB(kRank2);
-    Bitboard wpawn_attacks = SetwisePawnAttacks(kWhite, wpawn_attacks);
-    std::string lhs = io::AsciiBoard(wpawn_bb, ".p");
-    std::string rhs = io::AsciiBoard(wpawn_attacks, ".x");
-    std::cout << util::HorizontalMerge<true> (lhs, rhs, " | ") << std::endl << std::endl
-              << util::HorizontalMerge<false>(lhs, rhs, " | ") << std::endl;
+
+    // Bitboard wpawn_bb = RankBB(kRank2);
+    // Bitboard wpawn_attacks = SetwisePawnAttacks(kWhite, wpawn_attacks);
+    // std::string lhs = io::AsciiBoard(wpawn_bb, ".p");
+    // std::string rhs = io::AsciiBoard(wpawn_attacks, ".x");
+    // std::cout << util::HorizontalMerge<true> (lhs, rhs, " | ") << std::endl << std::endl
+    //           << util::HorizontalMerge<false>(lhs, rhs, " | ") << std::endl;
     
 
-    Bitboard bb = SquareBB(kC3);
-    Bitboard occ = SquareBB(kC7);
-    std::cout << io::AsciiBoard(SetwiseRayBB<kNorth>(bb, occ)) << std::endl;
+    // Bitboard bb = SquareBB(kC3);
+    // Bitboard occ = SquareBB(kC7);
+    // std::cout << io::AsciiBoard(SetwiseRayBB<kNorth>(bb, occ)) << std::endl;
+
+    uint64_t x = 0xA33F782819300124902;
+    std::cout << io::BinaryString(x) << " | " << io::BinaryString(x - 1) << std::endl;
+    while (x)
+    {
+        x &= x - 1;
+        std::cout << io::BinaryString(x) << " | " << io::BinaryString(x - 1) << std::endl;
+    }
 
     return 0;
 }

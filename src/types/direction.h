@@ -7,7 +7,9 @@
 
 namespace cohen_chess
 {
-    enum Direction : int8_t
+    typedef int8_t Direction;
+
+    enum : Direction
     {
         kNorth          = +8,
         kEast           = +1,
@@ -36,46 +38,12 @@ namespace cohen_chess
         kDirectionNone  = 0,
     };
 
-    constexpr Direction operator+(Direction op)
-    {
-        return Direction(+int8_t(op));
-    }
-
-    constexpr Direction operator-(Direction op)
-    {
-        return Direction(-int8_t(op));
-    }
-
-    constexpr Direction operator~(Direction op)
-    {
-        return Direction(~int8_t(op));
-    }
-
-    constexpr Direction operator-(Square sq1, Square sq2)
-    {
-        return Direction(int8_t(sq1) - int8_t(sq2));
-    }
-
-    constexpr Square operator+(Square sq, Direction dir)
-    {
-        return Square(int8_t(sq) + int8_t(dir));
-    }
-
-    constexpr Square operator-(Square sq, Direction dir)
-    {
-        return Square(int8_t(sq) - int8_t(dir));
-    }
-
-    constexpr Square& operator+=(Square& sq, Direction dir)
-    {
-        return sq = Square(int8_t(sq) + int8_t(dir));
-    }
-
     namespace direction
     {
         extern Direction kRayBetween[kSquareNB][kSquareNB];
 
         void InitRayBetween(Direction[kSquareNB][kSquareNB]);
+        void Init();
     };
 
     inline Direction RayBetween(Square sq1, Square sq2)

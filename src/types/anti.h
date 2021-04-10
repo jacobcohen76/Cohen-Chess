@@ -5,7 +5,9 @@
 
 namespace cohen_chess
 {
-    enum Anti : int8_t
+    typedef uint8_t Anti;
+
+    enum : Anti
     {
         kAnti1  =  0,
         kAnti2  =  1,
@@ -28,118 +30,6 @@ namespace cohen_chess
     constexpr Anti MirroAnti(Anti a)
     {
         return Anti(kAntiF - a);
-    }
-
-    constexpr Anti& operator++(Anti& op)
-    {
-        return op = Anti(int8_t(op) + 1);
-    }
-
-    constexpr Anti& operator--(Anti& op)
-    {
-        return op = Anti(int8_t(op) - 1);
-    }
-
-    constexpr Anti operator+(Anti op)
-    {
-        return Anti(+int8_t(op));
-    }
-
-    constexpr Anti operator-(Anti op)
-    {
-        return Anti(-int8_t(op));
-    }
-
-    constexpr Anti operator~(Anti op)
-    {
-        return Anti(~int8_t(op));
-    }
-
-    template<typename Integral>
-    constexpr Anti operator<<(Anti op1, Integral op2)
-    {
-        return Anti(int8_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr Anti operator>>(Anti op1, Integral op2)
-    {
-        return Anti(int8_t(op1) >> op2);
-    }
-
-    constexpr Anti operator&(Anti op1, Anti op2)
-    {
-        return Anti(int8_t(op1) & int8_t(op2));
-    }
-
-    constexpr Anti operator^(Anti op1, Anti op2)
-    {
-        return Anti(int8_t(op1) ^ int8_t(op2));
-    }
-
-    constexpr Anti operator|(Anti op1, Anti op2)
-    {
-        return Anti(int8_t(op1) ^ int8_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator+=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator-=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator*=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator/=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator%=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator<<=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator>>=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator&=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator^=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr Anti& operator|=(Anti& lhs, Integral rhs)
-    {
-        return lhs = Anti(int8_t(lhs) | rhs);
     }
 }
 

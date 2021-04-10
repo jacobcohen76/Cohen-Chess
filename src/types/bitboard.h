@@ -1,6 +1,8 @@
 #ifndef COHEN_CHESS_TYPES_BITBOARD_H_INCLUDED
 #define COHEN_CHESS_TYPES_BITBOARD_H_INCLUDED
 
+#include "../util/bit_util.h"
+
 #include "anti.h"
 #include "diag.h"
 #include "direction.h"
@@ -12,147 +14,60 @@
 
 namespace cohen_chess
 {
-    enum Bitboard : uint64_t
-    {
-        kEmptyBB        = 0x0000000000000000,
-        kUniverseBB     = 0xFFFFFFFFFFFFFFFF,
-        kDarkSquaresBB  = 0xAA55AA55AA55AA55,
-        kLightSquaresBB = 0x55AA55AA55AA55AA,
-        kRankEdgesBB    = 0x8181818181818181,
-        kFileEdgesBB    = 0xFF000000000000FF,
-        kEdgesBB        = 0xFF818181818181FF,
-    };
+    typedef uint64_t Bitboard;
 
-    constexpr Bitboard& operator++(Bitboard& op)
+    constexpr const Bitboard kEmptyBB        = 0x0000000000000000;
+    constexpr const Bitboard kUniverseBB     = 0xFFFFFFFFFFFFFFFF;
+    constexpr const Bitboard kDarkSquaresBB  = 0xAA55AA55AA55AA55;
+    constexpr const Bitboard kLightSquaresBB = 0x55AA55AA55AA55AA;
+    constexpr const Bitboard kRankEdgesBB    = 0x8181818181818181;
+    constexpr const Bitboard kFileEdgesBB    = 0xFF000000000000FF;
+    constexpr const Bitboard kEdgesBB        = 0xFF818181818181FF;
+
+    constexpr Bitboard MirrorRank(Bitboard bb)
     {
-        return op = Bitboard(uint64_t(op) + 1ull);
+        return Bitboard(__builtin_bswap64(bb));
     }
 
-    constexpr Bitboard& operator--(Bitboard& op)
+    constexpr Bitboard MirrorFile(Bitboard bb)
     {
-        return op = Bitboard(uint64_t(op) - 1ull);
+        constexpr const Bitboard k1 = 0x5555555555555555;
+        constexpr const Bitboard k2 = 0x3333333333333333;
+        constexpr const Bitboard k4 = 0x0F0F0F0F0F0F0F0F;
+        bb = ((bb >> 1) & k1) | ((bb & k1) << 1);
+        bb = ((bb >> 2) & k2) | ((bb & k2) << 2);
+        bb = ((bb >> 4) & k4) | ((bb & k4) << 4);
+        return bb;
     }
 
-    constexpr Bitboard operator+(Bitboard op)
+    constexpr Bitboard MirrorDiag(Bitboard bb)
     {
-        return Bitboard(+uint64_t(op));
+        constexpr const Bitboard k1 = 0x5500550055005500;
+        constexpr const Bitboard k2 = 0x3333000033330000;
+        constexpr const Bitboard k4 = 0x0F0F0F0F00000000;
+        Bitboard tr = kEmptyBB;
+        tr = ((bb << 28) ^ bb) & k4;
+        bb = ((tr >> 28) ^ tr) ^ bb;
+        tr = ((bb << 14) ^ bb) & k2;
+        bb = ((tr >> 14) ^ tr) ^ bb;
+        tr = ((bb <<  7) ^ bb) & k1;
+        bb = ((tr >>  7) ^ tr) ^ bb;
+        return bb;
     }
 
-    constexpr Bitboard operator-(Bitboard op)
+    constexpr Bitboard MirrorAnti(Bitboard bb)
     {
-        return Bitboard(-uint64_t(op));
-    }
-
-    constexpr Bitboard operator~(Bitboard op)
-    {
-        return Bitboard(~uint64_t(op));
-    }
-
-    template<typename Integral>
-    constexpr Bitboard operator<<(Bitboard op1, Integral op2)
-    {
-        return Bitboard(uint64_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard operator>>(Bitboard op1, Integral op2)
-    {
-        return Bitboard(uint64_t(op1) >> op2);
-    }
-
-    constexpr Bitboard operator*(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) * uint64_t(op2));
-    }
-
-    constexpr Bitboard operator/(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) / uint64_t(op2));
-    }
-
-    constexpr Bitboard operator+(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) + uint64_t(op2));
-    }
-
-    constexpr Bitboard operator-(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) - uint64_t(op2));
-    }
-
-    constexpr Bitboard operator&(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) & uint64_t(op2));
-    }
-
-    constexpr Bitboard operator^(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) ^ uint64_t(op2));
-    }
-
-    constexpr Bitboard operator|(Bitboard op1, Bitboard op2)
-    {
-        return Bitboard(uint64_t(op1) | uint64_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator+=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator-=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator*=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator/=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator%=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator<<=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator>>=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator&=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator^=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr Bitboard& operator|=(Bitboard& lhs, Integral rhs)
-    {
-        return lhs = Bitboard(uint64_t(lhs) | rhs);
+        constexpr const Bitboard k1 = 0xAA00AA00AA00AA00;
+        constexpr const Bitboard k2 = 0xCCCC0000CCCC0000;
+        constexpr const Bitboard k4 = 0xF0F0F0F00F0F0F0F;
+        Bitboard tr = kEmptyBB;
+        tr =   (bb << 36) ^ bb;
+        bb = (((bb >> 36) ^ tr) & k4) ^ bb;
+        tr =  ((bb << 18) ^ bb) & k2;
+        bb =  ((tr >> 18) ^ tr) ^ bb;
+        tr =  ((bb <<  9) ^ bb) & k1;
+        bb =  ((tr >>  9) ^ tr) ^ bb;
+        return bb;
     }
 
     constexpr Bitboard SquareBB(Square sq)
@@ -160,58 +75,80 @@ namespace cohen_chess
         return Bitboard(0x0000000000000001) << sq;
     }
 
-    constexpr Bitboard RankBB(Rank r)
+    constexpr Bitboard RankBB(Rank rank)
     {
-        return Bitboard(0x00000000000000FF) << (r << 3);
+        return Bitboard(0x00000000000000FF) << (rank << 3);
     }
 
-    constexpr Bitboard FileBB(File f)
+    constexpr Bitboard FileBB(File file)
     {
-        return Bitboard(0x0101010101010101) << f;
+        return Bitboard(0x0101010101010101) << file;
     }
 
-    constexpr Bitboard DiagBB(Diag diag)
+    inline Bitboard DiagBB(Diag diag)
     {
-        return (Bitboard[kDiagNB])
+        static const Bitboard kDiagBitboards[kDiagNB]
         {
-            Bitboard(0x0000000000000080),
-            Bitboard(0x0000000000008040),
-            Bitboard(0x0000000000804020),
-            Bitboard(0x0000000080402010),
-            Bitboard(0x0000008040201008),
-            Bitboard(0x0000804020100804),
-            Bitboard(0x0080402010080402),
-            Bitboard(0x8040201008040201),
-            Bitboard(0x4020100804020100),
-            Bitboard(0x2010080402010000),
-            Bitboard(0x1008040201000000),
-            Bitboard(0x0804020100000000),
-            Bitboard(0x0402010000000000),
-            Bitboard(0x0201000000000000),
-            Bitboard(0x0100000000000000),
-        }[diag];
+            0x0000000000000080,
+            0x0000000000008040,
+            0x0000000000804020,
+            0x0000000080402010,
+            0x0000008040201008,
+            0x0000804020100804,
+            0x0080402010080402,
+            0x8040201008040201,
+            0x4020100804020100,
+            0x2010080402010000,
+            0x1008040201000000,
+            0x0804020100000000,
+            0x0402010000000000,
+            0x0201000000000000,
+            0x0100000000000000,
+        };
+        return kDiagBitboards[diag];
     }
 
-    constexpr Bitboard AntiBB(Anti anti)
+    inline Bitboard AntiBB(Anti anti)
     {
-        return (Bitboard[kAntiNB])
+        static const Bitboard kAntiBitboards[kAntiNB]
         {
-            Bitboard(0x0000000000000001),
-            Bitboard(0x0000000000000102),
-            Bitboard(0x0000000000010204),
-            Bitboard(0x0000000001020408),
-            Bitboard(0x0000000102040810),
-            Bitboard(0x0000010204081020),
-            Bitboard(0x0001020408102040),
-            Bitboard(0x0102040810204080),
-            Bitboard(0x0204081020408000),
-            Bitboard(0x0408102040800000),
-            Bitboard(0x0810204080000000),
-            Bitboard(0x1020408000000000),
-            Bitboard(0x2040800000000000),
-            Bitboard(0x4080000000000000),
-            Bitboard(0x8000000000000000),
-        }[anti];
+            0x0000000000000001,
+            0x0000000000000102,
+            0x0000000000010204,
+            0x0000000001020408,
+            0x0000000102040810,
+            0x0000010204081020,
+            0x0001020408102040,
+            0x0102040810204080,
+            0x0204081020408000,
+            0x0408102040800000,
+            0x0810204080000000,
+            0x1020408000000000,
+            0x2040800000000000,
+            0x4080000000000000,
+            0x8000000000000000,
+        };
+        return kAntiBitboards[anti];
+    }
+
+    namespace bitboard
+    {
+        extern Bitboard kLineBitboards[kSquareNB][kSquareNB];
+        extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
+        
+        void InitLineBitboards(Bitboard[kSquareNB][kSquareNB]);
+        void InitBetweenBitboards(Bitboard[kSquareNB][kSquareNB]);
+        void Init();
+    };
+
+    inline Bitboard LineBB(Square sq1, Square sq2)
+    {
+        return bitboard::kLineBitboards[sq1][sq2];
+    }
+
+    inline Bitboard BetweenBB(Square sq1, Square sq2)
+    {
+        return bitboard::kBetweenBitboards[sq1][sq2];
     }
 
     template <Direction dir>
@@ -352,7 +289,7 @@ namespace cohen_chess
     }
 
     template <Direction dir>
-    constexpr Bitboard SetwiseRayBB(Bitboard occ, Bitboard bb)
+    constexpr Bitboard SetwiseRayBB(Bitboard bb, Bitboard occ)
     {
         Bitboard shift;
         occ = ShiftBB<dir>(occ);
@@ -360,98 +297,6 @@ namespace cohen_chess
         {
             bb = shift;
         }
-        return bb;
-    }
-
-    namespace bitboard
-    {
-        extern Bitboard kLineBitboards[kSquareNB][kSquareNB];
-        extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
-        
-        void InitLineBitboards(Bitboard[kSquareNB][kSquareNB]);
-        void InitBetweenBitboards(Bitboard[kSquareNB][kSquareNB]);
-    };
-
-    inline Bitboard LineBB(Square sq1, Square sq2)
-    {
-        return bitboard::kLineBitboards[sq1][sq2];
-    }
-
-    inline Bitboard BetweenBB(Square sq1, Square sq2)
-    {
-        return bitboard::kBetweenBitboards[sq1][sq2];
-    }
-
-    constexpr int PopCount(Bitboard bb)
-    {
-        return __builtin_popcountll(uint64_t(bb));
-    }
-
-    constexpr Bitboard FlipLSB(Bitboard bb)
-    {
-        return bb & (bb ^ -bb);
-    }
-
-    constexpr int LSB(Bitboard bb)
-    {
-        return __builtin_ctzll(uint64_t(bb));
-    }
-
-    inline int PopLSB(Bitboard& bb)
-    {
-        int lsb = LSB(bb);
-        bb = FlipLSB(bb);
-        return lsb;
-    }
-
-    constexpr int MSB(Bitboard bb)
-    {
-        return kH8 - __builtin_clzll(uint64_t(bb));
-    }
-
-    constexpr Bitboard MirrorRank(Bitboard bb)
-    {
-        return Bitboard(__builtin_bswap64(bb));
-    }
-
-    constexpr Bitboard MirrorFile(Bitboard bb)
-    {
-        constexpr const Bitboard k1 = Bitboard(0x5555555555555555);
-        constexpr const Bitboard k2 = Bitboard(0x3333333333333333);
-        constexpr const Bitboard k4 = Bitboard(0x0F0F0F0F0F0F0F0F);
-        bb = ((bb >> 1) & k1) | ((bb & k1) << 1);
-        bb = ((bb >> 2) & k2) | ((bb & k2) << 2);
-        bb = ((bb >> 4) & k4) | ((bb & k4) << 4);
-        return bb;
-    }
-
-    constexpr Bitboard MirrorDiag(Bitboard bb)
-    {
-        constexpr const Bitboard k1 = Bitboard(0x5500550055005500);
-        constexpr const Bitboard k2 = Bitboard(0x3333000033330000);
-        constexpr const Bitboard k4 = Bitboard(0x0F0F0F0F00000000);
-        Bitboard tr = kEmptyBB;
-        tr = ((bb << 28) ^ bb) & k4;
-        bb = ((tr >> 28) ^ tr) ^ bb;
-        tr = ((bb << 14) ^ bb) & k2;
-        bb = ((tr >> 14) ^ tr) ^ bb;
-        tr = ((bb <<  7) ^ bb) & k1;
-        bb = ((tr >>  7) ^ tr) ^ bb;
-        return bb;
-    }
-
-    constexpr Bitboard MirrorAnti(Bitboard bb)
-    {
-        constexpr const Bitboard k1 = Bitboard(0xAA00AA00AA00AA00);
-        constexpr const Bitboard k2 = Bitboard(0xCCCC0000CCCC0000);
-        constexpr const Bitboard k4 = Bitboard(0xF0F0F0F00F0F0F0F);
-        Bitboard tr = kEmptyBB;
-        tr =   (bb << 36) ^ bb;
-        bb = (((bb >> 36) ^ tr) & k4) ^ bb;
-        tr =  ((bb << 18) ^ bb) & k2;
-        bb =  ((tr >> 18) ^ tr) ^ bb;
-        tr =  ((bb <<  9) ^ bb) & k1;
-        bb =  ((tr >>  9) ^ tr) ^ bb;
         return bb;
     }
 }

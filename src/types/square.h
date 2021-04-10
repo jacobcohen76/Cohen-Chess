@@ -11,7 +11,9 @@
 
 namespace cohen_chess
 {
-    enum Square : int8_t
+    typedef int8_t Square;
+
+    enum : Square
     {
         kA1, kB1, kC1, kD1, kE1, kF1, kG1, kH1,
         kA2, kB2, kC2, kD2, kE2, kF2, kG2, kH2,
@@ -28,11 +30,6 @@ namespace cohen_chess
     constexpr Square MakeSquare(Rank r, File f)
     {
         return Square((r << 3) | f);
-    }
-
-    constexpr Square MakeSquare(File f, Rank r)
-    {
-        return MakeSquare(r, f);
     }
 
     constexpr Rank RankOf(Square sq)
@@ -113,118 +110,6 @@ namespace cohen_chess
     constexpr int8_t SquareDistance(Square sq1, Square sq2)
     {
         return RankDistance(sq1, sq2) + FileDistance(sq1, sq2);
-    }
-
-    constexpr Square& operator++(Square& op)
-    {
-        return op = Square(int8_t(op) + 1);
-    }
-
-    constexpr Square& operator--(Square& op)
-    {
-        return op = Square(int8_t(op) - 1);
-    }
-
-    constexpr Square operator+(Square op)
-    {
-        return Square(+int8_t(op));
-    }
-
-    constexpr Square operator-(Square op)
-    {
-        return Square(-int8_t(op));
-    }
-
-    constexpr Square operator~(Square op)
-    {
-        return Square(~int8_t(op));
-    }
-
-    template<typename Integral>
-    constexpr Square operator<<(Square op1, Integral op2)
-    {
-        return Square(int8_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr Square operator>>(Square op1, Integral op2)
-    {
-        return Square(int8_t(op1) >> op2);
-    }
-
-    constexpr Square operator&(Square op1, Square op2)
-    {
-        return Square(int8_t(op1) & int8_t(op2));
-    }
-
-    constexpr Square operator^(Square op1, Square op2)
-    {
-        return Square(int8_t(op1) ^ int8_t(op2));
-    }
-
-    constexpr Square operator|(Square op1, Square op2)
-    {
-        return Square(int8_t(op1) ^ int8_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr Square& operator+=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator-=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator*=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator/=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator%=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator<<=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator>>=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator&=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator^=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr Square& operator|=(Square& lhs, Integral rhs)
-    {
-        return lhs = Square(int8_t(lhs) | rhs);
     }
 }
 

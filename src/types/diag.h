@@ -5,7 +5,9 @@
 
 namespace cohen_chess
 {
-    enum Diag : int8_t
+    typedef uint8_t Diag;
+
+    enum : Diag
     {
         kDiag1  =  0,
         kDiag2  =  1,
@@ -28,118 +30,6 @@ namespace cohen_chess
     constexpr Diag MirrorDiag(Diag d)
     {
         return Diag(kDiagF - d);
-    }
-
-    constexpr Diag& operator++(Diag& op)
-    {
-        return op = Diag(int8_t(op) + 1);
-    }
-
-    constexpr Diag& operator--(Diag& op)
-    {
-        return op = Diag(int8_t(op) - 1);
-    }
-
-    constexpr Diag operator+(Diag op)
-    {
-        return Diag(+int8_t(op));
-    }
-
-    constexpr Diag operator-(Diag op)
-    {
-        return Diag(-int8_t(op));
-    }
-
-    constexpr Diag operator~(Diag op)
-    {
-        return Diag(~int8_t(op));
-    }
-
-    template<typename Integral>
-    constexpr Diag operator<<(Diag op1, Integral op2)
-    {
-        return Diag(int8_t(op1) << op2);
-    }
-
-    template<typename Integral>
-    constexpr Diag operator>>(Diag op1, Integral op2)
-    {
-        return Diag(int8_t(op1) >> op2);
-    }
-
-    constexpr Diag operator&(Diag op1, Diag op2)
-    {
-        return Diag(int8_t(op1) & int8_t(op2));
-    }
-
-    constexpr Diag operator^(Diag op1, Diag op2)
-    {
-        return Diag(int8_t(op1) ^ int8_t(op2));
-    }
-
-    constexpr Diag operator|(Diag op1, Diag op2)
-    {
-        return Diag(int8_t(op1) ^ int8_t(op2));
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator+=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) + rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator-=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) - rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator*=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) * rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator/=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) / rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator%=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) % rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator<<=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) << rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator>>=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) >> rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator&=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) & rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator^=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) ^ rhs);
-    }
-
-    template<typename Integral>
-    constexpr Diag& operator|=(Diag& lhs, Integral rhs)
-    {
-        return lhs = Diag(int8_t(lhs) | rhs);
     }
 }
 

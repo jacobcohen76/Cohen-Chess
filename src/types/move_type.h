@@ -7,7 +7,9 @@
 
 namespace cohen_chess
 {
-    enum MoveType : uint16_t
+    typedef uint16_t MoveType;
+
+    enum : MoveType
     {
         kQuietMove = 0x0000,
         kPromotion = 0x1000,
