@@ -41,7 +41,7 @@ namespace cohen_chess
     namespace direction
     {
         extern Direction kRayBetween[kSquareNB][kSquareNB];
-
+        
         void InitRayBetween(Direction[kSquareNB][kSquareNB]);
         void Init();
     };
@@ -53,12 +53,14 @@ namespace cohen_chess
 
     constexpr int8_t Magnitude(Direction dir)
     {
-        return SquareDistance(kE4, kE4 + dir);
+        return SquareManhattanDistance(kE4, kE4 + dir);
     }
 
     constexpr bool CanStep(Square sq, Direction step)
     {
-        return IsNormal(sq) && IsNormal(sq + step) && SquareDistance(sq, sq + step) == Magnitude(step);
+        return IsNormalSquare(sq)        &&
+               IsNormalSquare(sq + step) &&
+               SquareManhattanDistance(sq, sq + step) == Magnitude(step);
     }
 };
 

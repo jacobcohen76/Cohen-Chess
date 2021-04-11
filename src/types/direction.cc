@@ -45,5 +45,14 @@ namespace cohen_chess
                 }
             }
         }
-    };
+
+        void Init()
+        {
+            static bool initialized = false;
+            if (!initialized)
+            {
+                InitRayBetween(kRayBetween);
+            }
+        }
+    }
 }

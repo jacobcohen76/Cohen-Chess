@@ -46,7 +46,7 @@ namespace cohen_chess
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = magic_table[sq];
-                fm.mask     = RelevantOccBishop(sq);
+                fm.mask     = BishopMask(sq);
                 fm.magic    = magics[sq];
                 fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
                 // fm.shift    = kSquareNB - PopCount(fm.mask);
@@ -69,7 +69,7 @@ namespace cohen_chess
             for(Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 FancyMagic& fm = kBishopMagicTable[sq];
-                fm.mask     = RelevantOccRook(sq);
+                fm.mask     = RookMask(sq);
                 fm.magic    = magics[sq];
                 fm.attacks  = sq ? magic_table[sq - 1].attacks + max_index : attack_table;
                 // fm.shift    = kSquareNB - PopCount(fm.mask);

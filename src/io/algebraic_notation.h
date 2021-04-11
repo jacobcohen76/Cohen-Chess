@@ -69,7 +69,7 @@ namespace cohen_chess
 
         inline std::string CoordinateString(Square sq)
         {
-            if(IsNormal(sq))
+            if(IsNormalSquare(sq))
             {
                 return std::string{ FileChar(FileOf(sq)), RankChar(RankOf(sq)) };
             }

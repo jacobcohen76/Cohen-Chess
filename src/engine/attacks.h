@@ -49,12 +49,12 @@ namespace cohen_chess
         }
     }
 
-    constexpr Bitboard RelevantOccBishop(Square sq)
+    inline Bitboard BishopMask(Square sq)
     {
         return (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
     }
 
-    constexpr Bitboard RelevantOccRook(Square sq)
+    inline Bitboard RookMask(Square sq)
     {
         return ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
     }

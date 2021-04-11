@@ -13,13 +13,16 @@ namespace cohen_chess
 {
     namespace zobrist
     {
+        typedef uint64_t (*Randomizer)();
+
         extern Key kPieceOnSquareKeys[kPieceNB][kSquareNB];
         extern Key kCastlingRightsKeys[kCastlingNB];
         extern Key kEnPassantFileTargetKeys[kFileNB];
 
-        void InitPieceOnSquareKeys(Key[kPieceNB][kSquareNB], uint64_t (*)());
-        void InitCastlingRightsKeys(Key[kCastlingNB], uint64_t (*)());
-        void InitEnPassantFileTargetKeys(Key[kFileNB], uint64_t (*)());
+        void InitPieceOnSquareKeys(Key[kPieceNB][kSquareNB], Randomizer);
+        void InitCastlingRightsKeys(Key[kCastlingNB], Randomizer);
+        void InitEnPassantFileTargetKeys(Key[kFileNB], Randomizer);
+        void Init(Randomizer);
     };
 
     inline Key ZobristKey(Piece pc, Square sq)

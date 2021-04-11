@@ -10,10 +10,20 @@ namespace cohen_chess
 
         void InitPopCountTable(uint8_t pop_count_table[], size_t table_size)
         {
-            for(size_t i = 0; i < table_size; ++i)
+            for (size_t i = 0; i < table_size; ++i)
             {
                 pop_count_table[i] = PopCountLSB(i);
             }
         }
-    };
-};
+
+        void Init()
+        {
+            static bool initialized = false;
+            if (!initialized)
+            {
+                InitPopCountTable(kU16PopCountTable, 65536);
+                initialized = true;
+            }
+        }
+    }
+}

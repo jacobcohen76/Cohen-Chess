@@ -57,6 +57,7 @@ namespace cohen_chess
         void Init()
         {
             static bool initialized = false;
+            direction::Init();
             if (!initialized)
             {
                 InitLineBitboards(kLineBitboards);

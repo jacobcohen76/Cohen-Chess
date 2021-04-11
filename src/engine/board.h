@@ -50,7 +50,7 @@ namespace cohen_chess
     {
         Bitboard sq_bb = SquareBB(sq);
         piece_bitboards[pc] |= sq_bb;
-        piece_bitboards[AllColor(pc)] |= sq_bb;
+        piece_bitboards[PieceAllColor(pc)] |= sq_bb;
         piece_bitboards[kOccupancy] |= sq_bb;
         piece_on_square[sq] = pc;
         info.zkey ^= ZobristKey(pc, sq);
@@ -64,7 +64,7 @@ namespace cohen_chess
     {
         Bitboard not_sq_bb = ~SquareBB(sq);
         piece_bitboards[pc] &= not_sq_bb;
-        piece_bitboards[AllColor(pc)] &= not_sq_bb;
+        piece_bitboards[PieceAllColor(pc)] &= not_sq_bb;
         piece_bitboards[kOccupancy] &= not_sq_bb;
         piece_on_square[sq] = kPieceNone;
         info.zkey ^= ZobristKey(pc, sq);
@@ -92,34 +92,34 @@ namespace cohen_chess
         //if moving from or to a8 flip BlackOO
         //if moving from or to h8 flip BlackOOO
         //if moving King remove the current sides castling rights
-        MoveType mv_type = MoveTypeOf(move);
-        Square from = FromSquare(move), to = ToSquare(move);
-        Piece on_from = on(from), on_to = on(to);
-        if(PieceTypeOf(on_from) == kPawn)
-        {
-            if(to - from == 2 * kNorth || to - from == 2 * kSouth)
-            {
-                info.ep_target = to + (side ? kNorth : kSouth);
-            }
-            else
-            {
-                if(mv_type == kEnPassant)
-                {
-                    info.captured = this->capture(info.ep_target);
-                }
-                else if(mv_type == kPromotion)
-                {
-                    put(MakePiece(side, PromotedTo(move)), to);
-                }
-                info.ep_target = kSquareNone;
-            }
-            info.halfmove_clock = 0;
-        }
-        else
-        {
-            info.ep_target = kSquareNone;
-        }
-        this->move(on_from, from, to);
+        // MoveType mv_type = MoveTypeOf(move);
+        // Square from = FromSquare(move), to = ToSquare(move);
+        // Piece on_from = on(from), on_to = on(to);
+        // if(PieceTypeOf(on_from) == kPawn)
+        // {
+        //     if(to - from == 2 * kNorth || to - from == 2 * kSouth)
+        //     {
+        //         info.ep_target = to + (side ? kNorth : kSouth);
+        //     }
+        //     else
+        //     {
+        //         if(mv_type == kEnPassant)
+        //         {
+        //             info.captured = this->capture(info.ep_target);
+        //         }
+        //         else if(mv_type == kPromotion)
+        //         {
+        //             put(MakePiece(side, PromotedTo(move)), to);
+        //         }
+        //         info.ep_target = kSquareNone;
+        //     }
+        //     info.halfmove_clock = 0;
+        // }
+        // else
+        // {
+        //     info.ep_target = kSquareNone;
+        // }
+        // this->move(on_from, from, to);
     }
 
     inline Piece Board::on(Square sq) const

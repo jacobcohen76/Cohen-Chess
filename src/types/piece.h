@@ -44,12 +44,12 @@ namespace cohen_chess
         return PieceType(pc & kPieceTypeAll);
     }
 
-    constexpr Piece FlipColor(Piece pc)
+    constexpr Piece FlipPieceColor(Piece pc)
     {
         return Piece(pc ^ kOccupancy);
     }
 
-    constexpr Piece AllColor(Piece pc)
+    constexpr Piece PieceAllColor(Piece pc)
     {
         return Piece(pc | kPieceTypeAll);
     }

@@ -3,7 +3,7 @@
 
 namespace cohen_chess
 {
-
+    void Init();
 }
 
 #endif

@@ -10,7 +10,7 @@ namespace cohen_chess
         Key kCastlingRightsKeys[kCastlingNB];
         Key kEnPassantFileTargetKeys[kFileNB];
 
-        void InitPieceOnSquareKeys(Key piece_on_square_keys[kPieceNB][kSquareNB], uint64_t (*randomizer)())
+        void InitPieceOnSquareKeys(Key piece_on_square_keys[kPieceNB][kSquareNB], Randomizer randomizer)
         {
             for(Piece pc = kPieceNone; pc < kPieceNB; ++pc)
             {
@@ -32,7 +32,7 @@ namespace cohen_chess
             }
         }
 
-        void InitCastlingRightsKeys(Key castling_rights_keys[kCastlingNB], uint64_t (*randomizer)())
+        void InitCastlingRightsKeys(Key castling_rights_keys[kCastlingNB], Randomizer randomizer)
         {
             castling_rights_keys[kWhiteOO]  = Key(randomizer());
             castling_rights_keys[kWhiteOOO] = Key(randomizer());
@@ -63,11 +63,23 @@ namespace cohen_chess
             }
         }
 
-        void InitEnPassantFileTargetKeys(Key en_passant_file_target_keys[kFileNB], uint64_t (*randomizer)())
+        void InitEnPassantFileTargetKeys(Key en_passant_file_target_keys[kFileNB], Randomizer randomizer)
         {
             for(File f = kFileA; f < kFileNB; ++f)
             {
                 en_passant_file_target_keys[f] = Key(randomizer());
+            }
+        }
+
+        void Init(Randomizer randomizer)
+        {
+            static bool initialized = false;
+            if (!initialized)
+            {
+                InitPieceOnSquareKeys(kPieceOnSquareKeys, randomizer);
+                InitCastlingRightsKeys(kCastlingRightsKeys, randomizer);
+                InitEnPassantFileTargetKeys(kEnPassantFileTargetKeys, randomizer);
+                initialized = true;
             }
         }
     }

@@ -52,27 +52,27 @@ namespace cohen_chess
         return Anti(RankOf(sq) + FileOf(sq));
     }
 
-    constexpr Square MirrorRank(Square sq)
+    constexpr Square MirrorSquareRank(Square sq)
     {
         return Square(sq ^ kA8);
     }
 
-    constexpr Square MirrorFile(Square sq)
+    constexpr Square MirrorSquareFile(Square sq)
     {
         return Square(sq ^ kH1);
     }
 
-    constexpr Square MirrorDiag(Square sq)
+    constexpr Square MirrorSquareDiag(Square sq)
     {
         return Square(((sq << 3) | (sq >> 3)) & kH8);
     }
 
-    constexpr Square MirrorAnti(Square sq)
+    constexpr Square MirrorSquareAnti(Square sq)
     {
-        return Square(MirrorDiag(sq) ^ kH8);
+        return Square(MirrorSquareDiag(sq) ^ kH8);
     }
 
-    constexpr Square MirrorRankFile(Square sq)
+    constexpr Square MirrorSquareRankFile(Square sq)
     {
         return Square(sq ^ kH8);
     }
@@ -82,34 +82,34 @@ namespace cohen_chess
         return Square(sq ^ (side * kH8));
     }
 
-    constexpr Square RelativeRank(Color side, Square sq)
+    constexpr Square RelativeSquareRank(Color side, Square sq)
     {
         return Square(sq ^ (side * kA8));
     }
 
-    constexpr Square RelativeFile(Color side, Square sq)
+    constexpr Square RelativeSquareFile(Color side, Square sq)
     {
         return Square(sq ^ (side * kH1));
     }
 
-    constexpr bool IsNormal(Square sq)
-    {
-        return kA1 <= sq && sq < kSquareNB;
-    }
-
-    constexpr int8_t RankDistance(Square sq1, Square sq2)
+    constexpr int8_t SquareRankDistance(Square sq1, Square sq2)
     {
         return std::abs(RankOf(sq1) - RankOf(sq2));
     }
 
-    constexpr int8_t FileDistance(Square sq1, Square sq2)
+    constexpr int8_t SquareFileDistance(Square sq1, Square sq2)
     {
         return std::abs(FileOf(sq1) - FileOf(sq2));
     }
 
-    constexpr int8_t SquareDistance(Square sq1, Square sq2)
+    constexpr int8_t SquareManhattanDistance(Square sq1, Square sq2)
     {
-        return RankDistance(sq1, sq2) + FileDistance(sq1, sq2);
+        return SquareRankDistance(sq1, sq2) + SquareFileDistance(sq1, sq2);
+    }
+
+    constexpr bool IsNormalSquare(Square sq)
+    {
+        return 0 <= sq && sq < kSquareNB;
     }
 }
 
