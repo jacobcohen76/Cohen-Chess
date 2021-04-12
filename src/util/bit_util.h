@@ -16,10 +16,50 @@ namespace cohen_chess
         void Init();
     };
 
-    template <typename T> constexpr
-    typename std::enable_if<std::is_integral<T>::value>::type FlipLSB(T x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value>::type FlipLSB(T x)
     {
         return x & (x - 1);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value>::type RotateLeft(T x, int r)
+    {
+        if constexpr (std::numeric_limits<T>::is_signed)
+        {
+            if (x < 0)
+            {
+
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value>::type RotateRight(T x, int r)
+    {
+        if constexpr (std::numeric_limits<T>::is_signed)
+        {
+            if (x < 0)
+            {
+
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+
+        }
     }
 
     /**
