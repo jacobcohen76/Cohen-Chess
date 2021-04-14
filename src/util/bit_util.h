@@ -1,8 +1,10 @@
 #ifndef COHEN_CHESS_UTIL_BIT_UTIL_H_INCLUDED
 #define COHEN_CHESS_UTIL_BIT_UTIL_H_INCLUDED
 
+#include <array>
 #include <cassert>
 #include <cstdint>
+#include <limits>
 #include <string>
 #include <type_traits>
 
@@ -10,152 +12,208 @@ namespace cohen_chess
 {
     namespace bit_util
     {
-        extern uint8_t kU16PopCountTable[65536];
-
-        void InitPopCountTable(uint8_t[], size_t);
-        void Init();
-    };
-
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value>::type FlipLSB(T x)
-    {
-        return x & (x - 1);
+        constexpr std::array<uint8_t, 65536> kPopCountTable = []
+        {
+            std::array<uint8_t, 65536> pop_count_table = {};
+            for (size_t i = 0; i < 65536; ++i)
+            {
+                uint8_t count = 0;
+                uint64_t x = i;
+                while (x)
+                {
+                    ++count;
+                    x &= x - 1;
+                }
+                pop_count_table[i] = count;
+            }
+            return pop_count_table;
+        }();
     }
 
+    /**
+     * Performs a bitwise circular shift left on an unsigned integral type.
+     * 
+     * @param x The unsigned integral to circular shift left.
+     * @param r The shift amount.
+     * @return The bitwise circular shift left of x.
+     */
     template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value>::type RotateLeft(T x, int r)
+    constexpr std::enable_if<std::is_unsigned<T>::value, T>::type RotateLeft(T x, int r)
     {
-        if constexpr (std::numeric_limits<T>::is_signed)
+        constexpr int kNumBits = std::numeric_limits<T>::digits;
+        if ((r %= kNumBits) == 0)
         {
-            if (x < 0)
-            {
-
-            }
-            else
-            {
-                
-            }
+            return x;
+        }
+        else if (r > 0)
+        {
+            return (x << +r) | (x >> ((kNumBits - r) % kNumBits));
         }
         else
         {
-
-        }
-    }
-
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value>::type RotateRight(T x, int r)
-    {
-        if constexpr (std::numeric_limits<T>::is_signed)
-        {
-            if (x < 0)
-            {
-
-            }
-            else
-            {
-                
-            }
-        }
-        else
-        {
-
+            return (x >> -r) | (x << ((kNumBits + r) % kNumBits));
         }
     }
 
     /**
-     * Returns the bit-index of the least significant 1 bit (LS1B).
+     * Performs a bitwise cicular shift right on an unsigned integral type.
      * 
-     * Multiplying by a power of 2 (the isolated LS1B) acts like a left shift
-     * by it's exponent. Thus, by multiplying a 64-bit De Bruijn Sequence with
-     * a with an integer's isolated LS1B, the product will have a unique 6-bit
-     * subsequence in the most significant bits. The bit-index of the LS1B
-     * is then obtained by looking up this subsequence in an arry.
-     * https://www.chessprogramming.org/BitScan#De_Bruijn_Multiplication
-     * 
-     * De Brujin constants generated using seed '1776' on the following program:
-     * https://www.chessprogramming.org/De_Bruijn_Sequence_Generator
-     * @author Gerd Isenberg
-     * 
-     * @param x the integer to scan
-     * @return index (0..63) of least significant 1-bit
-     * @throws assert x != 0
+     * @param x The unsigned integral to circular shift right.
+     * @param r The shift amount.
+     * @return The bitwise circular shift right of x.
      */
-    inline int DeBruijnBitScanForward(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_unsigned<T>::value, T>::type RotateRight(T x, int r)
     {
-        static constexpr uint64_t kDebruijn64 = 0x0218A3AB27B9B4BF;
-        static const int kBitIndexTable[64] =
+        constexpr int kNumBits = std::numeric_limits<T>::digits;
+        if ((r %= kNumBits) == 0)
         {
-             0,  1,  2,  7,  3, 13,  8, 19,
-             4, 32, 14, 54,  9, 45, 20, 35,
-             5, 17, 52, 33, 15, 25, 27, 55,
-            10, 29, 49, 46, 41, 21, 36, 57,
-            63,  6, 12, 18, 31, 53, 44, 34,
-            16, 51, 24, 26, 28, 48, 40, 56,
-            62, 11, 30, 43, 50, 23, 47, 39,
-            61, 42, 22, 38, 60, 37, 59, 58,
-        };
-        assert(x != 0);
-        return kBitIndexTable[((x & -x) * kDebruijn64) >> 58];
+            return x;
+        }
+        else if (r > 0)
+        {
+            return (x >> +r) | (x << ((kNumBits - r) % kNumBits));
+        }
+        else
+        {
+            return (x << -r) | (x >> ((kNumBits + r) % kNumBits));
+        }
     }
 
-    inline int BuiltinBitScanForward(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountTrailingZeroes(T x)
     {
-        assert(x != 0);
-        return __builtin_ctzll(x);
+        constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
+        constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
+        constexpr int kNumBitsU = std::numeric_limits<unsigned>::digits;
+        constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
+        if (x == 0)
+        {
+            return kNumBits;
+        }
+        else if constexpr (kNumBits <= kNumBitsU)
+        {
+            return __builtin_ctz(x);
+        }
+        else if constexpr (kNumBits <= kNumBitsUL)
+        {
+            return __builtin_ctzl(x);
+        }
+        else if constexpr (kNumBits <= kNumBitsULL)
+        {
+            return __builtin_ctzll(x);
+        }
+        else
+        {
+            static_assert(kNumBits <= kNumBitsULL, "Maximum supported integer size is 64-bit");
+        }
     }
 
-    inline int BitScanForward(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountTrailingZeroes(T x)
+    {
+        return BuiltinCountTrailingZeroes(x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountLeadingZeroes(T x)
+    {
+        constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
+        constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
+        constexpr int kNumBitsU = std::numeric_limits<unsigned>::digits;
+        constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
+        if (x == 0)
+        {
+            return kNumBits;
+        }
+        else if constexpr (kNumBits <= kNumBitsU)
+        {
+            constexpr int kDiff = kNumBitsU - kNumBits;
+            return __builtin_clz(x) - kDiff;
+        }
+        else if constexpr (kNumBits <= kNumBitsUL)
+        {
+            constexpr int kDiff = kNumBitsUL - kNumBits;
+            return __builtin_clzl(x) - kDiff;
+        }
+        else if constexpr (kNumBits <= kNumBitsULL)
+        {
+            constexpr int kDiff = kNumBitsULL - kNumBits;
+            return __builtin_clzll(x) - kDiff;
+        }
+        else
+        {
+            static_assert(kNumBits <= kNumBitsULL, "Maximum supported integer size is 64-bit");
+        }
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountLeadingZeroes(T x)
+    {
+        return BuiltinCountLeadingZeroes(x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountTrailingOnes(T x)
+    {
+        return BuiltinCountTrailingZeroes(~x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountTrailingOnes(T x)
+    {
+        return BuiltinCountTrailingOnes(x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountLeadingOnes(T x)
+    {
+        return BuiltinCountLeadingZeroes(~x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountLeadingOnes(T x)
+    {
+        return BuiltinCountLeadingOnes(x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinBitScanForward(T x)
+    {
+        return BuiltinCountTrailingZeroes(x);
+    }
+
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BitScanForward(T x)
     {
         return BuiltinBitScanForward(x);
     }
 
-    /**
-     * https://www.chessprogramming.org/BitScan#De_Bruijn_Multiplication_2
-     * 
-     * @author Kim Walisch, Mark Dickinson
-     * @param x the integer to scan
-     * @return index(0..63) of most significant 1-bit
-     * @throws assert x != 0
-     */
-    inline int DeBruijnBitScanReverse(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinBitScanReverse(T x)
     {
-        static constexpr uint64_t kDebruijn64 = 0x03F79D71B4CB0A89;
-        static const int kBitIndexTable[64] =
+        constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
+        if (x == 0)
         {
-             0, 47,  1, 56, 48, 27,  2, 60,
-            57, 49, 41, 37, 28, 16,  3, 61,
-            54, 58, 35, 52, 50, 42, 21, 44,
-            38, 32, 29, 23, 17, 11,  4, 62,
-            46, 55, 26, 59, 40, 36, 15, 53,
-            34, 51, 20, 43, 31, 22, 10, 45,
-            25, 39, 14, 33, 19, 30,  9, 24,
-            13, 18,  8, 12,  7,  6,  5, 63,
-        };
-        assert(x != 0);
-        x |= x >>  1;
-        x |= x >>  2;
-        x |= x >>  4;
-        x |= x >>  8;
-        x |= x >> 16;
-        x |= x >> 32;
-        return kBitIndexTable[(x * kDebruijn64) >> 58];
+            return kNumBits;
+        }
+        else
+        {
+            return kNumBits - 1 - BuiltinCountLeadingZeroes(x);
+        }
     }
 
-    inline int BuiltinBitScanReverse(uint64_t x)
-    {
-        assert(x != 0);
-        return 63 - __builtin_clzll(x);
-    }
-
-    inline int BitScanReverse(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type BitScanReverse(T x)
     {
         return BuiltinBitScanReverse(x);
     }
 
-    inline int PopCountLSB(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountLSB(T x)
     {
         int count = 0;
-        while(x)
+        while (x)
         {
             ++count;
             x &= x - 1;
@@ -163,26 +221,102 @@ namespace cohen_chess
         return count;
     }
 
-    inline int PopCountLookup(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountLookup(T x)
     {
-        return bit_util::kU16PopCountTable[(x >>  0) & 0xFFFF] +
-               bit_util::kU16PopCountTable[(x >> 16) & 0xFFFF] +
-               bit_util::kU16PopCountTable[(x >> 32) & 0xFFFF] +
-               bit_util::kU16PopCountTable[(x >> 48) & 0xFFFF];
+        constexpr int kNumBits64 = std::numeric_limits<uint64_t>::digits;
+        constexpr int kNumBits32 = std::numeric_limits<uint32_t>::digits;
+        constexpr int kNumBits16 = std::numeric_limits<uint16_t>::digits;
+        constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
+        if (x == 0)
+        {
+            return 0;
+        }
+        else if constexpr (kNumBits <= kNumBits16)
+        {
+            return bit_util::kPopCountTable[x & 0xFFFF];
+        }
+        else if constexpr (kNumBits <= kNumBits32)
+        {
+            return bit_util::kPopCountTable[(x >>  0) & 0xFFFF] +
+                   bit_util::kPopCountTable[(x >> 16) & 0xFFFF];
+        }
+        else if constexpr (kNumBits <= kNumBits64)
+        {
+            return bit_util::kPopCountTable[(x >>  0) & 0xFFFF] +
+                   bit_util::kPopCountTable[(x >> 16) & 0xFFFF] +
+                   bit_util::kPopCountTable[(x >> 32) & 0xFFFF] +
+                   bit_util::kPopCountTable[(x >> 48) & 0xFFFF];
+        }
+        else
+        {
+            static_assert(kNumBits <= kNumBits64, "Maximum supported integer size is 64-bit");
+        }
     }
 
-    inline int PopCountBuiltin(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountBuiltin(T x)
     {
-        return __builtin_popcountll(x);
+        constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
+        constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
+        constexpr int kNumBitsU = std::numeric_limits<unsigned>::digits;
+        constexpr int kNumBits = std::numeric_limits<T>::digits;
+        if (x == 0)
+        {
+            return 0;
+        }
+        else if constexpr (kNumBits <= kNumBitsU)
+        {
+            return __builtin_popcount(x);
+        }
+        else if constexpr (kNumBits <= kNumBitsUL)
+        {
+            return __builtin_popcountl(x);
+        }
+        else if constexpr (kNumBits <= kNumBitsULL)
+        {
+            return __builtin_popcountll(x);
+        }
+        else
+        {
+            static_assert(kNumBits <= kNumBitsULL, "Maximum supported integer size is 64-bit");
+        }
     }
 
-    inline int PopCount(uint64_t x)
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCount(T x)
     {
         return PopCountBuiltin(x);
     }
 
-    template <bool lowercase = false>
-    inline char HexCharacter(uint64_t nibble)
+    /**
+     * Flips the least significant bit of an integral.
+     * 
+     * @param x The integral to flip the least signficant bit of.
+     * @return The value of x with its least significant bit flipped.
+     */
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, T>::type FlipLSB(T x)
+    {
+        return x & (x - 1);
+    }
+
+    /**
+     * Gets the bit-index of the least significant bit and flips it.
+     * 
+     * @param x The integral to pop the least significant bit of.
+     * @return The bit-index of the least significant bit.
+     */
+    template <typename T>
+    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopLSB(T& x)
+    {
+        int lsb = BitScanForward(x);
+        x = FlipLSB(x);
+        return lsb;
+    }
+
+    template <typename T, bool lowercase = false>
+    constexpr std::enable_if<std::is_integral<T>::value, char> HexCharacter(T nibble)
     {
         switch(nibble)
         {

@@ -1,5 +1,7 @@
+
+
 all:
-	g++                               \
+	g++-10 -std=c++20                    \
 		src/main.cpp                  \
 		src/engine/attacks.cc         \
 		src/engine/board.cc           \
@@ -12,7 +14,6 @@ all:
 		src/io/uci.cc                 \
 		src/types/bitboard.cc         \
 		src/types/direction.cc        \
-		src/util/bit_util.cc          \
 		src/util/initializer.cc       \
 		src/util/random.cc            \
 		src/util/string_util.cc
