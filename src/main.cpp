@@ -5,6 +5,7 @@
 int main(int argc, char* argv[])
 {
     cohen_chess::Init();
-    std::cout << cohen_chess::PopCountLookup(0xFF38) << std::endl;
+    long num = 0xFFFFFF3FAAAFAFA8;
+    std::cout << cohen_chess::PopCountLookup(num) << std::endl;
     return 0;
 }

@@ -55,5 +55,5 @@
         "compare": "cpp",
         "concepts": "cpp"
     },
-    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+    "C_Cpp.intelliSenseEngineFallback": "Disabled"
 }
