@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cassert>
+#include <concepts>
 #include <cstdint>
 #include <limits>
 #include <string>
@@ -10,26 +11,6 @@
 
 namespace cohen_chess
 {
-    namespace bit_util
-    {
-        constexpr std::array<uint8_t, 65536> kPopCountTable = []
-        {
-            std::array<uint8_t, 65536> pop_count_table = {};
-            for (size_t i = 0; i < 65536; ++i)
-            {
-                uint8_t count = 0;
-                uint64_t x = i;
-                while (x)
-                {
-                    ++count;
-                    x &= x - 1;
-                }
-                pop_count_table[i] = count;
-            }
-            return pop_count_table;
-        }();
-    }
-
     /**
      * Performs a bitwise circular shift left on an unsigned integral type.
      * 
@@ -37,8 +18,8 @@ namespace cohen_chess
      * @param r The shift amount.
      * @return The bitwise circular shift left of x.
      */
-    template <typename T>
-    constexpr std::enable_if<std::is_unsigned<T>::value, T>::type RotateLeft(T x, int r)
+    template <std::integral T>
+    constexpr T RotateLeft(T x, int r)
     {
         constexpr int kNumBits = std::numeric_limits<T>::digits;
         if ((r %= kNumBits) == 0)
@@ -62,8 +43,8 @@ namespace cohen_chess
      * @param r The shift amount.
      * @return The bitwise circular shift right of x.
      */
-    template <typename T>
-    constexpr std::enable_if<std::is_unsigned<T>::value, T>::type RotateRight(T x, int r)
+    template <std::integral T>
+    constexpr T RotateRight(T x, int r)
     {
         constexpr int kNumBits = std::numeric_limits<T>::digits;
         if ((r %= kNumBits) == 0)
@@ -80,8 +61,8 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountTrailingZeroes(T x)
+    template <std::integral T>
+    constexpr int BuiltinCountTrailingZeroes(T x)
     {
         constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
         constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
@@ -109,14 +90,14 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountTrailingZeroes(T x)
+    template <std::integral T>
+    constexpr int CountTrailingZeroes(T x)
     {
         return BuiltinCountTrailingZeroes(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountLeadingZeroes(T x)
+    template <std::integral T>
+    constexpr int BuiltinCountLeadingZeroes(T x)
     {
         constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
         constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
@@ -147,50 +128,50 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountLeadingZeroes(T x)
+    template <std::integral T>
+    constexpr int CountLeadingZeroes(T x)
     {
         return BuiltinCountLeadingZeroes(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountTrailingOnes(T x)
+    template <std::integral T>
+    constexpr int BuiltinCountTrailingOnes(T x)
     {
         return BuiltinCountTrailingZeroes(~x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountTrailingOnes(T x)
+    template <std::integral T>
+    constexpr int CountTrailingOnes(T x)
     {
         return BuiltinCountTrailingOnes(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinCountLeadingOnes(T x)
+    template <std::integral T>
+    constexpr int BuiltinCountLeadingOnes(T x)
     {
         return BuiltinCountLeadingZeroes(~x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type CountLeadingOnes(T x)
+    template <std::integral T>
+    constexpr int CountLeadingOnes(T x)
     {
         return BuiltinCountLeadingOnes(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinBitScanForward(T x)
+    template <std::integral T>
+    constexpr int BuiltinBitScanForward(T x)
     {
         return BuiltinCountTrailingZeroes(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BitScanForward(T x)
+    template <std::integral T>
+    constexpr int BitScanForward(T x)
     {
         return BuiltinBitScanForward(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BuiltinBitScanReverse(T x)
+    template <std::integral T>
+    constexpr int BuiltinBitScanReverse(T x)
     {
         constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
         if (x == 0)
@@ -203,14 +184,14 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type BitScanReverse(T x)
+    template <std::integral T>
+    constexpr int BitScanReverse(T x)
     {
         return BuiltinBitScanReverse(x);
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountLSB(T x)
+    template <std::integral T>
+    constexpr int PopCountLSB(T x)
     {
         int count = 0;
         while (x)
@@ -221,9 +202,25 @@ namespace cohen_chess
         return count;
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountLookup(T x)
+    template <std::integral T>
+    constexpr int PopCountLookup(T x)
     {
+        constexpr std::array<uint8_t, 65536> kPopCountTable = []
+        {
+            std::array<uint8_t, 65536> pop_count_table = {};
+            for (size_t i = 0; i < 65536; ++i)
+            {
+                uint8_t count = 0;
+                uint64_t x = i;
+                while (x)
+                {
+                    ++count;
+                    x &= x - 1;
+                }
+                pop_count_table[i] = count;
+            }
+            return pop_count_table;
+        }();
         constexpr int kNumBits64 = std::numeric_limits<uint64_t>::digits;
         constexpr int kNumBits32 = std::numeric_limits<uint32_t>::digits;
         constexpr int kNumBits16 = std::numeric_limits<uint16_t>::digits;
@@ -234,19 +231,19 @@ namespace cohen_chess
         }
         else if constexpr (kNumBits <= kNumBits16)
         {
-            return bit_util::kPopCountTable[x & 0xFFFF];
+            return kPopCountTable[x & 0xFFFF];
         }
         else if constexpr (kNumBits <= kNumBits32)
         {
-            return bit_util::kPopCountTable[(x >>  0) & 0xFFFF] +
-                   bit_util::kPopCountTable[(x >> 16) & 0xFFFF];
+            return kPopCountTable[(x >>  0) & 0xFFFF] +
+                   kPopCountTable[(x >> 16) & 0xFFFF];
         }
         else if constexpr (kNumBits <= kNumBits64)
         {
-            return bit_util::kPopCountTable[(x >>  0) & 0xFFFF] +
-                   bit_util::kPopCountTable[(x >> 16) & 0xFFFF] +
-                   bit_util::kPopCountTable[(x >> 32) & 0xFFFF] +
-                   bit_util::kPopCountTable[(x >> 48) & 0xFFFF];
+            return kPopCountTable[(x >>  0) & 0xFFFF] +
+                   kPopCountTable[(x >> 16) & 0xFFFF] +
+                   kPopCountTable[(x >> 32) & 0xFFFF] +
+                   kPopCountTable[(x >> 48) & 0xFFFF];
         }
         else
         {
@@ -254,8 +251,8 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCountBuiltin(T x)
+    template <std::integral T>
+    constexpr int PopCountBuiltin(T x)
     {
         constexpr int kNumBitsULL = std::numeric_limits<unsigned long long>::digits;
         constexpr int kNumBitsUL = std::numeric_limits<unsigned long>::digits;
@@ -283,8 +280,8 @@ namespace cohen_chess
         }
     }
 
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopCount(T x)
+    template <std::integral T>
+    constexpr int PopCount(T x)
     {
         return PopCountBuiltin(x);
     }
@@ -295,8 +292,8 @@ namespace cohen_chess
      * @param x The integral to flip the least signficant bit of.
      * @return The value of x with its least significant bit flipped.
      */
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, T>::type FlipLSB(T x)
+    template <std::integral T>
+    constexpr T FlipLSB(T x)
     {
         return x & (x - 1);
     }
@@ -307,16 +304,16 @@ namespace cohen_chess
      * @param x The integral to pop the least significant bit of.
      * @return The bit-index of the least significant bit.
      */
-    template <typename T>
-    constexpr std::enable_if<std::is_integral<T>::value, int>::type PopLSB(T& x)
+    template <std::integral T>
+    constexpr int PopLSB(T& x)
     {
         int lsb = BitScanForward(x);
         x = FlipLSB(x);
         return lsb;
     }
 
-    template <typename T, bool lowercase = false>
-    constexpr std::enable_if<std::is_integral<T>::value, char> HexCharacter(T nibble)
+    template <std::integral T, bool lowercase = false>
+    constexpr char HexCharacter(T nibble)
     {
         switch(nibble)
         {
@@ -340,12 +337,12 @@ namespace cohen_chess
         }
     }
 
-    template <size_t no_digits = 16, bool lowercase = false>
-    inline std::string HexString(uint64_t raw_bits)
+    template <std::integral T, size_t no_digits = (std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed) / 4, bool lowercase = false>
+    inline std::string HexString(T raw_bits)
     {
         std::string hex_string(no_digits, '0');
         size_t i = -1;
-        while(raw_bits)
+        while (raw_bits)
         {
             hex_string[no_digits - ++i - 1] = HexCharacter<lowercase>(raw_bits & 0xF);
             raw_bits = (raw_bits & ~0xF) >> 4;
@@ -353,12 +350,12 @@ namespace cohen_chess
         return hex_string;
     }
 
-    template <size_t no_bits = 64>
-    inline std::string BinaryString(uint64_t raw_bits)
+    template <std::integral T, size_t no_bits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed>
+    inline std::string BinaryString(T raw_bits)
     {
         std::string binary_string(no_bits, '0');
         size_t i = -1;
-        while(raw_bits)
+        while (raw_bits)
         {
             binary_string[no_bits - ++i - 1] = (raw_bits & 1) + '0';
             raw_bits = (raw_bits & ~0x1) >> 1;

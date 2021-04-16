@@ -22,14 +22,14 @@ namespace cohen_chess
         kFileNB = 8,
     };
 
-    constexpr File MirrorFile(File f)
+    constexpr File MirrorFile(File file)
     {
-        return File(f ^ kFileH);
+        return File(file ^ kFileH);
     }
 
-    constexpr File RelativeFile(Color side, File f)
+    constexpr File RelativeFile(Color side, File file)
     {
-        return File(f ^ (side * kFileH));
+        return File(file ^ (side * kFileH));
     }
 }
 

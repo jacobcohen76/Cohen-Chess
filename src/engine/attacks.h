@@ -49,12 +49,12 @@ namespace cohen_chess
         }
     }
 
-    inline Bitboard BishopMask(Square sq)
+    constexpr Bitboard BishopMask(Square sq)
     {
         return (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
     }
 
-    inline Bitboard RookMask(Square sq)
+    constexpr Bitboard RookMask(Square sq)
     {
         return ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
     }
@@ -73,10 +73,10 @@ namespace cohen_chess
 
     constexpr Bitboard SetwiseKnightAttacks(Bitboard knight_set)
     {
-        return  ShiftBB<kNorthNorthEast>(knight_set) | ShiftBB<kEastEastNorth>(knight_set) |
-                ShiftBB<kNorthNorthWest>(knight_set) | ShiftBB<kEastEastSouth>(knight_set) |
-                ShiftBB<kSouthSouthEast>(knight_set) | ShiftBB<kWestWestNorth>(knight_set) |
-                ShiftBB<kSouthSouthWest>(knight_set) | ShiftBB<kWestWestSouth>(knight_set);
+        return ShiftBB<kNorthNorthEast>(knight_set) | ShiftBB<kEastEastNorth>(knight_set) |
+               ShiftBB<kNorthNorthWest>(knight_set) | ShiftBB<kEastEastSouth>(knight_set) |
+               ShiftBB<kSouthSouthEast>(knight_set) | ShiftBB<kWestWestNorth>(knight_set) |
+               ShiftBB<kSouthSouthWest>(knight_set) | ShiftBB<kWestWestSouth>(knight_set);
     }
 
     constexpr Bitboard SetwiseKingAttacks(Bitboard king_set)
@@ -139,13 +139,6 @@ namespace cohen_chess
     {
         return MagicBishopAttacks(occ, sq) | MagicRookAttacks(occ, sq);    
     }
-
-    constexpr auto PawnAttacks      = LookupPawnAttacks;
-    constexpr auto KnightAttacks    = LookupKnightAttacks;
-    constexpr auto BishopAttacks    = MagicBishopAttacks;
-    constexpr auto RookAttacks      = MagicRookAttacks;
-    constexpr auto QueenAttacks     = MagicQueenAttacks;
-    constexpr auto KingAttacks      = LookupKingAttacks;
 }
 
 #endif

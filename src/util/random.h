@@ -5,9 +5,20 @@
 
 namespace cohen_chess
 {
-    inline uint64_t RandomU64()
+    template <uint64_t a = 6364136223846793005, uint64_t c = 1442695040888963407>
+    class LinearCongruentialGenerator
     {
-        return 0;
+    public:
+        constexpr LinearCongruentialGenerator(uint64_t seed = 0)
+            : state(seed) {}
+
+        constexpr uint64_t operator ()()
+        {
+            return state = state * a + c;
+        }
+
+    private:
+        uint64_t state;
     };
 }
 

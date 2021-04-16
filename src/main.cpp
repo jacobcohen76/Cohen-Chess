@@ -4,8 +4,13 @@
 
 int main(int argc, char* argv[])
 {
-    cohen_chess::Init();
-    long num = 0xFFFFFF3FAAAFAFA8;
-    std::cout << cohen_chess::PopCountLookup(num) << std::endl;
+    using namespace cohen_chess;
+    
+    std::cout << io::AsciiBoard(RankBB(kRank1)) << std::endl << std::endl;
+    std::cout << io::AsciiBoard(SquareBB(kB3)) << std::endl << std::endl;
+
+    std::cout << io::AsciiBoard(LineBB(kB3, kE6)) << std::endl << std::endl;
+    std::cout << io::AsciiBoard(BetweenBB(kB3, kE6)) << std::endl << std::endl;
+
     return 0;
 }

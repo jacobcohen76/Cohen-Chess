@@ -10,6 +10,7 @@
 #include "rank.h"
 #include "square.h"
 
+#include <array>
 #include <cstdint>
 
 namespace cohen_chess
@@ -27,44 +28,84 @@ namespace cohen_chess
         kEdgesBB        = 0xFF818181818181FF,
     };
 
-    namespace bitboard
+    constexpr Bitboard ComputeSquareBB(Square sq)
     {
-        extern Bitboard kLineBitboards[kSquareNB][kSquareNB];
-        extern Bitboard kBetweenBitboards[kSquareNB][kSquareNB];
-        
-        void InitLineBitboards(Bitboard[kSquareNB][kSquareNB]);
-        void InitBetweenBitboards(Bitboard[kSquareNB][kSquareNB]);
-        void Init();
-    };
-
-    inline Bitboard LineBB(Square sq1, Square sq2)
-    {
-        return bitboard::kLineBitboards[sq1][sq2];
+        constexpr Bitboard kBitboardSquareA1 = 0x0000000000000001;
+        return kBitboardSquareA1 << sq;
     }
 
-    inline Bitboard BetweenBB(Square sq1, Square sq2)
+    constexpr Bitboard LookupSquareBB(Square sq)
     {
-        return bitboard::kBetweenBitboards[sq1][sq2];
-    } 
+        constexpr std::array<Bitboard, kSquareNB> kSquareBitboards = []
+        {
+            std::array<Bitboard, kSquareNB> square_bitboards;
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
+            {
+                square_bitboards[sq] = ComputeSquareBB(sq);
+            }
+            return square_bitboards;
+        }();
+        return kSquareBitboards[sq];
+    }
 
     constexpr Bitboard SquareBB(Square sq)
     {
-        return Bitboard(0x0000000000000001) << sq;
+        return ComputeSquareBB(sq);
+    }
+
+    constexpr Bitboard ComputeRankBB(Rank rank)
+    {
+        constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
+        return kBitboardRank1 << rank;
+    }
+
+    constexpr Bitboard LookupRankBB(Rank rank)
+    {
+        constexpr std::array<Bitboard, kRankNB> kRankBitboards = []
+        {
+            std::array<Bitboard, kRankNB> rank_bitboards;
+            for (Rank rank = kRank1; rank < kRankNB; ++rank)
+            {
+                rank_bitboards[rank] = ComputeRankBB(rank);
+            }
+            return rank_bitboards;
+        }();
+        return kRankBitboards[rank];
     }
 
     constexpr Bitboard RankBB(Rank rank)
     {
-        return Bitboard(0x00000000000000FF) << (rank << 3);
+        return ComputeRankBB(rank);
+    }
+
+    constexpr Bitboard ComputeFileBB(File file)
+    {
+        constexpr Bitboard kBitboardFileA = 0x0101010101010101;
+        return kBitboardFileA << file;
+    }
+
+    constexpr Bitboard LookupFileBB(File file)
+    {
+        constexpr std::array<Bitboard, kFileNB> kFileBitboards = []
+        {
+            std::array<Bitboard, kFileNB> file_bitboards;
+            for (File file = kFileA; file < kFileNB; ++file)
+            {
+                file_bitboards[file] = ComputeFileBB(file);
+            }
+            return file_bitboards;
+        }();
+        return kFileBitboards[file];
     }
 
     constexpr Bitboard FileBB(File file)
     {
-        return Bitboard(0x0101010101010101) << file;
+        return ComputeFileBB(file);
     }
 
-    inline Bitboard DiagBB(Diag diag)
+    constexpr Bitboard DiagBB(Diag diag)
     {
-        static const Bitboard kDiagBitboards[kDiagNB] =
+        constexpr std::array<Bitboard, kDiagNB> kDiagBitboards =
         {
             0x0000000000000080,
             0x0000000000008040,
@@ -85,9 +126,9 @@ namespace cohen_chess
         return kDiagBitboards[diag];
     }
 
-    inline Bitboard AntiBB(Anti anti)
+    constexpr Bitboard AntiBB(Anti anti)
     {
-        static const Bitboard kAntiBitboards[kAntiNB] =
+        constexpr std::array<Bitboard, kAntiNB> kAntiBitboards = 
         {
             0x0000000000000001,
             0x0000000000000102,
@@ -108,51 +149,64 @@ namespace cohen_chess
         return kAntiBitboards[anti];
     }
 
-    constexpr Bitboard MirrorRank(Bitboard bb)
+    constexpr Bitboard LineBB(Square sq1, Square sq2)
     {
-        return Bitboard(__builtin_bswap64(bb));
+        constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kLineBitboards = []
+        {
+            std::array<std::array<Bitboard, kSquareNB>, kSquareNB> line_bitboards;
+            for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
+            {
+                for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
+                {
+                    Bitboard bb = kEmptyBB;
+                    Direction dir = RayBetween(sq1, sq2);
+                    if (dir)
+                    {
+                        Square itr = sq1;
+                        while (itr != sq2)
+                        {
+                            bb |= SquareBB(itr);
+                            itr += dir;
+                        }
+                        bb |= SquareBB(sq2);
+                    }
+                    line_bitboards[sq1][sq2] = bb;
+                    line_bitboards[sq2][sq1] = bb;
+                }
+            }
+            return line_bitboards;
+        }();
+        return kLineBitboards[sq1][sq2];
     }
 
-    constexpr Bitboard MirrorFile(Bitboard bb)
+    constexpr Bitboard BetweenBB(Square sq1, Square sq2)
     {
-        constexpr Bitboard k1 = 0x5555555555555555;
-        constexpr Bitboard k2 = 0x3333333333333333;
-        constexpr Bitboard k4 = 0x0F0F0F0F0F0F0F0F;
-        bb = ((bb >> 1) & k1) | ((bb & k1) << 1);
-        bb = ((bb >> 2) & k2) | ((bb & k2) << 2);
-        bb = ((bb >> 4) & k4) | ((bb & k4) << 4);
-        return bb;
-    }
-
-    constexpr Bitboard MirrorDiag(Bitboard bb)
-    {
-        constexpr Bitboard k1 = 0x5500550055005500;
-        constexpr Bitboard k2 = 0x3333000033330000;
-        constexpr Bitboard k4 = 0x0F0F0F0F00000000;
-        Bitboard tr = kEmptyBB;
-        tr = ((bb << 28) ^ bb) & k4;
-        bb = ((tr >> 28) ^ tr) ^ bb;
-        tr = ((bb << 14) ^ bb) & k2;
-        bb = ((tr >> 14) ^ tr) ^ bb;
-        tr = ((bb <<  7) ^ bb) & k1;
-        bb = ((tr >>  7) ^ tr) ^ bb;
-        return bb;
-    }
-
-    constexpr Bitboard MirrorAnti(Bitboard bb)
-    {
-        constexpr Bitboard k1 = 0xAA00AA00AA00AA00;
-        constexpr Bitboard k2 = 0xCCCC0000CCCC0000;
-        constexpr Bitboard k4 = 0xF0F0F0F00F0F0F0F;
-        Bitboard tr = kEmptyBB;
-        tr =   (bb << 36) ^ bb;
-        bb = (((bb >> 36) ^ tr) & k4) ^ bb;
-        tr =  ((bb << 18) ^ bb) & k2;
-        bb =  ((tr >> 18) ^ tr) ^ bb;
-        tr =  ((bb <<  9) ^ bb) & k1;
-        bb =  ((tr >>  9) ^ tr) ^ bb;
-        return bb;
-    }
+        constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenBitboards = []
+        {
+            std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_bitboards;
+            for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
+            {
+                for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
+                {
+                    Bitboard bb = kEmptyBB;
+                    Direction dir = RayBetween(sq1, sq2);
+                    if (dir)
+                    {
+                        Square itr = sq1 + dir;
+                        while (itr != sq2)
+                        {
+                            bb |= SquareBB(itr);
+                            itr += dir;
+                        }
+                    }
+                    between_bitboards[sq1][sq2] = bb;
+                    between_bitboards[sq2][sq1] = bb;
+                }
+            }
+            return between_bitboards;
+        }();
+        return kBetweenBitboards[sq1][sq2];
+    } 
 
     template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb)
@@ -263,10 +317,56 @@ namespace cohen_chess
     {
         Bitboard shift;
         occ = ShiftBB<dir>(occ);
-        while((shift = ShiftBB<dir>(bb) | bb) != bb && !(shift & occ))
+        while((shift = ShiftBB<dir>(bb) | bb) != bb && (shift & occ) == 0)
         {
             bb = shift;
         }
+        return bb;
+    }
+
+    constexpr Bitboard MirrorBitboardRank(Bitboard bb)
+    {
+        return __builtin_bswap64(bb);
+    }
+
+    constexpr Bitboard MirrorBitboardFile(Bitboard bb)
+    {
+        constexpr Bitboard k1 = 0x5555555555555555;
+        constexpr Bitboard k2 = 0x3333333333333333;
+        constexpr Bitboard k4 = 0x0F0F0F0F0F0F0F0F;
+        bb = ((bb >> 1) & k1) | ((bb & k1) << 1);
+        bb = ((bb >> 2) & k2) | ((bb & k2) << 2);
+        bb = ((bb >> 4) & k4) | ((bb & k4) << 4);
+        return bb;
+    }
+
+    constexpr Bitboard MirrorBitboardDiag(Bitboard bb)
+    {
+        constexpr Bitboard k1 = 0x5500550055005500;
+        constexpr Bitboard k2 = 0x3333000033330000;
+        constexpr Bitboard k4 = 0x0F0F0F0F00000000;
+        Bitboard tr = kEmptyBB;
+        tr = ((bb << 28) ^ bb) & k4;
+        bb = ((tr >> 28) ^ tr) ^ bb;
+        tr = ((bb << 14) ^ bb) & k2;
+        bb = ((tr >> 14) ^ tr) ^ bb;
+        tr = ((bb <<  7) ^ bb) & k1;
+        bb = ((tr >>  7) ^ tr) ^ bb;
+        return bb;
+    }
+
+    constexpr Bitboard MirrorBitboardAnti(Bitboard bb)
+    {
+        constexpr Bitboard k1 = 0xAA00AA00AA00AA00;
+        constexpr Bitboard k2 = 0xCCCC0000CCCC0000;
+        constexpr Bitboard k4 = 0xF0F0F0F00F0F0F0F;
+        Bitboard tr = kEmptyBB;
+        tr =   (bb << 36) ^ bb;
+        bb = (((bb >> 36) ^ tr) & k4) ^ bb;
+        tr =  ((bb << 18) ^ bb) & k2;
+        bb =  ((tr >> 18) ^ tr) ^ bb;
+        tr =  ((bb <<  9) ^ bb) & k1;
+        bb =  ((tr >>  9) ^ tr) ^ bb;
         return bb;
     }
 }
