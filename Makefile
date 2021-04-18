@@ -4,11 +4,11 @@ SRC      = src
 BIN      = bin
 
 cc       = gcc-10
-CXX      = g++-10
+CXX      = clang
 
 CPPFLAGS = 
 CFLAGS   = 
-CXXFLAGS = -std=c++20
+CXXFLAGS = -std=c++20 -O3 -fconstexpr-steps=1000000000 -lstdc++
 
 all: cohen_chess
 

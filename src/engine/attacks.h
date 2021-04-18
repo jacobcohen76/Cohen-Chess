@@ -8,47 +8,6 @@
 
 namespace cohen_chess
 {
-    namespace attacks
-    {
-        /**
-         * https://www.chessprogramming.org/Magic_Bitboards#Fancy
-         */
-        struct FancyMagic
-        {
-            Bitboard    mask;
-            Bitboard    magic;
-            Bitboard*   attacks;
-            uint32_t    shift;
-
-            size_t      index(Bitboard) const;
-            Bitboard    attackable(Bitboard) const;
-        };
-
-        extern Bitboard     kPawnAttackTable[kColorNB][kSquareNB];
-        extern Bitboard     kKnightAttackTable[kSquareNB];
-        extern Bitboard     kKingAttackTable[kSquareNB];
-        // extern Bitboard     kMagicBishopAttackTable[kSquareNB];
-        // extern Bitboard     kMagicRookAttackTable[kSquareNB];
-        extern FancyMagic   kBishopMagicTable[kSquareNB];
-        extern FancyMagic   kRookMagicTable[kSquareNB];
-
-        void InitPawnAttackTable(Bitboard[kColorNB][kSquareNB]);
-        void InitKnightAttackTable(Bitboard[kSquareNB]);
-        void InitKingAttackTable(Bitboard[kSquareNB]);
-        void InitBishopMagicTable(FancyMagic[kSquareNB], Bitboard[kSquareNB], Bitboard*);
-        void InitRookMagicTable(FancyMagic[kSquareNB], Bitboard[kSquareNB], Bitboard*);
-
-        inline size_t FancyMagic::index(Bitboard occ) const
-        {
-            return (occ & mask) * magic >> shift;
-        }
-
-        inline Bitboard FancyMagic::attackable(Bitboard occ) const
-        {
-            return attacks[index(occ)];
-        }
-    }
-
     constexpr Bitboard BishopMask(Square sq)
     {
         return (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq)) & ~SquareBB(sq)) & ~kEdgesBB;
@@ -59,85 +18,46 @@ namespace cohen_chess
         return ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
     }
 
-    constexpr Bitboard SetwisePawnAttacks(Color side, Bitboard pawn_set)
+    template <Color side>
+    constexpr Bitboard SetwisePawnAttacks(Bitboard pawns)
     {
-        if(side == kWhite)
-        {
-            return ShiftBB<kNorthEast>(pawn_set) | ShiftBB<kNorthWest>(pawn_set);
-        }
+        if constexpr (side == kWhite)
+            return ShiftBB<kNorthEast>(pawns) | ShiftBB<kNorthWest>(pawns);
         else
-        {
-            return ShiftBB<kSouthEast>(pawn_set) | ShiftBB<kSouthWest>(pawn_set);
-        }
+            return ShiftBB<kSouthEast>(pawns) | ShiftBB<kSouthWest>(pawns);
     }
 
-    constexpr Bitboard SetwiseKnightAttacks(Bitboard knight_set)
+    constexpr Bitboard SetwiseKnightAttacks(Bitboard knights)
     {
-        return ShiftBB<kNorthNorthEast>(knight_set) | ShiftBB<kEastEastNorth>(knight_set) |
-               ShiftBB<kNorthNorthWest>(knight_set) | ShiftBB<kEastEastSouth>(knight_set) |
-               ShiftBB<kSouthSouthEast>(knight_set) | ShiftBB<kWestWestNorth>(knight_set) |
-               ShiftBB<kSouthSouthWest>(knight_set) | ShiftBB<kWestWestSouth>(knight_set);
+        return ShiftBB<kNorthNorthEast>(knights) | ShiftBB<kEastEastNorth>(knights) |
+               ShiftBB<kNorthNorthWest>(knights) | ShiftBB<kEastEastSouth>(knights) |
+               ShiftBB<kSouthSouthEast>(knights) | ShiftBB<kWestWestNorth>(knights) |
+               ShiftBB<kSouthSouthWest>(knights) | ShiftBB<kWestWestSouth>(knights);
     }
 
-    constexpr Bitboard SetwiseKingAttacks(Bitboard king_set)
+    constexpr Bitboard SetwiseKingAttacks(Bitboard kings)
     {
-        Bitboard attacks = ShiftBB<kEast>(king_set) | ShiftBB<kWest>(king_set);
-        king_set |= attacks;
-        attacks  |= ShiftBB<kNorth>(king_set) | ShiftBB<kSouth>(king_set);
+        Bitboard attacks = ShiftBB<kEast>(kings) | ShiftBB<kWest>(kings);
+        kings   |= attacks;
+        attacks |= ShiftBB<kNorth>(kings) | ShiftBB<kSouth>(kings);
         return attacks;
     }
 
-    inline Bitboard IterativeBishopAttacks(Bitboard occ, Square sq)
+    constexpr Bitboard RayBishopAttacks(Bitboard occ, Square sq)
     {
-        Bitboard sq_bb = SquareBB(sq);
-        return  SetwiseRayBB<kNorthEast>(occ, sq_bb) |
-                SetwiseRayBB<kNorthWest>(occ, sq_bb) |
-                SetwiseRayBB<kSouthEast>(occ, sq_bb) |
-                SetwiseRayBB<kSouthWest>(occ, sq_bb);
+        return RayBB<kNorthEast>(occ, sq) | RayBB<kNorthWest>(occ, sq) |
+               RayBB<kSouthEast>(occ, sq) | RayBB<kSouthWest>(occ, sq);
     }
 
-    inline Bitboard IterativeRookAttacks(Bitboard occ, Square sq)
+    constexpr Bitboard RayRookAttacks(Bitboard occ, Square sq)
     {
-        Bitboard sq_bb = SquareBB(sq);
-        return  SetwiseRayBB<kNorth>(occ, sq_bb) |
-                SetwiseRayBB<kEast> (occ, sq_bb) |
-                SetwiseRayBB<kSouth>(occ, sq_bb) |
-                SetwiseRayBB<kWest> (occ, sq_bb);
+        return RayBB<kNorth>(occ, sq) | RayBB<kEast>(occ, sq) |
+               RayBB<kSouth>(occ, sq) | RayBB<kWest>(occ, sq);
     }
 
-    inline Bitboard IterativeQueenAttacks(Bitboard occ, Square sq)
+    constexpr Bitboard RayQueenAttacks(Bitboard occ, Square sq)
     {
-        return IterativeBishopAttacks(occ, sq) | IterativeRookAttacks(occ, sq);
-    }
-
-    inline Bitboard LookupPawnAttacks(Color c, Square sq)
-    {
-        return attacks::kPawnAttackTable[c][sq];
-    }
-
-    inline Bitboard LookupKnightAttacks(Square sq)
-    {
-        return attacks::kKnightAttackTable[sq];
-    }
-
-    inline Bitboard LookupKingAttacks(Square sq)
-    {
-        return attacks::kKingAttackTable[sq];
-    }
-
-    inline Bitboard MagicBishopAttacks(Bitboard occ, Square sq)
-    {
-        return attacks::kBishopMagicTable[sq].attackable(occ);
-    }
-
-    inline Bitboard MagicRookAttacks(Bitboard occ, Square sq)
-    {
-        return attacks::kRookMagicTable[sq].attackable(occ);
-    }
-
-    inline Bitboard MagicQueenAttacks(Bitboard occ, Square sq)
-    {
-        return MagicBishopAttacks(occ, sq) | MagicRookAttacks(occ, sq);    
+        return RayBishopAttacks(occ, sq) | RayRookAttacks(occ, sq);
     }
 }
 

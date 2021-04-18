@@ -94,12 +94,14 @@ namespace cohen_chess
 
     constexpr int8_t SquareRankDistance(Square sq1, Square sq2)
     {
-        return std::abs(RankOf(sq1) - RankOf(sq2));
+        auto dist = RankOf(sq1) - RankOf(sq2);
+        return (dist < 0) ? -dist : +dist;
     }
 
     constexpr int8_t SquareFileDistance(Square sq1, Square sq2)
     {
-        return std::abs(FileOf(sq1) - FileOf(sq2));
+        auto dist = FileOf(sq1) - FileOf(sq2);
+        return (dist < 0) ? -dist : +dist;
     }
 
     constexpr int8_t SquareManhattanDistance(Square sq1, Square sq2)
