@@ -9,7 +9,7 @@ void TestFancyBishopMagic()
     for (Square sq = kA1; sq < kSquareNB; ++sq)
     {
         std::cout << "Square " << CoordinateString(sq) << ":" << std::endl << std::endl;
-        Bitboard mask = BishopMask(sq);
+        Bitboard mask = MagicBishopMask(sq);
         Bitboard occ = kEmptyBB;
         do
         {
@@ -40,7 +40,7 @@ void TestFancyRookMagic()
     for (Square sq = kA1; sq < kSquareNB; ++sq)
     {
         std::cout << "Square " << CoordinateString(sq) << ":" << std::endl << std::endl;
-        Bitboard mask = BishopMask(sq);
+        Bitboard mask = MagicRookMask(sq);
         Bitboard occ = kEmptyBB;
         do
         {
@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
 {
     TestFancyBishopMagic();
     TestFancyRookMagic();
+    std::cout << "SUCCESS!!!" << std::endl;
 
 
 

@@ -51,9 +51,9 @@ Bitboard GenerateMagic(Magic m, size_t num_iterations, std::function<Bitboard()>
 size_t EvaluateBishopFancyMagic(Bitboard magic, Square sq)
 {
     FancyMagic fm;
-    fm.start    = 0;
+    fm.begin    = 0;
     fm.magic    = magic;
-    fm.mask     = BishopMask(sq);
+    fm.mask     = MagicBishopMask(sq);
     fm.shift    = kSquareNB - PopCount(fm.mask);
     auto attack_generator = [sq](Bitboard occ)
     {
@@ -65,8 +65,9 @@ size_t EvaluateBishopFancyMagic(Bitboard magic, Square sq)
 size_t EvaluateRookFancyMagic(Bitboard magic, Square sq)
 {
     FancyMagic fm;
+    fm.begin    = 0;
     fm.magic    = magic;
-    fm.mask     = RookMask(sq);
+    fm.mask     = MagicRookMask(sq);
     fm.shift    = kSquareNB - PopCount(fm.mask);
     auto attack_generator = [sq](Bitboard occ)
     {
@@ -78,7 +79,8 @@ size_t EvaluateRookFancyMagic(Bitboard magic, Square sq)
 Bitboard GenerateBishopFancyMagic(Square sq, size_t num_iterations, std::function<Bitboard()> randomizer)
 {
     FancyMagic fm;
-    fm.mask     = BishopMask(sq);
+    fm.begin    = 0;
+    fm.mask     = MagicBishopMask(sq);
     fm.shift    = kSquareNB - PopCount(fm.mask);
     auto attack_generator = [sq](Bitboard occ)
     {
@@ -90,7 +92,8 @@ Bitboard GenerateBishopFancyMagic(Square sq, size_t num_iterations, std::functio
 Bitboard GenerateRookFancyMagic(Square sq, size_t num_iterations, std::function<Bitboard()> randomizer)
 {
     FancyMagic fm;
-    fm.mask     = RookMask(sq);
+    fm.begin    = 0;
+    fm.mask     = MagicRookMask(sq);
     fm.shift    = kSquareNB - PopCount(fm.mask);
     auto attack_generator = [sq](Bitboard occ)
     {
@@ -104,21 +107,9 @@ int main(int argc, char* argv[])
     std::random_device rd;
     std::uniform_int_distribution<Bitboard> dist;
     auto rng = std::bind(dist, std::ref(rd));
-    // auto randomizer = [&]()
-    // {
-    //     Bitboard u1 = rng() & 0xFFFF;
-    //     Bitboard u2 = rng() & 0xFFFF;
-    //     Bitboard u3 = rng() & 0xFFFF;
-    //     Bitboard u4 = rng() & 0xFFFF;
-    //     return u1 | (u2 << 16) | (u3 << 32) | (u4 << 48);
-    // };
-    auto randomizer = []()
+    auto randomizer = [&]()
     {
-        Bitboard u1 = Bitboard(rand()) & 0xFFFF;
-        Bitboard u2 = Bitboard(rand()) & 0xFFFF;
-        Bitboard u3 = Bitboard(rand()) & 0xFFFF;
-        Bitboard u4 = Bitboard(rand()) & 0xFFFF;
-        return u1 | (u2 << 16) | (u3 << 32) | (u4 << 48);
+        return rng() & rng();
     };
 
     if (argc > 3)
@@ -137,33 +128,38 @@ int main(int argc, char* argv[])
             std::cout << "0x" << HexString(magic) << ", " << EvaluateRookFancyMagic(magic, sq) << std::endl;
         }
     }
-    else if (argc > 1)
+    else if (argc > 2)
     {
-        size_t num_iterations = std::stoull(argv[1]);
+        size_t num_iterations = std::stoull(argv[2]);
 
-        std::cout << "Bishop Fancy Magics:" << std::endl;
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        if (std::string(argv[1]) == "bishop")
         {
-            if (sq != kA1 && FileOf(sq) == kFileA)
+            std::cout << "Bishop Fancy Magics:" << std::endl;
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                std::cout << std::endl;
+                if (sq != kA1 && FileOf(sq) == kFileA)
+                {
+                    std::cout << std::endl;
+                }
+                Bitboard magic = GenerateBishopFancyMagic(sq, num_iterations, randomizer);
+                std::cout << "0x" << HexString(magic) << ", ";
             }
-            Bitboard magic = GenerateBishopFancyMagic(sq, num_iterations, randomizer);
-            std::cout << "0x" << HexString(magic) << ", ";
+            std::cout << std::endl << std::endl;
         }
-        std::cout << std::endl << std::endl;
-
-        std::cout << "Rook Fancy Magics:" << std::endl;
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        else if (std::string(argv[1]) == "rook")
         {
-            if (sq != kA1 && FileOf(sq) == kFileA)
+            std::cout << "Rook Fancy Magics:" << std::endl;
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                std::cout << std::endl;
+                if (sq != kA1 && FileOf(sq) == kFileA)
+                {
+                    std::cout << std::endl;
+                }
+                Bitboard magic = GenerateRookFancyMagic(sq, num_iterations, randomizer);
+                std::cout << "0x" << HexString(magic) << ", ";
             }
-            Bitboard magic = GenerateRookFancyMagic(sq, num_iterations, randomizer);
-            std::cout << "0x" << HexString(magic) << ", ";
+            std::cout << std::endl << std::endl;
         }
-        std::cout << std::endl << std::endl;
     }
     return 0;
 }
