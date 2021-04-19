@@ -102,7 +102,7 @@ namespace cohen_chess
     constexpr Bitboard ComputeRankBB(Rank rank)
     {
         constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
-        return kBitboardRank1 << rank;
+        return kBitboardRank1 << (rank << 3);
     }
 
     constexpr Bitboard LookupRankBB(Rank rank)

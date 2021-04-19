@@ -3,19 +3,29 @@ SHELL = /bin/sh
 SRC      = src
 BIN      = bin
 
-cc       = gcc-10
-CXX      = clang
+CC       = gcc-10
+CXX      = g++-10
+
+# c++ standard
+CXXSTD = -std=c++20
+
+# c++ optimizations
+CXXOPT = -Ofast
+
+# c++ verboisty
+CXXVRB = -Wall
 
 CPPFLAGS = 
 CFLAGS   = 
-CXXFLAGS = -std=c++20 -O3 -fconstexpr-steps=1000000000 -lstdc++
+CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB)
 
-all: cohen_chess
+# for clang
+# -fconstexpr-steps=1000000000 -lstdc++
 
-cohen_chess: main
+all: main
 
 main:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/main.cpp -o cohen_chess
 
 clean:
 	rm -rf $(BIN) *.o

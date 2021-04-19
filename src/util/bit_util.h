@@ -344,7 +344,7 @@ namespace cohen_chess
         size_t i = -1;
         while (raw_bits)
         {
-            hex_string[no_digits - ++i - 1] = HexCharacter<lowercase>(raw_bits & 0xF);
+            hex_string[no_digits - ++i - 1] = HexCharacter<T, lowercase>(raw_bits & 0xF);
             raw_bits = (raw_bits & ~0xF) >> 4;
         }
         return hex_string;
