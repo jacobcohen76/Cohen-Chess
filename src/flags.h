@@ -1,6 +1,0 @@
-#ifndef COHEN_CHESS_FLAGS_H_INCLUDED
-#define COHEN_CHESS_FLAGS_H_INCLUDED
-
-#define NDEBUG
-
-#endif

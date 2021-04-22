@@ -1,4 +1,4 @@
-SHELL = /bin/sh
+SHELL    = /bin/sh
 
 SRC      = src
 BIN      = bin
@@ -17,15 +17,18 @@ CXXVRB = -Wall
 
 CPPFLAGS = 
 CFLAGS   = 
-CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB)
+CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB) -lstdc++
 
-# for clang
-# -fconstexpr-steps=1000000000 -lstdc++
+all: cohen_chess magic_generator magic_evaluator
 
-all: main
+cohen_chess:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
-main:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/main.cpp -o cohen_chess
+magic_generator:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
+
+magic_evaluator:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 clean:
 	rm -rf $(BIN) *.o
