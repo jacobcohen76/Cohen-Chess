@@ -36,22 +36,22 @@ namespace cohen_chess
 
     constexpr Piece MakePiece(Color side, PieceType type)
     {
-        return Piece((uint8_t(side) << 3) | uint8_t(type));
+        return (side << 3) | type;
     }
 
     constexpr PieceType PieceTypeOf(Piece pc)
     {
-        return PieceType(pc & kPieceTypeAll);
+        return pc & kPieceTypeAll;
     }
 
     constexpr Piece FlipPieceColor(Piece pc)
     {
-        return Piece(pc ^ kOccupancy);
+        return pc ^ kOccupancy;
     }
 
     constexpr Piece PieceAllColor(Piece pc)
     {
-        return Piece(pc | kPieceTypeAll);
+        return pc | kPieceTypeAll;
     }
 }
 

@@ -20,7 +20,6 @@ auto randomizer = []()
     return random_device_uniform_int() & random_device_uniform_int();
 };
 
-template <typename Magic>
 Bitboard GenerateMagic(Magic m, std::function<Bitboard(Bitboard)> attack_generator, size_t num_iterations)
 {
     static Bitboard attack_table[8196] = {};
@@ -50,7 +49,6 @@ Bitboard GenerateMagic(Magic m, std::function<Bitboard(Bitboard)> attack_generat
     return best_magic;
 }
 
-template <typename Magic>
 Bitboard GenerateMagic(Magic m, std::function<Bitboard(Bitboard)> attack_generator)
 {
     static Bitboard attack_table[8196] = {};
@@ -83,133 +81,73 @@ Bitboard GenerateMagic(Magic m, std::function<Bitboard(Bitboard)> attack_generat
 }
 
 template <PieceType pc_type>
-Bitboard GenerateFancyMagic(Square sq)
+Bitboard GenerateMagic(Square sq)
 {
     static_assert(pc_type == kBishop || pc_type == kRook);
     if constexpr (pc_type == kBishop)
     {
-        FancyMagic fm;
-        fm.begin    = 0;
-        fm.magic    = kEmptyBB;
-        fm.mask     = MagicBishopMask(sq);
-        fm.shift    = kSquareNB - PopCount(fm.mask);
+        Magic m;
+        m.begin     = 0;
+        m.magic     = kEmptyBB;
+        m.mask      = MagicBishopMask(sq);
+        m.shift     = kSquareNB - PopCount(fm.mask);
         auto attack_generator = [&](Bitboard occ)
         {
             return FancyMagicBishopAttacks(occ, sq);
         };
-        return GenerateMagic(fm, attack_generator);
+        return GenerateMagic(m, attack_generator);
     }
     else
     {
-        FancyMagic fm;
-        fm.begin    = 0;
-        fm.magic    = kEmptyBB;
-        fm.mask     = MagicRookMask(sq);
-        fm.shift    = kSquareNB - PopCount(fm.mask);
+        Magic m;
+        m.begin     = 0;
+        m.magic     = kEmptyBB;
+        m.mask      = MagicRookMask(sq);
+        m.shift     = kSquareNB - PopCount(fm.mask);
         auto attack_generator = [&](Bitboard occ)
         {
             return FancyMagicRookAttacks(occ, sq);
         };
-        return GenerateMagic(fm, attack_generator);
+        return GenerateMagic(m, attack_generator);
     }
 }
 
 template <PieceType pc_type>
-Bitboard GenerateFancyMagic(Square sq, size_t num_iterations)
+Bitboard GenerateMagic(Square sq, size_t num_iterations)
 {
     static_assert(pc_type == kBishop || pc_type == kRook);
     if constexpr (pc_type == kBishop)
     {
-        FancyMagic fm;
-        fm.begin    = 0;
-        fm.magic    = kEmptyBB;
-        fm.mask     = MagicBishopMask(sq);
-        fm.shift    = kSquareNB - PopCount(fm.mask);
+        Magic m;
+        m.begin     = 0;
+        m.magic     = kEmptyBB;
+        m.mask      = MagicBishopMask(sq);
+        m.shift     = kSquareNB - PopCount(fm.mask);
         auto attack_generator = [&](Bitboard occ)
         {
             return FancyMagicBishopAttacks(occ, sq);
         };
-        return GenerateMagic(fm, attack_generator, num_iterations);
+        return GenerateMagic(m, attack_generator, num_iterations);
     }
     else
     {
-        FancyMagic fm;
-        fm.begin    = 0;
-        fm.magic    = kEmptyBB;
-        fm.mask     = MagicRookMask(sq);
-        fm.shift    = kSquareNB - PopCount(fm.mask);
+        Magic m;
+        m.begin     = 0;
+        m.magic     = kEmptyBB;
+        m.mask      = MagicRookMask(sq);
+        m.shift     = kSquareNB - PopCount(fm.mask);
         auto attack_generator = [&](Bitboard occ)
         {
             return FancyMagicRookAttacks(occ, sq);
         };
-        return GenerateMagic(fm, attack_generator, num_iterations);
-    }
-}
-
-template <PieceType pc_type>
-Bitboard GenerateBlackMagic(Square sq)
-{
-    static_assert(pc_type == kBishop || pc_type == kRook);
-    if constexpr (pc_type == kBishop)
-    {
-        BlackMagic bm;
-        bm.begin    = 0;
-        bm.magic    = kEmptyBB;
-        bm.mask     = MagicBishopMask(sq);
-        auto attack_generator = [&](Bitboard occ)
-        {
-            return FancyMagicBishopAttacks(occ, sq);
-        };
-        return GenerateMagic(bm, attack_generator);
-    }
-    else
-    {
-        BlackMagic bm;
-        bm.begin    = 0;
-        bm.magic    = kEmptyBB;
-        bm.mask     = MagicRookMask(sq);
-        auto attack_generator = [&](Bitboard occ)
-        {
-            return FancyMagicRookAttacks(occ, sq);
-        };
-        return GenerateMagic(bm, attack_generator);
-    }
-}
-
-template <PieceType pc_type>
-Bitboard GenerateBlackMagic(Square sq, size_t num_iterations)
-{
-    static_assert(pc_type == kBishop || pc_type == kRook);
-    if constexpr (pc_type == kBishop)
-    {
-        BlackMagic bm;
-        bm.begin    = 0;
-        bm.magic    = kEmptyBB;
-        bm.mask     = MagicBishopMask(sq);
-        auto attack_generator = [&](Bitboard occ)
-        {
-            return FancyMagicBishopAttacks(occ, sq);
-        };
-        return GenerateMagic(bm, attack_generator, num_iterations);
-    }
-    else
-    {
-        BlackMagic bm;
-        bm.begin    = 0;
-        bm.magic    = kEmptyBB;
-        bm.mask     = MagicRookMask(sq);
-        auto attack_generator = [&](Bitboard occ)
-        {
-            return FancyMagicRookAttacks(occ, sq);
-        };
-        return GenerateMagic(bm, attack_generator, num_iterations);
+        return GenerateMagic(m, attack_generator, num_iterations);
     }
 }
 
 int main(int argc, char* argv[])
 {
     std::cout << "Hello World!" << std::endl;
-    Bitboard magic = GenerateBlackMagic<kBishop>(kA1, 1000000);
+    Bitboard magic = GenerateMagic<kBishop>(kA1, 1000000);
     std::cout << "0x" << HexString(magic) << std::endl;
     return 0;
 }

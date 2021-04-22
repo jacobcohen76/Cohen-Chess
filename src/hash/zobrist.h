@@ -16,70 +16,73 @@ namespace cohen_chess
 {
     static constexpr auto kZobristRandomizer = LinearCongruentialGenerator();
 
-    constexpr Key ZobristKey(Piece pc, Square sq)
+    constexpr std::array<std::array<Key, kSquareNB>, kPieceNB> kZobristPieceSquareKeys = [](auto randomizer)
     {
-        constexpr std::array<std::array<Key, kSquareNB>, kPieceNB> kPieceSquareKeys = [](auto randomizer)
+        std::array<std::array<Key, kSquareNB>, kPieceNB> piece_square_keys = {};
+        for (Piece pc = kWhitePawn; pc <= kWhiteKing; ++pc)
         {
-            std::array<std::array<Key, kSquareNB>, kPieceNB> piece_square_keys = {};
-            for (Piece pc = kWhitePawn; pc <= kWhiteKing; ++pc)
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                for (Square sq = kA1; sq < kSquareNB; ++sq)
-                {
-                    piece_square_keys[pc][sq] = randomizer();
-                }
+                piece_square_keys[pc][sq] = randomizer();
             }
-            for (Piece pc = kBlackPawn; pc <= kBlackKing; ++pc)
+        }
+        for (Piece pc = kBlackPawn; pc <= kBlackKing; ++pc)
+        {
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
             {
-                for (Square sq = kA1; sq < kSquareNB; ++sq)
-                {
-                    piece_square_keys[pc][sq] = randomizer();
-                }
+                piece_square_keys[pc][sq] = randomizer();
             }
-            return piece_square_keys;
-        }(kZobristRandomizer);
-        return kPieceSquareKeys[pc][sq];
+        }
+        return piece_square_keys;
+    }(kZobristRandomizer);
+
+    constexpr Key ZobristPieceSquareKey(Piece pc, Square sq)
+    {
+        return kZobristPieceSquareKeys[pc][sq];
     }
 
-    constexpr Key ZobristKey(CastlingRights cr)
+    constexpr std::array<Key, kCastlingNB> kZobristCastlingKeys = [](auto randomizer)
     {
-        constexpr std::array<Key, kCastlingNB> kCastlingKeys = [](auto randomizer)
+        std::array<Key, kCastlingNB> castling_keys = {};
+        castling_keys[kWhiteOO]  = randomizer();
+        castling_keys[kWhiteOOO] = randomizer();
+        castling_keys[kBlackOO]  = randomizer();
+        castling_keys[kBlackOOO] = randomizer();
+        for (CastlingRights cr = kCastlingNone; cr < kCastlingNB; ++cr)
         {
-            std::array<Key, kCastlingNB> castling_keys = {};
-            castling_keys[kWhiteOO]  = randomizer();
-            castling_keys[kWhiteOOO] = randomizer();
-            castling_keys[kBlackOO]  = randomizer();
-            castling_keys[kBlackOOO] = randomizer();
-            for (CastlingRights cr = kCastlingNone; cr < kCastlingNB; ++cr)
+            if (FlipLSB(cr))
             {
-                if (FlipLSB(cr))
-                {
-                    if (cr & kWhiteOO)
-                        castling_keys[cr] ^= castling_keys[kWhiteOO];
-                    if (cr & kWhiteOOO)
-                        castling_keys[cr] ^= castling_keys[kWhiteOOO];
-                    if (cr & kBlackOO)
-                        castling_keys[cr] ^= castling_keys[kBlackOO];
-                    if (cr & kBlackOOO)
-                        castling_keys[cr] ^= castling_keys[kBlackOOO];
-                }
+                if (cr & kWhiteOO)
+                    castling_keys[cr] ^= castling_keys[kWhiteOO];
+                if (cr & kWhiteOOO)
+                    castling_keys[cr] ^= castling_keys[kWhiteOOO];
+                if (cr & kBlackOO)
+                    castling_keys[cr] ^= castling_keys[kBlackOO];
+                if (cr & kBlackOOO)
+                    castling_keys[cr] ^= castling_keys[kBlackOOO];
             }
-            return castling_keys;
-        }(kZobristRandomizer);
-        return kCastlingKeys[cr];
+        }
+        return castling_keys;
+    }(kZobristRandomizer);
+
+    constexpr Key ZobristCastlingKey(CastlingRights cr)
+    {
+        return kZobristCastlingKeys[cr];
     }
 
-    constexpr Key ZobristKey(File file)
+    constexpr std::array<Key, kFileNB> kZobristEnPassantFileKeys = [](auto randomizer)
     {
-        constexpr std::array<Key, kFileNB> kEnPassantFileKeys = [](auto randomizer)
+        std::array<Key, kFileNB> en_passant_file_keys = {};
+        for (File file = kFileA; file < kFileNB; ++file)
         {
-            std::array<Key, kFileNB> en_passant_file_keys = {};
-            for (File file = kFileA; file < kFileNB; ++file)
-            {
-                en_passant_file_keys[file] = randomizer();
-            }
-            return en_passant_file_keys;
-        }(kZobristRandomizer);
-        return kEnPassantFileKeys[file];
+            en_passant_file_keys[file] = randomizer();
+        }
+        return en_passant_file_keys;
+    }(kZobristRandomizer);
+
+    constexpr Key ZobristEnPassantKey(File file)
+    {
+        return kZobristEnPassantFileKeys[file];
     }
 
     // constexpr Key ZobristKey(Color color)

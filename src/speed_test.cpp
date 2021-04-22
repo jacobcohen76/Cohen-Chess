@@ -29,20 +29,20 @@ void LongProcess()
 
 int main(int argc, char* argv[])
 {
-    size_t num_iterations = 1000000000;
+    size_t num_iterations = 10000000000;
 
     auto random_bb = []()
     {
         static auto rd = std::default_random_engine();
         static auto dist = std::uniform_int_distribution<Bitboard>();
-        return dist(rd);
+        return Bitboard(rand());
     };
 
     auto random_sq = []()
     {
         static auto rd = std::default_random_engine();
         static auto dist = std::uniform_int_distribution<Square>(0, 63);
-        return dist(rd);
+        return Square(rand() & 0x3F);
     };
 
     auto repeat_process = [&](std::function<Bitboard(Bitboard, Square)> process)
@@ -59,29 +59,10 @@ int main(int argc, char* argv[])
     auto begin = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < num_iterations; ++i)
     {
-        MagicBishopAttacks(0, 0);
-    }
-    auto cease = std::chrono::high_resolution_clock::now();
-    duration = cease - begin;
-    std::cout << duration.count() << "s" << std::endl;
-
-
-    begin = std::chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < num_iterations; ++i)
-    {
-        int x = 3;
-    }
-    cease = std::chrono::high_resolution_clock::now();
-    duration = cease - begin;
-    std::cout << duration.count() << "s" << std::endl;
-
-    begin = std::chrono::high_resolution_clock::now();
-    for (size_t i = 0; i < num_iterations; ++i)
-    {
         random_bb();
         random_sq();
     }
-    cease = std::chrono::high_resolution_clock::now();
+    auto cease = std::chrono::high_resolution_clock::now();
     duration = cease - begin;
     std::cout << duration.count() << "s" << std::endl;
 

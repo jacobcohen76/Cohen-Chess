@@ -27,9 +27,9 @@ namespace cohen_chess
         kAntiNB = 15,
     };
 
-    constexpr Anti MirroAnti(Anti a)
+    constexpr Anti MirroAnti(Anti anti)
     {
-        return Anti(kAntiF - a);
+        return kAntiF - anti;
     }
 }
 

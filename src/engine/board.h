@@ -2,141 +2,92 @@
 #define COHEN_CHESS_ENGINE_BOARD_H_INCLUDED
 
 #include "../hash/zobrist.h"
+
 #include "../types/bitboard.h"
-#include "../types/color.h"
-#include "../types/direction.h"
 #include "../types/key.h"
-#include "../types/move_type.h"
 #include "../types/move.h"
 #include "../types/piece.h"
-#include "../types/square.h"
-#include "../util/string_util.h"
-#include "state_info.h"
-
-#include <cstdint>
-#include <string>
 
 namespace cohen_chess
 {
-    struct Board
+    struct StateInfo
     {
-        Board();
-
-        void        put(Piece, Square);
-        void        remove(Piece, Square);
-        void        move(Square, Square);
-        void        move(Piece, Square, Square);
-
-        void        make(Move);
-        void        unmake(Move, StateInfo&);
-
-        Piece       on(Square) const;
-        Piece       capture(Square);
-
-        Bitboard    bitset(Piece) const;
-
-        Bitboard    piece_bitboards[kPieceNB];
-        Piece       piece_on_square[kSquareNB];
-        StateInfo   info;
-        Color       side;
+        Key             key, pawn_key;
+        uint16_t        halfmove_clock;
+        Piece           captured;
+        bool            check;
     };
 
-    inline Board::Board() : piece_bitboards(), piece_on_square(), info(), side()
+    struct Board
     {
-        
-    }
+        Bitboard        bitboard[kPieceNB];
+        Piece           piece[kSquareNB];
+        StateInfo       info;
 
-    inline void Board::put(Piece pc, Square sq)
+        constexpr void put(Piece, Square);
+        constexpr void remove(Piece, Square);
+        constexpr void move(Square, Square);
+
+        constexpr Piece on(Square) const;
+        constexpr Piece capture(Square);
+
+        constexpr void make(Move);
+        constexpr void unmake(Move, const StateInfo&);
+    };
+
+    constexpr void Board::put(Piece pc, Square sq)
     {
-        Bitboard sq_bb = SquareBB(sq);
-        piece_bitboards[pc] |= sq_bb;
-        piece_bitboards[PieceAllColor(pc)] |= sq_bb;
-        piece_bitboards[kOccupancy] |= sq_bb;
-        piece_on_square[sq] = pc;
-        info.zkey ^= ZobristKey(pc, sq);
-        if(PieceTypeOf(pc) == kPawn)
+        bitboard[pc] |= SquareBB(sq);
+        bitboard[PieceAllColor(pc)] |= SquareBB(sq);
+        bitboard[kOccupancy] |= SquareBB(sq);
+        piece[sq] = pc;
+        info.key ^= ZobristPieceSquareKey(pc, sq);
+        if (PieceTypeOf(pc) == kPawn)
         {
-            info.pawn_key ^= ZobristKey(pc, sq);
+            info.pawn_key ^= ZobristPieceSquareKey(pc, sq);
         }
     }
 
-    inline void Board::remove(Piece pc, Square sq)
+    constexpr void Board::remove(Piece pc, Square sq)
     {
-        Bitboard not_sq_bb = ~SquareBB(sq);
-        piece_bitboards[pc] &= not_sq_bb;
-        piece_bitboards[PieceAllColor(pc)] &= not_sq_bb;
-        piece_bitboards[kOccupancy] &= not_sq_bb;
-        piece_on_square[sq] = kPieceNone;
-        info.zkey ^= ZobristKey(pc, sq);
-        if(PieceTypeOf(pc) == kPawn)
+        bitboard[pc] &= ~SquareBB(sq);
+        bitboard[PieceAllColor(pc)] &= ~SquareBB(sq);
+        bitboard[kOccupancy] &= ~SquareBB(sq);
+        piece[sq] = kPieceNone;
+        info.key ^= ZobristPieceSquareKey(pc, sq);
+        if (PieceTypeOf(pc) == kPawn)
         {
-            info.pawn_key ^= ZobristKey(pc, sq);
+            info.pawn_key ^= ZobristPieceSquareKey(pc, sq);
         }
     }
 
-    inline void Board::move(Square from, Square to)
+    constexpr void Board::move(Square from, Square to)
     {
         put(capture(from), to);
     }
 
-    inline void Board::move(Piece pc, Square from, Square to)
+    constexpr Piece Board::on(Square sq) const
     {
-        remove(pc, from);
-        put(pc, to);
+        return piece[sq];
     }
 
-    inline void Board::make(Move move)
+    constexpr Piece Board::capture(Square sq)
     {
-        //if moving from or to a1 flip WhiteOO
-        //if moving from or to h1 flip WhiteOOO
-        //if moving from or to a8 flip BlackOO
-        //if moving from or to h8 flip BlackOOO
-        //if moving King remove the current sides castling rights
-        // MoveType mv_type = MoveTypeOf(move);
-        // Square from = FromSquare(move), to = ToSquare(move);
-        // Piece on_from = on(from), on_to = on(to);
-        // if(PieceTypeOf(on_from) == kPawn)
-        // {
-        //     if(to - from == 2 * kNorth || to - from == 2 * kSouth)
-        //     {
-        //         info.ep_target = to + (side ? kNorth : kSouth);
-        //     }
-        //     else
-        //     {
-        //         if(mv_type == kEnPassant)
-        //         {
-        //             info.captured = this->capture(info.ep_target);
-        //         }
-        //         else if(mv_type == kPromotion)
-        //         {
-        //             put(MakePiece(side, PromotedTo(move)), to);
-        //         }
-        //         info.ep_target = kSquareNone;
-        //     }
-        //     info.halfmove_clock = 0;
-        // }
-        // else
-        // {
-        //     info.ep_target = kSquareNone;
-        // }
-        // this->move(on_from, from, to);
-    }
-
-    inline Piece Board::on(Square sq) const
-    {
-        return piece_on_square[sq];
-    }
-
-    inline Piece Board::capture(Square sq)
-    {
-        Piece pc = piece_on_square[sq];
+        Piece pc = piece[sq];
         remove(pc, sq);
         return pc;
     }
 
-    inline Bitboard Board::bitset(Piece pc) const
+    constexpr void Board::make(Move move)
     {
-        return piece_bitboards[pc];
+
+    }
+
+    constexpr void Board::unmake(Move move, const StateInfo& prev)
+    {
+        
+
+        info = prev;        
     }
 }
 

@@ -29,82 +29,82 @@ namespace cohen_chess
 
     constexpr Square MakeSquare(Rank r, File f)
     {
-        return Square((r << 3) | f);
+        return (r << 3) | f;
     }
 
     constexpr Rank RankOf(Square sq)
     {
-        return Rank(sq >> 3);
+        return sq >> 3;
     }
 
     constexpr File FileOf(Square sq)
     {
-        return File(sq & kH1);
+        return sq & kH1;
     }
 
     constexpr Diag DiagOf(Square sq)
     {
-        return Diag(RankOf(sq) - FileOf(sq) + kDiag8);
+        return RankOf(sq) - FileOf(sq) + kDiag8;
     }
 
     constexpr Anti AntiOf(Square sq)
     {
-        return Anti(RankOf(sq) + FileOf(sq));
+        return RankOf(sq) + FileOf(sq);
     }
 
     constexpr Square MirrorSquareRank(Square sq)
     {
-        return Square(sq ^ kA8);
+        return sq ^ kA8;
     }
 
     constexpr Square MirrorSquareFile(Square sq)
     {
-        return Square(sq ^ kH1);
+        return sq ^ kH1;
     }
 
     constexpr Square MirrorSquareDiag(Square sq)
     {
-        return Square(((sq << 3) | (sq >> 3)) & kH8);
+        return ((sq << 3) | (sq >> 3)) & kH8;
     }
 
     constexpr Square MirrorSquareAnti(Square sq)
     {
-        return Square(MirrorSquareDiag(sq) ^ kH8);
+        return MirrorSquareDiag(sq) ^ kH8;
     }
 
     constexpr Square MirrorSquareRankFile(Square sq)
     {
-        return Square(sq ^ kH8);
+        return sq ^ kH8;
     }
 
     constexpr Square RelativeSquare(Color side, Square sq)
     {
-        return Square(sq ^ (side * kH8));
+        return sq ^ (side * kH8);
     }
 
     constexpr Square RelativeSquareRank(Color side, Square sq)
     {
-        return Square(sq ^ (side * kA8));
+        return sq ^ (side * kA8);
     }
 
     constexpr Square RelativeSquareFile(Color side, Square sq)
     {
-        return Square(sq ^ (side * kH1));
+        return sq ^ (side * kH1);
     }
 
-    constexpr int8_t SquareRankDistance(Square sq1, Square sq2)
+    constexpr int SquareRankDistance(Square sq1, Square sq2)
     {
         auto dist = RankOf(sq1) - RankOf(sq2);
         return (dist < 0) ? -dist : +dist;
     }
 
-    constexpr int8_t SquareFileDistance(Square sq1, Square sq2)
+    constexpr int SquareFileDistance(Square sq1, Square sq2)
     {
         auto dist = FileOf(sq1) - FileOf(sq2);
         return (dist < 0) ? -dist : +dist;
     }
 
-    constexpr int8_t SquareManhattanDistance(Square sq1, Square sq2)
+    constexpr int SquareManhattanDistance(Square sq1, Square sq2)
     {
         return SquareRankDistance(sq1, sq2) + SquareFileDistance(sq1, sq2);
     }

@@ -27,9 +27,9 @@ namespace cohen_chess
         kDiagNB = 15,
     };
 
-    constexpr Diag MirrorDiag(Diag d)
+    constexpr Diag MirrorDiag(Diag diag)
     {
-        return Diag(kDiagF - d);
+        return kDiagF - diag;
     }
 }
 

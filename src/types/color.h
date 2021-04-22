@@ -14,9 +14,9 @@ namespace cohen_chess
         kColorNB = 2,
     };
 
-    constexpr Color FlipColor(Color c)
+    constexpr Color FlipColor(Color color)
     {
-        return !c;
+        return !color;
     }
 }
 
