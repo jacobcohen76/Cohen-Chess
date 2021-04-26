@@ -1,6 +1,8 @@
 #ifndef COHEN_CHESS_TYPES_ANTI_H_INCLUDED
 #define COHEN_CHESS_TYPES_ANTI_H_INCLUDED
 
+#include "color.h"
+
 #include <cstdint>
 
 namespace cohen_chess
@@ -30,6 +32,11 @@ namespace cohen_chess
     constexpr Anti MirroAnti(Anti anti)
     {
         return kAntiF - anti;
+    }
+
+    constexpr Anti RelativeAnti(Anti anti, Color side)
+    {
+        return side ? anti : MirroAnti(anti);
     }
 }
 

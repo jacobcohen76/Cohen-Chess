@@ -27,9 +27,9 @@ namespace cohen_chess
         kSquareNB   = 64,
     };
 
-    constexpr Square MakeSquare(Rank r, File f)
+    constexpr Square MakeSquare(Rank rank, File file)
     {
-        return (r << 3) | f;
+        return (rank << 3) | file;
     }
 
     constexpr Rank RankOf(Square sq)
@@ -77,17 +77,17 @@ namespace cohen_chess
         return sq ^ kH8;
     }
 
-    constexpr Square RelativeSquare(Color side, Square sq)
+    constexpr Square RelativeSquare(Square sq, Color side)
     {
         return sq ^ (side * kH8);
     }
 
-    constexpr Square RelativeSquareRank(Color side, Square sq)
+    constexpr Square RelativeSquareRank(Square sq, Color side)
     {
         return sq ^ (side * kA8);
     }
 
-    constexpr Square RelativeSquareFile(Color side, Square sq)
+    constexpr Square RelativeSquareFile(Square sq, Color side)
     {
         return sq ^ (side * kH1);
     }

@@ -90,10 +90,10 @@ Bitboard GenerateMagic(Square sq)
         m.begin     = 0;
         m.magic     = kEmptyBB;
         m.mask      = MagicBishopMask(sq);
-        m.shift     = kSquareNB - PopCount(fm.mask);
+        m.shift     = kSquareNB - PopCount(m.mask);
         auto attack_generator = [&](Bitboard occ)
         {
-            return FancyMagicBishopAttacks(occ, sq);
+            return MagicBishopAttacks(occ, sq);
         };
         return GenerateMagic(m, attack_generator);
     }
@@ -103,10 +103,10 @@ Bitboard GenerateMagic(Square sq)
         m.begin     = 0;
         m.magic     = kEmptyBB;
         m.mask      = MagicRookMask(sq);
-        m.shift     = kSquareNB - PopCount(fm.mask);
+        m.shift     = kSquareNB - PopCount(m.mask);
         auto attack_generator = [&](Bitboard occ)
         {
-            return FancyMagicRookAttacks(occ, sq);
+            return MagicRookAttacks(occ, sq);
         };
         return GenerateMagic(m, attack_generator);
     }
@@ -122,10 +122,10 @@ Bitboard GenerateMagic(Square sq, size_t num_iterations)
         m.begin     = 0;
         m.magic     = kEmptyBB;
         m.mask      = MagicBishopMask(sq);
-        m.shift     = kSquareNB - PopCount(fm.mask);
+        m.shift     = kSquareNB - PopCount(m.mask);
         auto attack_generator = [&](Bitboard occ)
         {
-            return FancyMagicBishopAttacks(occ, sq);
+            return MagicBishopAttacks(occ, sq);
         };
         return GenerateMagic(m, attack_generator, num_iterations);
     }
@@ -135,10 +135,10 @@ Bitboard GenerateMagic(Square sq, size_t num_iterations)
         m.begin     = 0;
         m.magic     = kEmptyBB;
         m.mask      = MagicRookMask(sq);
-        m.shift     = kSquareNB - PopCount(fm.mask);
+        m.shift     = kSquareNB - PopCount(m.mask);
         auto attack_generator = [&](Bitboard occ)
         {
-            return FancyMagicRookAttacks(occ, sq);
+            return MagicRookAttacks(occ, sq);
         };
         return GenerateMagic(m, attack_generator, num_iterations);
     }

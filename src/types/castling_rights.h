@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPES_CASTLING_RIGHTS_H_INCLUDED
 #define COHEN_CHESS_TYPES_CASTLING_RIGHTS_H_INCLUDED
 
+#include "color.h"
 #include "square.h"
 
 #include <cstdint>
@@ -27,6 +28,21 @@ namespace cohen_chess
 
         kCastlingNB     = 16,
     };
+
+    constexpr CastlingRights CastlingRightsSide(Color side)
+    {
+        return kCastlingWhite << (side << 1);
+    }
+
+    constexpr CastlingRights CastlingRightsQueenSide(Color side)
+    {
+        return kWhiteOO << (side << 1);
+    }
+
+    constexpr CastlingRights CastlingRightsKingSide(Color side)
+    {
+        return kWhiteOOO << (side << 1);
+    }
 }
 
 #endif

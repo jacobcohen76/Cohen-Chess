@@ -14,8 +14,6 @@
 
 namespace cohen_chess
 {
-    static constexpr auto kZobristRandomizer = LinearCongruentialGenerator();
-
     constexpr std::array<std::array<Key, kSquareNB>, kPieceNB> kZobristPieceSquareKeys = [](auto randomizer)
     {
         std::array<std::array<Key, kSquareNB>, kPieceNB> piece_square_keys = {};
@@ -34,7 +32,7 @@ namespace cohen_chess
             }
         }
         return piece_square_keys;
-    }(kZobristRandomizer);
+    }(LinearCongruentialGenerator(0xF5586876FC706684));
 
     constexpr Key ZobristPieceSquareKey(Piece pc, Square sq)
     {
@@ -63,36 +61,34 @@ namespace cohen_chess
             }
         }
         return castling_keys;
-    }(kZobristRandomizer);
+    }(LinearCongruentialGenerator(0xA7D1552684A6FC08));
 
     constexpr Key ZobristCastlingKey(CastlingRights cr)
     {
         return kZobristCastlingKeys[cr];
     }
 
-    constexpr std::array<Key, kFileNB> kZobristEnPassantFileKeys = [](auto randomizer)
+    constexpr std::array<Key, kFileNB + 1> kZobristEnPassantFileKeys = [](auto randomizer)
     {
-        std::array<Key, kFileNB> en_passant_file_keys = {};
+        std::array<Key, kFileNB + 1> en_passant_file_keys = {};
         for (File file = kFileA; file < kFileNB; ++file)
         {
             en_passant_file_keys[file] = randomizer();
         }
         return en_passant_file_keys;
-    }(kZobristRandomizer);
+    }(LinearCongruentialGenerator(0x9F0471D8CD082F7B));
 
     constexpr Key ZobristEnPassantKey(File file)
     {
         return kZobristEnPassantFileKeys[file];
     }
 
-    // constexpr Key ZobristKey(Color color)
-    // {
-    //     constexpr Key kBlackKey = [](auto randomizer)
-    //     {
-    //         return randomizer();
-    //     }(kZobristRandomizer);
-    //     return color * kBlackKey;
-    // }
+    constexpr Key kZobristBlackKey = 0x9634520BD3C345BA;
+
+    constexpr Key ZobristColorKey()
+    {
+        return kZobristBlackKey;
+    }
 }
 
 #endif

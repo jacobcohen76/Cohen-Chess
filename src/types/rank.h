@@ -22,14 +22,14 @@ namespace cohen_chess
         kRankNB = 8,
     };
 
-    constexpr Rank MirrorRank(Rank r)
+    constexpr Rank MirrorRank(Rank rank)
     {
-        return Rank(r ^ kRank8);
+        return rank ^ kRank8;
     }
 
-    constexpr Rank RelativeRank(Color side, Rank r)
+    constexpr Rank RelativeRank(Rank rank, Color side)
     {
-        return Rank(r ^ (side * kRank8));
+        return rank ^ (side * kRank8);
     }
 }
 

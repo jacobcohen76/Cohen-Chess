@@ -34,9 +34,9 @@ namespace cohen_chess
         kPieceNB     = 16,
     };
 
-    constexpr Piece MakePiece(Color side, PieceType type)
+    constexpr Piece MakePiece(PieceType type, Color side)
     {
-        return (side << 3) | type;
+        return type | (side << 3);
     }
 
     constexpr PieceType PieceTypeOf(Piece pc)

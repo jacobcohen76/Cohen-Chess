@@ -51,9 +51,9 @@ namespace cohen_chess
                SquareManhattanDistance(sq, sq + step) == Magnitude(step);
     }
 
-    constexpr std::array<std::array<Direction, kSquareNB>, kSquareNB> kRayBetweenTable = []
+    constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kRayBetweenTable = []
     {
-        std::array<std::array<Direction, kSquareNB>, kSquareNB> ray_between_table = {};
+        std::array<std::array<int8_t, kSquareNB>, kSquareNB> ray_between_table = {};
         for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
         {
             for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)

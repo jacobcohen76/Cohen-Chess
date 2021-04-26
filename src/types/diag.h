@@ -1,6 +1,8 @@
 #ifndef COHEN_CHESS_TYPES_DIAG_H_INCLUDED
 #define COHEN_CHESS_TYPES_DIAG_H_INCLUDED
 
+#include "color.h"
+
 #include <cstdint>
 
 namespace cohen_chess
@@ -30,6 +32,11 @@ namespace cohen_chess
     constexpr Diag MirrorDiag(Diag diag)
     {
         return kDiagF - diag;
+    }
+
+    constexpr Diag RelativeDiag(Diag diag, Color side)
+    {
+        return side ? diag : MirrorDiag(diag);
     }
 }
 

@@ -56,5 +56,6 @@
         "concepts": "cpp",
         "set": "cpp"
     },
-    "C_Cpp.intelliSenseEngineFallback": "Disabled"
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "python.pythonPath": "/usr/bin/python3.9"
 }
