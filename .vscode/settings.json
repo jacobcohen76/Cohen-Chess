@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "*.cu": "cpp",
+        "*.cuh": "cpp",
         "type_traits": "cpp",
         "array": "cpp",
         "atomic": "cpp",
@@ -54,8 +56,9 @@
         "ranges": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "cassert": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
-    "python.pythonPath": "/usr/bin/python3.9"
+    "python.pythonPath": "/bin/python3"
 }

@@ -1,13 +1,22 @@
 #ifndef COHEN_CHESS_TYPES_MOVE_H_INCLUDED
 #define COHEN_CHESS_TYPES_MOVE_H_INCLUDED
 
-#include "move_type.h"
-#include "piece_type.h"
+#include "piece.h"
 
 #include <cstdint>
 
 namespace cohen_chess
 {
+    typedef uint16_t MoveType;
+
+    enum : MoveType
+    {
+        kQuietMove = 0x0000,
+        kPromotion = 0x4000,
+        kEnPassant = 0x8000,
+        kCastling  = 0xC000,
+    };
+
     typedef uint16_t Move;
 
     enum : Move
@@ -38,12 +47,17 @@ namespace cohen_chess
 
     constexpr MoveType MoveTypeOf(Move move)
     {
-        return move & 0xF000;
+        return move & 0xC000;
     }
 
     constexpr PieceType PromotedTo(Move move)
     {
         return ((move >> 12) & 0x3) + kKnight;
+    }
+
+    constexpr MoveType PromotionMoveType(PieceType promoted_to)
+    {
+        return ((promoted_to - kKnight) << 12) | kPromotion;
     }
 }
 

@@ -77,7 +77,7 @@ namespace cohen_chess
     constexpr std::array<Bitboard, kSquareNB> kSquareTable = []()
     {
         constexpr Bitboard kBitboardSquareA1 = 0x0000000000000001;
-        std::array<Bitboard, kSquareNB> square_table;
+        std::array<Bitboard, kSquareNB> square_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             square_table[sq] = kBitboardSquareA1 << sq;
@@ -93,7 +93,7 @@ namespace cohen_chess
     constexpr std::array<Bitboard, kRankNB> kRankTable = []()
     {
         constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
-        std::array<Bitboard, kRankNB> rank_table;
+        std::array<Bitboard, kRankNB> rank_table = {};
         for (Rank rank = kRank1; rank < kRankNB; ++rank)
         {
             rank_table[rank] = kBitboardRank1 << (rank << 3);
@@ -109,7 +109,7 @@ namespace cohen_chess
     constexpr std::array<Bitboard, kFileNB> kFileTable = []()
     {
         constexpr Bitboard kBitboardFileA = 0x0101010101010101;
-        std::array<Bitboard, kFileNB> file_table;
+        std::array<Bitboard, kFileNB> file_table = {};
         for (File file = kFileA; file < kFileNB; ++file)
         {
             file_table[file] = kBitboardFileA << file;
@@ -172,7 +172,7 @@ namespace cohen_chess
 
     constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kLineTable = []()
     {
-        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> line_table;
+        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> line_table = {};
         for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
         {
             for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
@@ -203,7 +203,7 @@ namespace cohen_chess
 
     constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenTable = []()
     {
-        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table;
+        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
         for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
         {
             for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
@@ -233,7 +233,7 @@ namespace cohen_chess
 
     constexpr std::array<Bitboard, kSquareNB> MakeRayTable(Direction dir)
     {
-        std::array<Bitboard, kSquareNB> ray_table;
+        std::array<Bitboard, kSquareNB> ray_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Bitboard bb = kEmptyBB;

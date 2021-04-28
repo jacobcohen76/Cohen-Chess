@@ -8,63 +8,114 @@
 #include "../types/file.h"
 #include "../types/square.h"
 
+#include <iostream>
 #include <cstdint>
 #include <string>
 
 #include <iostream>
 
 namespace cohen_chess
-{  
-    namespace io
+{
+    template <Color side = kWhite, char empty = '.', char space = ' '>
+    class AsciiBoard
     {
-        template<Color side = kWhite>
-        std::string AsciiBoard(Bitboard bb, const char* occ_chars = ".1")
+        static_assert(side == kWhite || side == kBlack, "Side must be either kWhite or kBlack");
+
+    public:
+        constexpr AsciiBoard() = default;
+
+        constexpr AsciiBoard(Bitboard bb, char ch)
         {
-            std::string ascii_board(127, ' ');
-            size_t i = -1;
-            for(Rank r = kRank8; r >= kRank1; --r)
-            {
-                for(File f = kFileA; f <= kFileH; ++f)
-                {
-                    Square sq = RelativeSquare(side, MakeSquare(r, f));
-                    ascii_board[++i] = occ_chars[(bb >> sq) & 1];
-                    if(f < kFileH)
-                    {
-                        ascii_board[++i] = ' ';
-                    }
-                }
-                if(r > kRank1)
-                {
-                    ascii_board[++i] = '\n';
-                }
-            }
-            return ascii_board;
+            set_bb(bb, ch);
         }
 
-        template<Color side = kWhite>
-        std::string AsciiBoard(const Board& board, const char* piece_chars = ".PNBRQKC1pnbrqkc")
+        constexpr AsciiBoard(const Board& board)
         {
-            std::string ascii_board(127, ' ');
-            size_t i = -1;
-            for(Rank r = kRank8; r >= kRank1; --r)
+            set_board(board);
+        }
+
+        constexpr void set(Square sq, char ch)
+        {
+            data[index(sq)] = ch;
+        }
+
+        constexpr void set_bb(Bitboard bb, char ch)
+        {
+            while (bb)
             {
-                for(File f = kFileA; f <= kFileH; ++f)
+                set(PopLSB(bb), ch);
+            }
+        }
+
+        constexpr void set_board(const Board& board)
+        {
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
+            {
+                if (board.on(sq))
                 {
-                    Square sq = RelativeSquare(side, MakeSquare(r, f));
-                    ascii_board[++i] = piece_chars[board.on(sq)];
-                    if(f < kFileH)
-                    {
-                        ascii_board[++i] = ' ';
-                    }
-                }
-                if(r > kRank1)
-                {
-                    ascii_board[++i] = '\n';
+                    set(sq, PieceChar(board.on(sq)));
                 }
             }
-            return ascii_board;
         }
+
+        std::string to_string() const
+        {
+            return std::string(data.begin(), data.end());
+        }
+
+        constexpr void clear()
+        {
+            data = kInitialData;
+        }
+
+        constexpr auto begin()
+        {
+            return std::begin(data);
+        }
+
+        constexpr auto begin() const
+        {
+            return std::begin(data);
+        }
+
+        constexpr auto end()
+        {
+            return std::end(data);
+        }
+
+        constexpr auto end() const
+        {
+            return std::end(data);
+        }
+
+    private:
+        static constexpr std::array<char, 128> kInitialData =
+        {
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+        };
+
+        constexpr size_t index(Square sq) const
+        {
+            Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
+            File file = RelativeFile(FileOf(sq), side);
+            return 16 * rank + 2 * file;
+        }
+
+        std::array<char, 128> data = kInitialData;
     };
+
+    template <Color side, char empty, char space>
+    inline std::ostream& operator <<(std::ostream& os, const AsciiBoard<side, empty, space>& ascii_board)
+    {
+        return os << std::string_view(std::cbegin(ascii_board), std::cend(ascii_board));
+    }
 }
 
 #endif

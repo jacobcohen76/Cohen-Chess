@@ -2,7 +2,7 @@
 #define COHEN_CHESS_COHEN_CHESS_H_INCLUDED
 
 #include "engine/attacks.h"
-// #include "engine/board.h"
+#include "engine/board.h"
 // #include "engine/move_generation.h"
 // #include "engine/state_info.h"
 
@@ -24,9 +24,7 @@
 #include "types/direction.h"
 #include "types/file.h"
 #include "types/key.h"
-#include "types/move_type.h"
 #include "types/move.h"
-#include "types/piece_type.h"
 #include "types/piece.h"
 #include "types/rank.h"
 #include "types/square.h"

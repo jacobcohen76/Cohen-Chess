@@ -15,12 +15,12 @@ void TestMagicBishopAttacks()
         {
             Bitboard ray_attacks = RayBishopAttacks(occ, sq);
             Bitboard magic_attacks = MagicBishopAttacks(occ, sq);
-            std::string ascii_board_occ         = "occ:\n"           + io::AsciiBoard(occ);
-            std::string ascii_board_ray         = "ray_attacks:\n"   + io::AsciiBoard(ray_attacks);
-            std::string ascii_board_fancy_magic = "magic_attacks:\n" + io::AsciiBoard(magic_attacks);
+            std::string ascii_board_occ         = "occ:\n"           + AsciiBoard(occ, '1').to_string();
+            std::string ascii_board_ray         = "ray_attacks:\n"   + AsciiBoard(ray_attacks, '1').to_string();
+            std::string ascii_board_magic = "magic_attacks:\n" + AsciiBoard(magic_attacks, '1').to_string();
             std::string gap = "   ";
             std::string merged;
-            merged = util::HorizontalMerge(ascii_board_fancy_magic, ascii_board_ray, gap);
+            merged = util::HorizontalMerge(ascii_board_magic, ascii_board_ray, gap);
             merged = util::HorizontalMerge(ascii_board_occ, merged, gap);
             std::cout << merged << std::endl << std::endl;
             if (ray_attacks != magic_attacks)
@@ -46,12 +46,12 @@ void TestMagicRookAttacks()
         {
             Bitboard ray_attacks = RayRookAttacks(occ, sq);
             Bitboard magic_attacks = MagicRookAttacks(occ, sq);
-            std::string ascii_board_occ         = "occ:\n"           + io::AsciiBoard(occ);
-            std::string ascii_board_ray         = "ray_attacks:\n"   + io::AsciiBoard(ray_attacks);
-            std::string ascii_board_fancy_magic = "magic_attacks:\n" + io::AsciiBoard(magic_attacks);
+            std::string ascii_board_occ         = "occ:\n"           + AsciiBoard(occ, '1').to_string();
+            std::string ascii_board_ray         = "ray_attacks:\n"   + AsciiBoard(ray_attacks, '1').to_string();
+            std::string ascii_board_magic = "magic_attacks:\n" + AsciiBoard(magic_attacks, '1').to_string();
             std::string gap = "   ";
             std::string merged;
-            merged = util::HorizontalMerge(ascii_board_fancy_magic, ascii_board_ray, gap);
+            merged = util::HorizontalMerge(ascii_board_magic, ascii_board_ray, gap);
             merged = util::HorizontalMerge(ascii_board_occ, merged, gap);
             std::cout << merged << std::endl << std::endl;
             if (ray_attacks != magic_attacks)

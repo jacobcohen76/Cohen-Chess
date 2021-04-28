@@ -4,10 +4,10 @@
 #include "../types/color.h"
 #include "../types/file.h"
 #include "../types/rank.h"
-#include "../types/piece_type.h"
 #include "../types/piece.h"
 #include "../types/square.h"
 
+#include <array>
 #include <string>
 
 namespace cohen_chess
@@ -79,20 +79,20 @@ namespace cohen_chess
 
     constexpr Color CharToColor(char ch)
     {
-        return Color(ch == ColorChar(kBlack));
+        return ch == ColorChar(kBlack);
     }
 
     constexpr File CharToFile(char ch)
     {
-        return File(ch - FileChar(kFileA));
+        return ch - FileChar(kFileA);
     }
 
     constexpr Rank CharToRank(char ch)
     {
-        return Rank(ch - RankChar(kRank1));
+        return ch - RankChar(kRank1);
     }
 
-    inline Square CoordinateToSquare(std::string coord)
+    constexpr Square CoordinateToSquare(std::string_view coord)
     {
         if(coord[0] == '-')
         {
@@ -106,7 +106,7 @@ namespace cohen_chess
 
     constexpr PieceType CharToPieceType(char ch)
     {
-        switch(ch)
+        switch (ch)
         {
             case PieceTypeChar(kPawn):      return kPawn;
             case PieceTypeChar(kKnight):    return kKnight;
@@ -120,7 +120,7 @@ namespace cohen_chess
 
     constexpr Piece CharToPiece(char ch)
     {
-        switch(ch)
+        switch (ch)
         {
             case PieceChar(kWhitePawn):     return kWhitePawn;
             case PieceChar(kWhiteKnight):   return kWhiteKnight;
@@ -155,7 +155,7 @@ namespace cohen_chess
 
     constexpr bool IsPieceTypeChar(char ch)
     {
-        switch(ch)
+        switch (ch)
         {
             case PieceTypeChar(kPawn):
             case PieceTypeChar(kKnight):
@@ -171,7 +171,7 @@ namespace cohen_chess
 
     constexpr bool IsPieceChar(char ch)
     {
-        switch(ch)
+        switch (ch)
         {
             case PieceChar(kWhitePawn):
             case PieceChar(kWhiteKnight):

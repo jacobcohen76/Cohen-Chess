@@ -4,7 +4,7 @@
 #include "../types/bitboard.h"
 #include "../types/direction.h"
 #include "../types/key.h"
-#include "../types/piece_type.h"
+#include "../types/piece.h"
 #include "../types/square.h"
 
 #include <array>
@@ -15,17 +15,25 @@ namespace cohen_chess
     constexpr Bitboard SetwisePawnAttacks(Bitboard pawns)
     {
         if constexpr (side == kWhite)
+        {
             return ShiftBB<kNorthEast>(pawns) | ShiftBB<kNorthWest>(pawns);
+        }
         else
+        {
             return ShiftBB<kSouthEast>(pawns) | ShiftBB<kSouthWest>(pawns);
+        }
     }
 
     constexpr Bitboard SetwisePawnAttacks(Bitboard pawns, Color side)
     {
         if (side == kWhite)
+        {
             return SetwisePawnAttacks<kWhite>(pawns);
+        }
         else
+        {
             return SetwisePawnAttacks<kBlack>(pawns); 
+        }
     }
 
     constexpr Bitboard SetwiseKnightAttacks(Bitboard knights)
@@ -46,7 +54,7 @@ namespace cohen_chess
 
     constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttackTable = []()
     {
-        std::array<std::array<Bitboard, kSquareNB>, kColorNB> attack_table;
+        std::array<std::array<Bitboard, kSquareNB>, kColorNB> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             attack_table[kWhite][sq] = SetwisePawnAttacks<kWhite>(SquareBB(sq));
@@ -62,7 +70,7 @@ namespace cohen_chess
 
     constexpr std::array<Bitboard, kSquareNB> kKnightAttackTable = []()
     {
-        std::array<Bitboard, kSquareNB> attack_table;
+        std::array<Bitboard, kSquareNB> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             attack_table[sq] = SetwiseKingAttacks(SquareBB(sq));
@@ -77,7 +85,7 @@ namespace cohen_chess
 
     constexpr std::array<Bitboard, kSquareNB> kKingAttackTable = []()
     {
-        std::array<Bitboard, kSquareNB> attack_table;
+        std::array<Bitboard, kSquareNB> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             attack_table[sq] = SetwiseKingAttacks(SquareBB(sq));
@@ -125,7 +133,9 @@ namespace cohen_chess
         Key max_key = kKeyZero;
         Bitboard occ = kEmptyBB;
         do
+        {
             max_key = std::max(max_key, m.key(occ));
+        }
         while ((occ = (occ - m.mask) & m.mask));
         return max_key - m.begin + 1;
     }
@@ -134,14 +144,16 @@ namespace cohen_chess
     {
         size_t size = 0;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
             size += MagicSize(table[sq]);
+        }
         return size;
     }
 
     constexpr Bitboard MagicBishopMask(Square sq)
     {
         return ((DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq))) & ~SquareBB(sq)) & ~kEdgesBB;
-    } 
+    }
 
     constexpr std::array<Bitboard, kSquareNB> kMagicBishopNumbers =
     {
@@ -155,7 +167,7 @@ namespace cohen_chess
         0x2E545090D18A971C, 0x125AB600C146C314, 0x0211110132389020, 0x4294700222104405, 0x4460904820842420, 0x3280312554101160, 0x04A02023D2411860, 0x004002919400D818,
     };
 
-    constexpr std::array<Magic, kSquareNB> kMagicBishopTable = []
+    constexpr std::array<Magic, kSquareNB> kMagicBishopTable = []()
     {
         size_t table_pos = 0;
         std::array<Magic, kSquareNB> magic_table = {};
@@ -173,22 +185,19 @@ namespace cohen_chess
 
     constexpr std::array<Bitboard, MagicTableSize(kMagicBishopTable)> kMagicBishopAttackTable = []()
     {
-        std::array<Bitboard, MagicTableSize(kMagicBishopTable)> attack_table;
+        std::array<Bitboard, MagicTableSize(kMagicBishopTable)> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Magic m = kMagicBishopTable[sq];
             Bitboard occ = kEmptyBB;
             do
+            {
                 attack_table[m.key(occ)] = RayBishopAttacks(occ, sq);
+            }
             while ((occ = (occ - m.mask) & m.mask));
         }
         return attack_table;
     }();
-
-    constexpr Bitboard MagicBishopAttacks(Bitboard occ, Square sq)
-    {
-        return kMagicBishopAttackTable[kMagicBishopTable[sq].key(occ)];
-    }
 
     constexpr Bitboard MagicRookMask(Square sq)
     {
@@ -225,26 +234,28 @@ namespace cohen_chess
 
     constexpr std::array<Bitboard, MagicTableSize(kMagicRookTable)> kMagicRookAttackTable = []()
     {
-        std::array<Bitboard, MagicTableSize(kMagicRookTable)> attack_table;
+        std::array<Bitboard, MagicTableSize(kMagicRookTable)> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Magic m = kMagicRookTable[sq];
             Bitboard occ = kEmptyBB;
             do
+            {
                 attack_table[m.key(occ)] = RayRookAttacks(occ, sq);
+            }
             while ((occ = (occ - m.mask) & m.mask));
         }
         return attack_table;
     }();
 
+    constexpr Bitboard MagicBishopAttacks(Bitboard occ, Square sq)
+    {
+        return kMagicBishopAttackTable[kMagicBishopTable[sq].key(occ)];
+    }
+
     constexpr Bitboard MagicRookAttacks(Bitboard occ, Square sq)
     {
         return kMagicRookAttackTable[kMagicRookTable[sq].key(occ)];
-    }
-
-    constexpr Bitboard MagicQueenMask(Square sq)
-    {
-        return MagicBishopMask(sq) | MagicRookMask(sq);
     }
 
     constexpr Bitboard MagicQueenAttacks(Bitboard occ, Square sq)

@@ -4,7 +4,7 @@ SRC      = src
 BIN      = bin
 
 CC       = gcc-10
-CXX      = g++-10
+CXX      = clang++
 
 # c++ standard
 CXXSTD = -std=c++20
@@ -17,17 +17,23 @@ CXXVRB = -Wall
 
 CPPFLAGS = 
 CFLAGS   = 
-CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB) -lstdc++
+CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB) -lstdc++ -fconstexpr-steps=1000000000
 
-all: cohen_chess magic_generator magic_evaluator
+all: cohen_chess hex_generator magic_generator magic_evaluator speed_test
 
 cohen_chess:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
+
+hex_generator:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 magic_generator:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 magic_evaluator:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
+
+speed_test:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 clean:

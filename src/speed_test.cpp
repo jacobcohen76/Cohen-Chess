@@ -29,7 +29,12 @@ void LongProcess()
 
 int main(int argc, char* argv[])
 {
-    size_t num_iterations = 10000000000;
+    if (argc < 2)
+    {
+        return 1;
+    }
+
+    size_t num_iterations = std::stoull(argv[1]);
 
     auto random_bb = []()
     {
@@ -64,25 +69,25 @@ int main(int argc, char* argv[])
     }
     auto cease = std::chrono::high_resolution_clock::now();
     duration = cease - begin;
-    std::cout << duration.count() << "s" << std::endl;
+    std::cout << "Control:               " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, RayBishopAttacks));
-    std::cout << "RayBishopAttacks:        " << duration.count() << "s" << std::endl;
+    std::cout << "RayBishopAttacks:      " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, RayRookAttacks));
-    std::cout << "RayRookAttacks:          " << duration.count() << "s" << std::endl;
+    std::cout << "RayRookAttacks:        " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, RayQueenAttacks));
-    std::cout << "RayQueenAttacks:         " << duration.count() << "s" << std::endl;
+    std::cout << "RayQueenAttacks:       " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, MagicBishopAttacks));
-    std::cout << "FancyMagicBishopAttacks: " << duration.count() << "s" << std::endl;
+    std::cout << "MagicBishopAttacks:    " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, MagicRookAttacks));
-    std::cout << "FancyMagicRookAttacks:   " << duration.count() << "s" << std::endl;
+    std::cout << "MagicRookAttacks:      " << duration.count() << "s" << std::endl;
 
     duration = TimeTest<std::chrono::high_resolution_clock>(std::bind(repeat_process, MagicQueenAttacks));
-    std::cout << "FancyMagicQueenAttacks:  " << duration.count() << "s" << std::endl;
+    std::cout << "MagicQueenAttacks:     " << duration.count() << "s" << std::endl;
 
     return 0;
 }
