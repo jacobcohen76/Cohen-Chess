@@ -15,6 +15,7 @@ namespace cohen_chess
         Key             key, pawn_key;
         Bitboard        checks;
         uint16_t        halfmove_clock;
+        uint16_t        fullmove_count;
         Piece           captured;
         File            ep_file;
         CastlingRights  castling_rights;

@@ -49,6 +49,7 @@ namespace cohen_chess
 
         constexpr void set_board(const Board& board)
         {
+            clear();
             for (Square sq = kA1; sq < kSquareNB; ++sq)
             {
                 if (board.on(sq))

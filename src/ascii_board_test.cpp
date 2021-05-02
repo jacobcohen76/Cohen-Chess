@@ -80,5 +80,13 @@ int main(int argc, char* argv[])
     board.make(MakeMove(kE2, kE4));
     ascii_board.set_board(board);
     std::cout << "Board" << std::endl << ascii_board << std::endl;
+
+    board.clear();
+    SetFenPosition("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", board);
+    ascii_board.set_board(board);
+    std::cout << "Board" << std::endl << ascii_board << std::endl;
+
+    board.clear();
+    std::cout << "Board" << std::endl << ascii_board << std::endl;
     return 0;
 }

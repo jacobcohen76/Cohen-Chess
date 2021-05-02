@@ -57,7 +57,12 @@
         "compare": "cpp",
         "concepts": "cpp",
         "set": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "condition_variable": "cpp",
+        "cstring": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp",
+        "stop_token": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "python.pythonPath": "/bin/python3"

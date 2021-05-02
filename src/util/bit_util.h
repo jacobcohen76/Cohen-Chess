@@ -202,25 +202,26 @@ namespace cohen_chess
         return count;
     }
 
+    constexpr std::array<uint8_t, 65536> kPopCountTable = []()
+    {
+        std::array<uint8_t, 65536> pop_count_table = {};
+        for (size_t i = 0; i < 65536; ++i)
+        {
+            uint8_t count = 0;
+            uint64_t x = i;
+            while (x)
+            {
+                ++count;
+                x &= x - 1;
+            }
+            pop_count_table[i] = count;
+        }
+        return pop_count_table;
+    }();
+
     template <std::integral T>
     constexpr int PopCountLookup(T x)
     {
-        constexpr std::array<uint8_t, 65536> kPopCountTable = []
-        {
-            std::array<uint8_t, 65536> pop_count_table = {};
-            for (size_t i = 0; i < 65536; ++i)
-            {
-                uint8_t count = 0;
-                uint64_t x = i;
-                while (x)
-                {
-                    ++count;
-                    x &= x - 1;
-                }
-                pop_count_table[i] = count;
-            }
-            return pop_count_table;
-        }();
         constexpr int kNumBits64 = std::numeric_limits<uint64_t>::digits;
         constexpr int kNumBits32 = std::numeric_limits<uint32_t>::digits;
         constexpr int kNumBits16 = std::numeric_limits<uint16_t>::digits;
@@ -310,6 +311,20 @@ namespace cohen_chess
         int lsb = BitScanForward(x);
         x = FlipLSB(x);
         return lsb;
+    }
+
+    /**
+     * Gets the bit-index of the most significant bit and flips it.
+     * 
+     * @param x The integral to pop the most significant bit of.
+     * @return The bit-index of the most significant bit.
+     */
+    template <std::integral T>
+    constexpr int PopMSB(T& x)
+    {
+        int msb = BitScanReverse(x);
+        x ^= T(1) << msb;
+        return msb;
     }
 
     template <std::integral T, bool lowercase = false>

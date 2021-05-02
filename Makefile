@@ -17,7 +17,7 @@ CXXVRB = -Wall
 
 CPPFLAGS = 
 CFLAGS   = 
-CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB) -lstdc++ -fconstexpr-steps=1000000000
+CXXFLAGS = $(CXXSTD) $(CXXOPT) $(CXXVRB) -lstdc++ -fconstexpr-steps=2147483647
 
 all: cohen_chess hex_generator magic_generator magic_evaluator speed_test
 
