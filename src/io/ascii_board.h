@@ -12,8 +12,6 @@
 #include <cstdint>
 #include <string>
 
-#include <iostream>
-
 namespace cohen_chess
 {
     template <Color side = kWhite, char empty = '.', char space = ' '>
@@ -57,11 +55,6 @@ namespace cohen_chess
                     set(sq, PieceChar(board.on(sq)));
                 }
             }
-        }
-
-        std::string to_string() const
-        {
-            return std::string(data.begin(), data.end());
         }
 
         constexpr void clear()

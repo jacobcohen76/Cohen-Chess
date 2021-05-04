@@ -83,12 +83,7 @@ namespace cohen_chess
         return kZobristEnPassantFileKeys[file];
     }
 
-    constexpr Key kZobristBlackKey = 0x9634520BD3C345BA;
-
-    constexpr Key ZobristColorKey()
-    {
-        return kZobristBlackKey;
-    }
+    constexpr Key kZobristSideKey = 0x9634520BD3C345BA;
 }
 
 #endif

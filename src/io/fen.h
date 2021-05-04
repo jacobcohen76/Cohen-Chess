@@ -19,7 +19,7 @@ namespace cohen_chess
         "([pnbrqkPNBRKQ1-8]+)"  "(\\s+)"
         "(w|b)"                 "(\\s+)"
         "([KQkq]{1,4}|-)"       "(\\s+)"
-        "([a-h][1-8]|-)"      "(\\s+)"
+        "([a-h][1-8]|-)"        "(\\s+)"
         "(\\d+)"                "(\\s+)"
         "(\\d+)"
     };
@@ -32,7 +32,7 @@ namespace cohen_chess
     constexpr size_t kFenRegexGroupRank3            = 11;
     constexpr size_t kFenRegexGroupRank2            = 13;
     constexpr size_t kFenRegexGroupRank1            = 15;
-    constexpr size_t kFenRegexGroupColor            = 17;
+    constexpr size_t kFenRegexGroupSide             = 17;
     constexpr size_t kFenRegexGroupCastlingRights   = 19;
     constexpr size_t kFenRegexGroupEnPassantTarget  = 21;
     constexpr size_t kFenRegexGroupHalfmoveClock    = 23;
@@ -58,6 +58,18 @@ namespace cohen_chess
             cr |= FenCastlingRightsBit(ch);
         }
         return cr;
+    }
+
+    constexpr File FenEnPassantTarget(std::string_view fen_ep_target)
+    {
+        if (fen_ep_target == "-" || fen_ep_target.size() == 0)
+        {
+            return kFileNB;
+        }
+        else
+        {
+            return CharToFile(fen_ep_target[0]);
+        }
     }
 
     constexpr bool SetFenRank(std::string_view fen_rank, Board& board, Rank rank)
@@ -88,7 +100,9 @@ namespace cohen_chess
         {
             board.clear();
             board.state.set_castling_rights(FenCastlingRights(match[kFenRegexGroupCastlingRights].str()));
-            board.state.set_ep_file(CoordinateToSquare(match[kFenRegexGroupEnPassantTarget].str()));
+            board.state.set_ep_file(FenEnPassantTarget(match[kFenRegexGroupEnPassantTarget].str()));
+            board.state.set_side(match[kFenRegexGroupSide].str() == "b");
+            std::cout << "side=" << (match[kFenRegexGroupSide].str() == "b") << std::endl;
             board.state.halfmove_clock = std::stoi(match[kFenRegexGroupHalfmoveClock]);
             board.state.fullmove_count = std::stoi(match[kFenRegexGroupFullmoveCount]);
             return SetFenRank(match[kFenRegexGroupRank8].str(), board, kRank8) &&
@@ -104,6 +118,86 @@ namespace cohen_chess
         {
             return false;
         }
+    }
+
+    inline std::ostream& FormatFenRank(std::ostream& os, const Board& board, Rank rank)
+    {
+        int empty_count = 0;
+        for (File file = kFileA; file < kFileNB; ++file)
+        {
+            Piece piece = board.on(MakeSquare(rank, file));
+            if (piece)
+            {
+                if (empty_count)
+                {
+                    os << empty_count;
+                    empty_count = 0;
+                }
+                os << PieceChar(piece);
+            }
+            else
+            {
+                ++empty_count;
+            }
+        }
+        return empty_count ? os << empty_count : os;
+    }
+
+    inline std::ostream& FormatFenSide(std::ostream& os, Color side)
+    {
+        return os << ColorChar(side);
+    }
+
+    inline std::ostream& FormatFenCastlingRights(std::ostream& os, CastlingRights cr)
+    {
+        if (cr)
+        {
+            if (cr & kWhiteOOO)
+                os << 'K';
+            if (cr & kWhiteOO)
+                os << 'Q';
+            if (cr & kBlackOOO)
+                os << 'k';
+            if (cr & kBlackOO)
+                os << 'q';
+        }
+        else
+        {
+            os << '-';
+        }
+        return os;
+    }
+
+    inline std::ostream& FormatFenEnPassantTarget(std::ostream& os, const BoardState& state)
+    {
+        if (state.ep_file == kFileNB)
+        {
+            os << '-';
+        }
+        else
+        {
+            os << FileChar(state.ep_file);
+            os << RankChar(RelativeRank(kRank3, state.side ^ kBlack));
+        }
+        return os;
+    }
+
+    inline std::ostream& FormatFenPosition(std::ostream& os, const Board& board)
+    {
+        FormatFenRank(os, board, kRank8) << '/';
+        FormatFenRank(os, board, kRank7) << '/';
+        FormatFenRank(os, board, kRank6) << '/';
+        FormatFenRank(os, board, kRank5) << '/';
+        FormatFenRank(os, board, kRank4) << '/';
+        FormatFenRank(os, board, kRank3) << '/';
+        FormatFenRank(os, board, kRank2) << '/';
+        FormatFenRank(os, board, kRank1) << ' ';
+        FormatFenSide(os, board.state.side) << ' ';
+        FormatFenCastlingRights(os, board.state.castling_rights) << ' ';
+        FormatFenEnPassantTarget(os, board.state) << ' ';
+        os << board.state.halfmove_clock << ' ';
+        os << board.state.fullmove_count;
+        return os;
     }
 }
 

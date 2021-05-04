@@ -12,6 +12,12 @@ namespace cohen_chess
 {
     struct BoardState
     {
+        constexpr void set_side(Color);
+        constexpr void set_ep_file(File);
+        constexpr void set_castling_rights(CastlingRights);
+        constexpr void mask_castling_rights(CastlingRights);
+        constexpr void update_castling_rights(Square, Square);
+
         Key             key, pawn_key;
         Bitboard        checks;
         uint16_t        halfmove_clock;
@@ -20,33 +26,37 @@ namespace cohen_chess
         File            ep_file;
         CastlingRights  castling_rights;
         Color           side;
-
-        constexpr void set_ep_file(File);
-        constexpr void set_castling_rights(CastlingRights);
-        constexpr void mask_castling_rights(CastlingRights);
-        constexpr void update_castling_rights(Square, Square);
     };
 
     struct Board
     {
+        constexpr Piece     on(Square) const;
+        constexpr void      put(Piece, Square);
+        constexpr void      clear();
+        constexpr void      make(Move);
+        constexpr void      unmake(Move, const BoardState&);
+
+    private:
+        constexpr Piece     capture(Square);
+        constexpr void      emplace(Piece, Square);
+        constexpr void      remove(Piece, Square);
+        constexpr void      promote(PieceType, Square);
+        constexpr void      push(Square, Square);
+
+    public:
         Bitboard        bitboards[kPieceNB];
         Piece           pieces[kSquareNB];
         BoardState      state;
-
-        constexpr void make(Move);
-        constexpr void unmake(Move, const BoardState&);
-
-        constexpr void clear();
-
-        constexpr void put(Piece, Square);
-        constexpr void push(Square, Square);
-        constexpr void promote(Piece, Square);
-        constexpr void remove(Piece, Square);
-        constexpr void remove(Square);
-
-        constexpr Piece capture(Square);
-        constexpr Piece on(Square) const;
     };
+
+    constexpr void BoardState::set_side(Color color)
+    {
+        if (side != color)
+        {
+            key ^= kZobristSideKey;
+        }
+        side = color;
+    }
 
     constexpr void BoardState::set_ep_file(File file)
     {
@@ -79,6 +89,27 @@ namespace cohen_chess
             mask_castling_rights(~kBlackOOO);
     }
 
+    constexpr Piece Board::on(Square sq) const
+    {
+        return pieces[sq];
+    }
+
+    constexpr void Board::put(Piece pc, Square sq)
+    {
+        if (on(sq))
+        {
+            remove(on(sq), sq);
+        }
+        emplace(pc, sq);
+    }
+
+    constexpr void Board::clear()
+    {
+        std::fill(bitboards, bitboards + kPieceNB, kEmptyBB);
+        std::fill(pieces, pieces + kSquareNB, kPieceNone);
+        state = {};
+    }
+
     constexpr void Board::make(Move move)
     {
         Square from = FromSquare(move), to = ToSquare(move);
@@ -97,7 +128,7 @@ namespace cohen_chess
             {
                 if (MoveTypeOf(move) == kPromotion)
                 {
-                    promote(MakePiece(PromotedTo(move), state.side), from);
+                    promote(PromotedTo(move), from);
                 }
                 else if (MoveTypeOf(move) == kEnPassant)
                 {
@@ -129,7 +160,7 @@ namespace cohen_chess
         push(from, to);
         state.update_castling_rights(from, to);
         state.side ^= kBlack;
-        state.key ^= kZobristBlackKey;
+        state.key ^= kZobristSideKey;
         ++state.halfmove_clock;
     }
 
@@ -138,7 +169,7 @@ namespace cohen_chess
         Square from = FromSquare(move), to = ToSquare(move);
         if (MoveTypeOf(move) == kPromotion)
         {
-            promote(MakePiece(kPawn, prev.side), to);
+            promote(kPawn, to);
         }
         else if (MoveTypeOf(move) == kEnPassant)
         {
@@ -160,14 +191,14 @@ namespace cohen_chess
         state = prev;
     }
 
-    constexpr void Board::clear()
+    constexpr Piece Board::capture(Square sq)
     {
-        std::fill(bitboards, bitboards + kPieceNB, kEmptyBB);
-        std::fill(pieces, pieces + kSquareNB, kPieceNone);
-        state = {};
+        Piece pc = on(sq);
+        remove(pc, sq);
+        return pc;
     }
 
-    constexpr void Board::put(Piece pc, Square sq)
+    constexpr void Board::emplace(Piece pc, Square sq)
     {
         bitboards[pc] |= SquareBB(sq);
         bitboards[PieceAllColor(pc)] |= SquareBB(sq);
@@ -178,17 +209,6 @@ namespace cohen_chess
         {
             state.pawn_key ^= ZobristPieceSquareKey(pc, sq);
         }
-    }
-
-    constexpr void Board::push(Square from, Square to)
-    {
-        put(capture(from), to);
-    }
-
-    constexpr void Board::promote(Piece pc, Square sq)
-    {
-        remove(sq);
-        put(pc, sq);
     }
 
     constexpr void Board::remove(Piece pc, Square sq)
@@ -204,21 +224,17 @@ namespace cohen_chess
         }
     }
 
-    constexpr void Board::remove(Square sq)
+    constexpr void Board::promote(PieceType piece_type, Square sq)
     {
-        remove(on(sq), sq);
+        Piece promoted = capture(sq);
+        promoted &= kPieceTypeNone;
+        promoted |= piece_type;
+        put(promoted, sq);
     }
 
-    constexpr Piece Board::capture(Square sq)
+    constexpr void Board::push(Square from, Square to)
     {
-        Piece pc = on(sq);
-        remove(pc, sq);
-        return pc;
-    }
-
-    constexpr Piece Board::on(Square sq) const
-    {
-        return pieces[sq];
+        put(capture(from), to);
     }
 }
 
