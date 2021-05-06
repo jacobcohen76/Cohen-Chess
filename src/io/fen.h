@@ -42,10 +42,10 @@ namespace cohen_chess
     {
         switch (ch)
         {
-            case 'K': return kWhiteOO;
-            case 'Q': return kWhiteOOO;
-            case 'k': return kBlackOO;
-            case 'q': return kBlackOOO;
+            case 'K': return kWhiteOOO;
+            case 'Q': return kWhiteOO;
+            case 'k': return kBlackOOO;
+            case 'q': return kBlackOO;
             default:  return kCastlingNone;
         }
     }
@@ -102,7 +102,6 @@ namespace cohen_chess
             board.state.set_castling_rights(FenCastlingRights(match[kFenRegexGroupCastlingRights].str()));
             board.state.set_ep_file(FenEnPassantTarget(match[kFenRegexGroupEnPassantTarget].str()));
             board.state.set_side(match[kFenRegexGroupSide].str() == "b");
-            std::cout << "side=" << (match[kFenRegexGroupSide].str() == "b") << std::endl;
             board.state.halfmove_clock = std::stoi(match[kFenRegexGroupHalfmoveClock]);
             board.state.fullmove_count = std::stoi(match[kFenRegexGroupFullmoveCount]);
             return SetFenRank(match[kFenRegexGroupRank8].str(), board, kRank8) &&

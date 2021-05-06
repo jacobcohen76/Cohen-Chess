@@ -7,6 +7,12 @@ int main(int argc, char* argv[])
     Board board;
     AsciiBoard ascii_board;
     SetFenPosition("rnbqkbnr/ppp1pppp/8/3p4/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1", board);
+
+    BoardState state = board.state;
+    Move move = MakeMove(kE1, kG1, kCastling);
+    board.make(move);
+    board.unmake(move, state);
+
     for (Piece piece = kPieceNone; piece < kPieceNB; ++piece)
     {
         ascii_board.set_bb(board.bitboards[piece], '1');
