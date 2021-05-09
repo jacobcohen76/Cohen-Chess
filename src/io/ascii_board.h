@@ -14,101 +14,131 @@
 
 namespace cohen_chess
 {
-    template <Color side = kWhite, char empty = '.', char space = ' '>
     class AsciiBoard
     {
-        static_assert(side == kWhite || side == kBlack, "Side must be either kWhite or kBlack");
-
     public:
         constexpr AsciiBoard() = default;
+        constexpr AsciiBoard(Color);
+        constexpr AsciiBoard(Bitboard, char, Color = kWhite);
+        constexpr AsciiBoard(const Board&, Color = kWhite);
 
-        constexpr AsciiBoard(Bitboard bb, char ch)
-        {
-            set_bb(bb, ch);
-        }
+        constexpr void set(Square, char);
+        constexpr void set_all(Bitboard, char);
+        constexpr void set_state(const Board&);
+        constexpr void clear();
+        constexpr void flip();
 
-        constexpr AsciiBoard(const Board& board)
-        {
-            set_board(board);
-        }
+        constexpr char* begin();
+        constexpr char* end();
 
-        constexpr void set(Square sq, char ch)
-        {
-            data[index(sq)] = ch;
-        }
-
-        constexpr void set_bb(Bitboard bb, char ch)
-        {
-            while (bb)
-            {
-                set(PopLSB(bb), ch);
-            }
-        }
-
-        constexpr void set_board(const Board& board)
-        {
-            clear();
-            for (Square sq = kA1; sq < kSquareNB; ++sq)
-            {
-                if (board.on(sq))
-                {
-                    set(sq, PieceChar(board.on(sq)));
-                }
-            }
-        }
-
-        constexpr void clear()
-        {
-            data = kInitialData;
-        }
-
-        constexpr auto begin()
-        {
-            return std::begin(data);
-        }
-
-        constexpr auto begin() const
-        {
-            return std::begin(data);
-        }
-
-        constexpr auto end()
-        {
-            return std::end(data);
-        }
-
-        constexpr auto end() const
-        {
-            return std::end(data);
-        }
+        constexpr const char* begin() const;
+        constexpr const char* end() const;
 
     private:
         static constexpr std::array<char, 128> kInitialData =
         {
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
-            empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, space, empty, '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
+            '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
         };
 
-        constexpr size_t index(Square sq) const
-        {
-            Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
-            File file = RelativeFile(FileOf(sq), side);
-            return 16 * rank + 2 * file;
-        }
+        static constexpr size_t index(Square, Color);
 
+        Color side = kWhite;
         std::array<char, 128> data = kInitialData;
     };
 
-    template <Color side, char empty, char space>
-    inline std::ostream& operator <<(std::ostream& os, const AsciiBoard<side, empty, space>& ascii_board)
+    constexpr AsciiBoard::AsciiBoard(Color side) :
+        side(side) {}
+
+    constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch, Color side) :
+        side(side)
     {
-        return os << std::string_view(std::cbegin(ascii_board), std::cend(ascii_board));
+        set_all(bb, ch);
+    }
+
+    constexpr AsciiBoard::AsciiBoard(const Board& board, Color side) :
+        side(side)
+    {
+        set_state(board);
+    }
+
+    constexpr void AsciiBoard::set(Square sq, char ch)
+    {
+        data[index(sq, side)] = ch;
+    }
+
+    constexpr void AsciiBoard::set_all(Bitboard bb, char ch)
+    {
+        while (bb)
+        {
+            set(PopLSB(bb), ch);
+        }
+    }
+
+    constexpr void AsciiBoard::set_state(const Board& board)
+    {
+        data = kInitialData;
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            if (board.on(sq))
+            {
+                set(sq, PieceChar(board.on(sq)));
+            }
+        }
+    }
+
+    constexpr void AsciiBoard::clear()
+    {
+        data = kInitialData;
+    }
+
+    constexpr void AsciiBoard::flip()
+    {
+        auto flipped = kInitialData;
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            flipped[index(sq, side ^ kBlack)] = data[index(sq, side)];
+        }
+        side ^= kBlack;
+        data = flipped;
+    }
+
+    constexpr char* AsciiBoard::begin()
+    {
+        return std::begin(data);
+    }
+
+    constexpr char* AsciiBoard::end()
+    {
+        return std::end(data);
+    }
+
+    constexpr const char* AsciiBoard::begin() const
+    {
+        return std::begin(data);
+    }
+
+    constexpr const char* AsciiBoard::end() const
+    {
+        return std::end(data);
+    }
+
+    constexpr size_t AsciiBoard::index(Square sq, Color side)
+    {
+        Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
+        File file = RelativeFile(FileOf(sq), side);
+        return 16 * rank + 2 * file;
+    }
+
+    inline std::ostream& operator <<(std::ostream& os, const AsciiBoard& ascii_board)
+    {
+        return os << std::string_view(std::begin(ascii_board), std::end(ascii_board));
     }
 }
 

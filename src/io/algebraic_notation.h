@@ -55,7 +55,7 @@ namespace cohen_chess
 
     constexpr char CharToFile(char ch)
     {
-        return ch - RankChar(kFileA);
+        return ch - FileChar(kFileA);
     }
 
     constexpr std::array<char, kPieceTypeNB> kPieceTypeCharacters =

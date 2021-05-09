@@ -1,202 +1,148 @@
 #ifndef COHEN_CHESS_IO_FEN_H_INCLUDED
 #define COHEN_CHESS_IO_FEN_H_INCLUDED
 
+#include "algebraic_notation.h"
+
 #include "../engine/board.h"
 
-#include <regex>
+#include <iostream>
+#include <string_view>
+#include <sstream>
 
 namespace cohen_chess
 {
-    const std::regex kFenRegex
+    inline std::istream& SetFenPosition(std::istream& is, Board& board)
     {
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(/)"
-        "([pnbrqkPNBRKQ1-8]+)"  "(\\s+)"
-        "(w|b)"                 "(\\s+)"
-        "([KQkq]{1,4}|-)"       "(\\s+)"
-        "([a-h][1-8]|-)"        "(\\s+)"
-        "(\\d+)"                "(\\s+)"
-        "(\\d+)"
-    };
-
-    constexpr size_t kFenRegexGroupRank8            =  1;
-    constexpr size_t kFenRegexGroupRank7            =  3;
-    constexpr size_t kFenRegexGroupRank6            =  5;
-    constexpr size_t kFenRegexGroupRank5            =  7;
-    constexpr size_t kFenRegexGroupRank4            =  9;
-    constexpr size_t kFenRegexGroupRank3            = 11;
-    constexpr size_t kFenRegexGroupRank2            = 13;
-    constexpr size_t kFenRegexGroupRank1            = 15;
-    constexpr size_t kFenRegexGroupSide             = 17;
-    constexpr size_t kFenRegexGroupCastlingRights   = 19;
-    constexpr size_t kFenRegexGroupEnPassantTarget  = 21;
-    constexpr size_t kFenRegexGroupHalfmoveClock    = 23;
-    constexpr size_t kFenRegexGroupFullmoveCount    = 25;
-
-    constexpr CastlingRights FenCastlingRightsBit(char ch)
-    {
-        switch (ch)
+        std::string token;
+        is >> token;
+        Square sq = kA8;
+        for (const char ch : token)
         {
-            case 'K': return kWhiteOOO;
-            case 'Q': return kWhiteOO;
-            case 'k': return kBlackOOO;
-            case 'q': return kBlackOO;
-            default:  return kCastlingNone;
-        }
-    }
-
-    constexpr CastlingRights FenCastlingRights(std::string_view fen_cr)
-    {
-        CastlingRights cr = kCastlingNone;
-        for (const auto ch : fen_cr)
-        {
-            cr |= FenCastlingRightsBit(ch);
-        }
-        return cr;
-    }
-
-    constexpr File FenEnPassantTarget(std::string_view fen_ep_target)
-    {
-        if (fen_ep_target == "-" || fen_ep_target.size() == 0)
-        {
-            return kFileNB;
-        }
-        else
-        {
-            return CharToFile(fen_ep_target[0]);
-        }
-    }
-
-    constexpr bool SetFenRank(std::string_view fen_rank, Board& board, Rank rank)
-    {
-        File file = kFileA;
-        for (char ch : fen_rank)
-        {
-            if (IsRankChar(ch))
+            if ('1' <= ch && ch <= '8')
             {
-                file += CharToRank(ch) + 1;
+                sq += ch - '0';
             }
             else if (IsPieceChar(ch))
             {
-                board.put(CharToPiece(ch), MakeSquare(rank, file++));
+                board.put(CharToPiece(ch), sq++);
             }
-            else
+            else if (ch == '/')
             {
-                return false;
+                sq += kSouthSouth;
             }
         }
-        return file == kFileNB;
-    }
-
-    inline bool SetFenPosition(std::string_view fen, Board& board)
-    {
-        std::cmatch match;
-        if (std::regex_match(std::begin(fen), std::end(fen), match, kFenRegex))
+        is >> token;
+        board.state.set_side(token == "b");
+        is >> token;
+        CastlingRights cr = kCastlingNone;
+        for (const char ch : token)
         {
-            board.clear();
-            board.state.set_castling_rights(FenCastlingRights(match[kFenRegexGroupCastlingRights].str()));
-            board.state.set_ep_file(FenEnPassantTarget(match[kFenRegexGroupEnPassantTarget].str()));
-            board.state.set_side(match[kFenRegexGroupSide].str() == "b");
-            board.state.halfmove_clock = std::stoi(match[kFenRegexGroupHalfmoveClock]);
-            board.state.fullmove_count = std::stoi(match[kFenRegexGroupFullmoveCount]);
-            return SetFenRank(match[kFenRegexGroupRank8].str(), board, kRank8) &&
-                   SetFenRank(match[kFenRegexGroupRank7].str(), board, kRank7) &&
-                   SetFenRank(match[kFenRegexGroupRank6].str(), board, kRank6) &&
-                   SetFenRank(match[kFenRegexGroupRank5].str(), board, kRank5) &&
-                   SetFenRank(match[kFenRegexGroupRank4].str(), board, kRank4) &&
-                   SetFenRank(match[kFenRegexGroupRank3].str(), board, kRank3) &&
-                   SetFenRank(match[kFenRegexGroupRank2].str(), board, kRank2) &&
-                   SetFenRank(match[kFenRegexGroupRank1].str(), board, kRank1);
+            switch (ch)
+            {
+                case 'K': cr |= kWhiteOOO; break;
+                case 'Q': cr |= kWhiteOO;  break;
+                case 'k': cr |= kBlackOOO; break;
+                case 'q': cr |= kBlackOO;  break;
+            }
+        }
+        board.state.set_castling_rights(cr);
+        is >> token;
+        if (token != "-" && token.size())
+        {
+            board.state.set_ep_file(CharToFile(token[0]));
         }
         else
         {
-            return false;
+            board.state.set_ep_file(kFileNB);
         }
+        is >> board.state.halfmove_clock >> board.state.fullmove_count;
+        return is;
     }
 
-    inline std::ostream& FormatFenRank(std::ostream& os, const Board& board, Rank rank)
+    inline void SetFenPosition(const std::string& fen_str, Board& board)
     {
-        int empty_count = 0;
-        for (File file = kFileA; file < kFileNB; ++file)
+        std::istringstream iss(fen_str);
+        SetFenPosition(iss, board);
+    }
+
+    inline void SetFenPosition(const char* fen_cstr, Board& board)
+    {
+        std::istringstream iss(fen_cstr);
+        SetFenPosition(iss, board);
+    }
+
+    inline std::istream& operator>>(std::istream& is, Board& board)
+    {
+        return SetFenPosition(is, board);
+    }
+
+    inline std::ostream& FormatFenPosition(std::ostream& os, const Board& board)
+    {
+        for (Square sq = kA8; sq >= kA1; sq += kSouthSouth)
         {
-            Piece piece = board.on(MakeSquare(rank, file));
-            if (piece)
+            int empty_count = 0;
+            for (File file = kFileA; file < kFileNB; ++file, ++sq)
             {
-                if (empty_count)
+                if (board.on(sq))
                 {
-                    os << empty_count;
-                    empty_count = 0;
+                    if (empty_count)
+                    {
+                        os << empty_count;
+                        empty_count = 0;
+                    }
+                    os << PieceChar(board.on(sq));
                 }
-                os << PieceChar(piece);
+                else
+                {
+                    ++empty_count;
+                }
             }
-            else
+            if (empty_count)
             {
-                ++empty_count;
+                os << empty_count;
             }
+            os << ((sq > kA2) ? '/' : ' ');
         }
-        return empty_count ? os << empty_count : os;
-    }
-
-    inline std::ostream& FormatFenSide(std::ostream& os, Color side)
-    {
-        return os << ColorChar(side);
-    }
-
-    inline std::ostream& FormatFenCastlingRights(std::ostream& os, CastlingRights cr)
-    {
-        if (cr)
+        os << (board.state.side ? 'b' : 'w') << ' ';
+        if (board.state.castling_rights)
         {
-            if (cr & kWhiteOOO)
+            if (board.state.castling_rights & kWhiteOOO)
                 os << 'K';
-            if (cr & kWhiteOO)
+            if (board.state.castling_rights & kWhiteOO)
                 os << 'Q';
-            if (cr & kBlackOOO)
+            if (board.state.castling_rights & kBlackOOO)
                 os << 'k';
-            if (cr & kBlackOO)
+            if (board.state.castling_rights & kBlackOO)
                 os << 'q';
         }
         else
         {
             os << '-';
         }
-        return os;
-    }
-
-    inline std::ostream& FormatFenEnPassantTarget(std::ostream& os, const BoardState& state)
-    {
-        if (state.ep_file == kFileNB)
+        os << ' ';
+        if (board.state.ep_file < kFileNB)
         {
-            os << '-';
+            os << FileChar(board.state.ep_file);
+            os << RankChar(RelativeRank(kRank3, board.state.side ^ kBlack));
         }
         else
         {
-            os << FileChar(state.ep_file);
-            os << RankChar(RelativeRank(kRank3, state.side ^ kBlack));
+            os << '-';
         }
+        os << ' ' << board.state.halfmove_clock << ' ' << board.state.fullmove_count;
         return os;
     }
 
-    inline std::ostream& FormatFenPosition(std::ostream& os, const Board& board)
+    inline std::string FormatFenPosition(const Board& board)
     {
-        FormatFenRank(os, board, kRank8) << '/';
-        FormatFenRank(os, board, kRank7) << '/';
-        FormatFenRank(os, board, kRank6) << '/';
-        FormatFenRank(os, board, kRank5) << '/';
-        FormatFenRank(os, board, kRank4) << '/';
-        FormatFenRank(os, board, kRank3) << '/';
-        FormatFenRank(os, board, kRank2) << '/';
-        FormatFenRank(os, board, kRank1) << ' ';
-        FormatFenSide(os, board.state.side) << ' ';
-        FormatFenCastlingRights(os, board.state.castling_rights) << ' ';
-        FormatFenEnPassantTarget(os, board.state) << ' ';
-        os << board.state.halfmove_clock << ' ';
-        os << board.state.fullmove_count;
-        return os;
+        std::ostringstream oss;
+        FormatFenPosition(oss, board);
+        return oss.str();
+    }
+
+    inline std::ostream& operator<<(std::ostream& os, const Board& board)
+    {
+        return FormatFenPosition(os, board);
     }
 }
 

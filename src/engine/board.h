@@ -32,6 +32,7 @@ namespace cohen_chess
     {
         constexpr Piece     on(Square) const;
         constexpr void      put(Piece, Square);
+
         constexpr void      clear();
         constexpr void      make(Move);
         constexpr void      unmake(Move, const BoardState&);
