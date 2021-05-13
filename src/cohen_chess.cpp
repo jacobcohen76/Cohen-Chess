@@ -1,84 +1,47 @@
-#include "cohen_chess.h"
+#include <cohen_chess.hpp>
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
-void TestMagicBishopAttacks()
+
+const std::string kTestPGN =
 {
-    using namespace cohen_chess;
-
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        std::cout << "Square " << CoordinateString(sq) << ":" << std::endl << std::endl;
-        Bitboard mask = MagicBishopMask(sq);
-        Bitboard occ = kEmptyBB;
-        do
-        {
-            Bitboard ray_attacks = RayBishopAttacks(occ, sq);
-            Bitboard magic_attacks = MagicBishopAttacks(occ, sq);
-            std::string ascii_board_occ         = "occ:\n"           + AsciiBoard(occ, '1').to_string();
-            std::string ascii_board_ray         = "ray_attacks:\n"   + AsciiBoard(ray_attacks, '1').to_string();
-            std::string ascii_board_magic = "magic_attacks:\n" + AsciiBoard(magic_attacks, '1').to_string();
-            std::string gap = "   ";
-            std::string merged;
-            merged = util::HorizontalMerge(ascii_board_magic, ascii_board_ray, gap);
-            merged = util::HorizontalMerge(ascii_board_occ, merged, gap);
-            std::cout << merged << std::endl << std::endl;
-            if (ray_attacks != magic_attacks)
-            {
-                std::cout << "ERROR!!!" << std::endl;
-                exit(1);
-            }
-        }
-        while ((occ = (occ - mask) & mask));
-    }
-}
-
-void TestMagicRookAttacks()
-{
-    using namespace cohen_chess;
-
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        std::cout << "Square " << CoordinateString(sq) << ":" << std::endl << std::endl;
-        Bitboard mask = MagicRookMask(sq);
-        Bitboard occ = kEmptyBB;
-        do
-        {
-            Bitboard ray_attacks = RayRookAttacks(occ, sq);
-            Bitboard magic_attacks = MagicRookAttacks(occ, sq);
-            std::string ascii_board_occ         = "occ:\n"           + AsciiBoard(occ, '1').to_string();
-            std::string ascii_board_ray         = "ray_attacks:\n"   + AsciiBoard(ray_attacks, '1').to_string();
-            std::string ascii_board_magic = "magic_attacks:\n" + AsciiBoard(magic_attacks, '1').to_string();
-            std::string gap = "   ";
-            std::string merged;
-            merged = util::HorizontalMerge(ascii_board_magic, ascii_board_ray, gap);
-            merged = util::HorizontalMerge(ascii_board_occ, merged, gap);
-            std::cout << merged << std::endl << std::endl;
-            if (ray_attacks != magic_attacks)
-            {
-                std::cout << "ERROR!!!" << std::endl;
-                exit(1);
-            }
-        }
-        while ((occ = (occ - mask) & mask));
-    }
-}
+    "[Event \"URS-chT\"]\n"
+    "[Site \"URS\"]\n"
+    "[Date \"1966.??.??\"]\n"
+    "[Round \"?\"]\n"
+    "[White \"Bykhovsky, Anatoly A\"]\n"
+    "[Black \"Alburt, Lev O\"]\n"
+    "[Result \"1-0\"]\n"
+    "[WhiteElo \"\"]\n"
+    "[BlackElo \"\"]\n"
+    "[ECO \"B29\"]\n"
+    "\n"
+    "1.e4 c5 2.Nf3 Nf6 3.e5 Nd5 4.Nc3 e6 5.Ne4 Qc7 6.b3 Nc6 7.Bb2 Nd4 8.Bc4 Nb4\n"
+    "9.O-O Nbxc2 10.Rc1 Qc6 11.Rxc2 Qxe4 12.Nxd4 cxd4 13.Qc1 Bb4 14.Bd3 Qxd3 15.Rxc8+ Ke7\n"
+    "16.Rxh8 Rxh8 17.a3 Bxd2 18.Qc5+ Kd8 19.Qxa7 Bc3 20.Qb8+ Ke7 21.Qd6+ Kd8 22.Qb8+ Ke7\n"
+    "23.Qd6+ Kd8 24.Bxc3 Qxc3 25.Rd1 f6 26.g3 Qc7 27.Qxd4 fxe5 28.Qg4 Re8 29.Qxg7 d5\n"
+    "30.Qg5+ Kd7 31.Rc1 Qb8 32.b4 e4 33.b5 Qd6 34.Qg7+ Re7 35.Qh8 Re8 36.Qg7+ Qe7\n"
+    "37.Qc3 Rd8 38.b6 e5 39.Qc7+ Ke8 40.Qxe7+ Kxe7 41.Rc7+ Rd7 42.Rxd7+ Kxd7 43.g4 d4\n"
+    "44.h4 Ke6 45.Kf1 Kd5 46.Ke2 Kc4 47.Kd2  1-0"
+};
 
 int main(int argc, char* argv[])
 {
-    TestMagicBishopAttacks();
-    TestMagicRookAttacks();
-    std::cout << "SUCCESS!!!" << std::endl;
+    std::cout << "Hello World!" << std::endl;
+    
+    cohen_chess::Board board = {};
+    cohen_chess::SetFenPosition(cohen_chess::kFenStartingPosition, board);
+    std::cout << cohen_chess::AsciiBoard(board) << std::endl;
 
-    // Bitboard occ = 0xAB83EF87C7123;
-    // std::cout << "occ:" << std::endl;
-    // std::cout << io::AsciiBoard(occ) << std::endl << std::endl;
+    cohen_chess::GameLog log;
+    std::istringstream iss{kTestPGN};
+    cohen_chess::ParsePGN(iss, log);
 
-    // std::cout << "RayBishopAttacks:" << std::endl;
-    // std::cout << io::AsciiBoard(RayBishopAttacks(occ, kD5)) << std::endl << std::endl;
-    // cohen_chess::LookupSquareBB(kA2);
-
-    // std::cout << io::AsciiBoard(0x7f7f7f7f7f7f7f7f) << std::endl << std::endl;
-
+    for (auto pair : log.tag_map)
+    {
+        std::cout << "key='" << pair.first << "',value='" << pair.second << "'" << std::endl;
+    }
     return 0;
 }
