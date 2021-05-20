@@ -1,8 +1,8 @@
 #ifndef COHEN_CHESS_ENGINE_GAME_LOG_HPP_INCLUDED
 #define COHEN_CHESS_ENGINE_GAME_LOG_HPP_INCLUDED
 
+#include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace cohen_chess
@@ -41,16 +41,18 @@ namespace cohen_chess
         constexpr std::vector<std::string>::reverse_iterator rend() noexcept;
         constexpr std::vector<std::string>::const_reverse_iterator rend() const noexcept;
         constexpr std::vector<std::string>::const_reverse_iterator crend() const noexcept;
-    
+
     // private:
-        std::unordered_map<std::string, std::string> tag_map;
         std::vector<std::string> move_list;
+        std::multimap<size_t, std::string> comment_map;
+        std::map<std::string, std::string> tag_map;
     };
 
     inline void GameLog::clear() noexcept
     {
-        tag_map.clear();
         move_list.clear();
+        comment_map.clear();
+        tag_map.clear();
     }
 
     inline bool GameLog::contains(const std::string& key) const

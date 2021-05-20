@@ -13,6 +13,7 @@
 #include <io/ascii_board.hpp>
 #include <io/cecp.hpp>
 #include <io/fen.hpp>
+#include <io/parse.hpp>
 #include <io/pgn.hpp>
 #include <io/uci.hpp>
 
