@@ -5,150 +5,182 @@
 #include <io/parse.hpp>
 
 #include <iostream>
-#include <locale>
+#include <sstream>
 
 namespace cohen_chess
 {
-    const std::array<std::string, 7> kSevenTagRoster =
-    {
-        "Event",
-        "Site",
-        "Date",
-        "Round",
-        "White",
-        "Black",
-        "Result",
-    };
-
     inline bool IsPgnResult(const std::string& token)
     {
         return token == "1-0" || token == "0-1" || token == "1/2-1/2" || token == "*";
     }
 
-    inline std::istream& ParseImportPgnTagPair(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnImportTag(std::istream& is, GameLog& log)
     {
         std::string key, value;
         if (is >> std::ws, is.get() != '[')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected '[' token");
         is >> std::ws >> key;
         if (is >> std::ws, is.get() != '"')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected \" token");
         std::getline(is, value, '"');
         if (is >> std::ws, is.get() != ']')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected ']' token");
         log[key] = value;
         return is;
     }
 
-    inline std::istream& ParseExportPgnTagPair(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnExportTag(std::istream& is, GameLog& log)
     {
         std::string key, value;
         if (is.get() != '[')
-            return is.setstate(std::ios::failbit), is;
-        is >> key;
-        if (is.get() != ' ')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected '[' token");
+        is >> key >> std::ws;
         if (is.get() != '"')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected \" token");
         std::getline(is, value, '"');
         if (is.get() != ']')
-            return is.setstate(std::ios::failbit), is;
+            throw ParseError("expected ']' token");
+        if (log.contains_tag(key))
+            throw ParseError("duplicate tag key");
         log[key] = value;
         return is;
     }
 
-    inline std::istream& ParseImportPgnTags(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnImportTags(std::istream& is, GameLog& log)
     {
         std::string line;
         while (std::getline(is, line), line.find('[') != std::string::npos)
         {
             std::istringstream line_iss(line);
-            ParseImportPgnTagPair(line_iss, log);
-            if (line_iss.fail())
-            {
-                return is.setstate(std::ios::failbit), is;
-            }
+            ParsePgnImportTag(line_iss, log);
         }
         return is;
     }
 
-    inline std::istream& ParseExportPgnTags(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnExportTags(std::istream& is, GameLog& log)
     {
         std::string line;
-        while (std::getline(is, line), line.size())
+        while (std::getline(is, line), line.size() == 0)
         {
             std::istringstream line_iss(line);
-            ParseExportPgnTagPair(line_iss, log);
-            if (line_iss.fail() || line_iss.get() != -1)
-            {
-                return is.setstate(std::ios::failbit), is;
-            }
+            ParsePgnExportTag(line_iss, log);
+            if (line_iss.get() != -1)
+                throw ParseError("expected '\\n' token");
         }
         return is;
     }
 
-    inline std::istream& ParseImportPgnMoves(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnImportMoveNumber(std::istream& is, size_t& ply)
+    {
+
+        return is;
+    }
+
+    inline std::istream& ParsePgnImportMovetext(std::istream& is, GameLog& log)
     {
         std::string token;
-        size_t ply;
+        size_t ply = 0;
+        char curr, next;
         while (is >> std::ws, !is.eof() && !IsPgnResult(token))
         {
-            char ch = is.peek();
-            if (ch == ';')
+            curr = is.peek();
+            if (curr == ';')
             {
                 std::getline(is, token);
-                // log.comment(token);
+                log.comments(ply).push_back(token);
             }
-            else if (ch == '{')
+            else if (curr == '{')
             {
                 std::getline(is, token, '}');
-                // log.comment(token + '}');
+                log.comments(ply).push_back(token + '}');
             }
-            else if (ch == '.')
+            else if (curr == '*')
             {
-                token = (ch = is.get());
+                token = is.get();
             }
-            else if (ch == '0' || ch == '1' || ch == '*')
+            else if (std::isdigit(curr))
             {
-                
-            }
-            else if (std::isdigit(ch))
-            {
-                is >> ply;
-                token = std::to_string(ply);
+                curr = is.get(), next = is.peek(), is.unget();
+                if ((curr == '0' || curr == '1') && (next == '-' || next == '/'))
+                {
+                    is >> token;
+                }
+                else
+                {
+                    is >> ply >> std::ws >> curr, next = is.peek();
+                    ply = (ply - 1) * 2 + (next == '.');
+                    if (next == '.' && (is.get(), is.get() != '.'))
+                        throw ParseError("expected '...' token");
+                }
             }
             else
             {
                 is >> token;
+                log[ply++] = token;
             }
-            std::cout << "token='" << token << "'" << std::endl;
         }
         return is;
     }
 
-    inline std::istream& ParseExportPgnMoves(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnExportMovetext(std::istream& is, GameLog& log)
     {
+        std::string token;
+        size_t ply = 0;
+        char curr, next;
+        while (!is.eof() && !IsPgnResult(token))
+        {
+            curr = is.peek();
+            if (curr == ';')
+            {
+                std::getline(is, token);
+                log.comments(ply).push_back(token);
+            }
+            else if (curr == '{')
+            {
+                std::getline(is, token, '}');
+                log.comments(ply).push_back(token + '}');
+            }
+            else if (curr == '*')
+            {
+                token = is.get();
+            }
+            else if (std::isdigit(curr))
+            {
+                curr = is.get(), next = is.peek(), is.unget();
+                if ((curr == '0' || curr == '1') && (next == '-' || next == '/'))
+                {
+                    is >> token;
+                }
+                else
+                {
+                    is >> ply >> curr, next = is.peek();
+                    ply = (ply - 1) * 2 + (next == '.');
+                    if (next == '.' && (is.get(), is.get() != '.'))
+                        throw ParseError("expected '...' token");
+                }
+            }
+            else
+            {
+                is >> token;
+                log[ply++] = token;
+            }
+        }
         return is;
     }
 
-    inline std::istream& ParseImportPgn(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnImport(std::istream& is, GameLog& log)
     {
-        ParseImportPgnTags(is, log);
-        ParseImportPgnMoves(is, log);
+        ParsePgnImportTags(is, log);
+        ParsePgnImportMovetext(is, log);
         return is;
     }
 
-    inline std::istream& ParseExportPgn(std::istream& is, GameLog& log)
+    inline std::istream& ParsePgnExport(std::istream& is, GameLog& log)
     {
-        ParseExportPgnTags(is, log);
-        ParseExportPgnMoves(is, log);
+        ParsePgnExportTags(is, log);
+        ParsePgnExportMovetext(is, log);
         return is;
     }
-
-    // inline std::istream& operator>>(std::istream& is, GameLog& log)
-    // {
-    //     return is;
-    // }
 }
 
 #endif

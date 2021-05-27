@@ -73,7 +73,7 @@ namespace cohen_chess
         std::array<Bitboard, kSquareNB> attack_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            attack_table[sq] = SetwiseKingAttacks(SquareBB(sq));
+            attack_table[sq] = SetwiseKnightAttacks(SquareBB(sq));
         }
         return attack_table;
     }();

@@ -27,6 +27,170 @@ namespace cohen_chess
         kEdgesBB        = 0xFF818181818181FF,
     };
 
+    namespace bitboard
+    {
+        constexpr Bitboard kBitboardSquareA1 = 0x0000000000000001;
+        constexpr Bitboard kBitboardRank1    = 0x00000000000000FF;
+        constexpr Bitboard kBitboardFileA    = 0x0101010101010101;
+
+        constexpr std::array<Bitboard, kSquareNB> kSquareTable = []()
+        {
+            std::array<Bitboard, kSquareNB> square_table = {};
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
+            {
+                square_table[sq] = kBitboardSquareA1 << sq;
+            }
+            return square_table;
+        }();
+
+        constexpr std::array<Bitboard, kRankNB> kRankTable = []()
+        {
+            std::array<Bitboard, kRankNB> rank_table = {};
+            for (Rank rank = kRank1; rank < kRankNB; ++rank)
+            {
+                rank_table[rank] = kBitboardRank1 << (rank << 3);
+            }
+            return rank_table;
+        }();
+
+        constexpr std::array<Bitboard, kFileNB> kFileTable = []()
+        {
+            std::array<Bitboard, kFileNB> file_table = {};
+            for (File file = kFileA; file < kFileNB; ++file)
+            {
+                file_table[file] = kBitboardFileA << file;
+            }
+            return file_table;
+        }();
+        
+        constexpr std::array<Bitboard, kDiagNB> kDiagTable =
+        {
+            0x0000000000000080,
+            0x0000000000008040,
+            0x0000000000804020,
+            0x0000000080402010,
+            0x0000008040201008,
+            0x0000804020100804,
+            0x0080402010080402,
+            0x8040201008040201,
+            0x4020100804020100,
+            0x2010080402010000,
+            0x1008040201000000,
+            0x0804020100000000,
+            0x0402010000000000,
+            0x0201000000000000,
+            0x0100000000000000,
+        };
+
+        constexpr std::array<Bitboard, kAntiNB> kAntiTable = 
+        {
+            0x0000000000000001,
+            0x0000000000000102,
+            0x0000000000010204,
+            0x0000000001020408,
+            0x0000000102040810,
+            0x0000010204081020,
+            0x0001020408102040,
+            0x0102040810204080,
+            0x0204081020408000,
+            0x0408102040800000,
+            0x0810204080000000,
+            0x1020408000000000,
+            0x2040800000000000,
+            0x4080000000000000,
+            0x8000000000000000,
+        };
+
+        constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kLineTable = []()
+        {
+            std::array<std::array<Bitboard, kSquareNB>, kSquareNB> line_table = {};
+            for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
+            {
+                for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
+                {
+                    Bitboard bb = kEmptyBB;
+                    Direction dir = RayBetween(sq1, sq2);
+                    if (dir)
+                    {
+                        Square itr = sq1;
+                        while (itr != sq2)
+                        {
+                            bb |= kBitboardSquareA1 << itr;
+                            itr += dir;
+                        }
+                        bb |= kBitboardSquareA1 << itr;
+                    }
+                    line_table[sq1][sq2] = bb;
+                    line_table[sq2][sq1] = bb;
+                }
+            }
+            return line_table;
+        }();
+        
+        constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenTable = []()
+        {
+            std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
+            for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
+            {
+                for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
+                {
+                    Bitboard bb = kEmptyBB;
+                    Direction dir = RayBetween(sq1, sq2);
+                    if (dir)
+                    {
+                        Square itr = sq1 + dir;
+                        while (itr != sq2)
+                        {
+                            bb |= kBitboardSquareA1 << itr;
+                            itr += dir;
+                        }
+                    }
+                    between_table[sq1][sq2] = bb;
+                    between_table[sq2][sq1] = bb;
+                }
+            }
+            return between_table;
+        }();
+
+        consteval std::array<Bitboard, kSquareNB> MakeRayTable(Direction dir)
+        {
+            std::array<Bitboard, kSquareNB> ray_table = {};
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
+            {
+                Bitboard bb = kEmptyBB;
+                Square itr = sq;
+                while (CanStep(itr, dir))
+                {
+                    itr += dir;
+                    bb |= kBitboardSquareA1 << itr;
+                }
+                ray_table[sq] = bb;
+            }
+            return ray_table;
+        }
+
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthTable          = MakeRayTable(kNorth);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthTable          = MakeRayTable(kSouth);
+        constexpr std::array<Bitboard, kSquareNB> kRayEastTable           = MakeRayTable(kEast);
+        constexpr std::array<Bitboard, kSquareNB> kRayWestTable           = MakeRayTable(kWest);
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthEastTable      = MakeRayTable(kNorthEast);
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthWestTable      = MakeRayTable(kNorthWest);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthEastTable      = MakeRayTable(kSouthEast);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthWestTable      = MakeRayTable(kSouthWest);
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthTable     = MakeRayTable(kNorthNorth);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthTable     = MakeRayTable(kSouthSouth);
+        constexpr std::array<Bitboard, kSquareNB> kRayEastEastTable       = MakeRayTable(kEastEast);
+        constexpr std::array<Bitboard, kSquareNB> kRayWestWestTable       = MakeRayTable(kWestWest);
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthEastTable = MakeRayTable(kNorthNorthEast);
+        constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthWestTable = MakeRayTable(kNorthNorthWest);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthEastTable = MakeRayTable(kSouthSouthEast);
+        constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthWestTable = MakeRayTable(kSouthSouthWest);
+        constexpr std::array<Bitboard, kSquareNB> kRayEastEastNorthTable  = MakeRayTable(kEastEastNorth);
+        constexpr std::array<Bitboard, kSquareNB> kRayEastEastSouthTable  = MakeRayTable(kEastEastSouth);
+        constexpr std::array<Bitboard, kSquareNB> kRayWestWestNorthTable  = MakeRayTable(kWestWestNorth);
+        constexpr std::array<Bitboard, kSquareNB> kRayWestWestSouthTable  = MakeRayTable(kWestWestSouth);
+    }
+
     constexpr Bitboard MirrorBitboardRank(Bitboard bb)
     {
         return __builtin_bswap64(bb);
@@ -73,200 +237,40 @@ namespace cohen_chess
         return bb;
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kSquareTable = []()
-    {
-        constexpr Bitboard kBitboardSquareA1 = 0x0000000000000001;
-        std::array<Bitboard, kSquareNB> square_table = {};
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
-        {
-            square_table[sq] = kBitboardSquareA1 << sq;
-        }
-        return square_table;
-    }();
-
     constexpr Bitboard SquareBB(Square sq)
     {
-        return kSquareTable[sq];
+        return bitboard::kSquareTable[sq];
     }
-
-    constexpr std::array<Bitboard, kRankNB> kRankTable = []()
-    {
-        constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
-        std::array<Bitboard, kRankNB> rank_table = {};
-        for (Rank rank = kRank1; rank < kRankNB; ++rank)
-        {
-            rank_table[rank] = kBitboardRank1 << (rank << 3);
-        }
-        return rank_table;
-    }();
 
     constexpr Bitboard RankBB(Rank rank)
     {
-        return kRankTable[rank];
+        return bitboard::kRankTable[rank];
     }
-
-    constexpr std::array<Bitboard, kFileNB> kFileTable = []()
-    {
-        constexpr Bitboard kBitboardFileA = 0x0101010101010101;
-        std::array<Bitboard, kFileNB> file_table = {};
-        for (File file = kFileA; file < kFileNB; ++file)
-        {
-            file_table[file] = kBitboardFileA << file;
-        }
-        return file_table;
-    }();
 
     constexpr Bitboard FileBB(File file)
     {
-        return kFileTable[file];
+        return bitboard::kFileTable[file];
     }
-
-    constexpr std::array<Bitboard, kDiagNB> kDiagTable =
-    {
-        0x0000000000000080,
-        0x0000000000008040,
-        0x0000000000804020,
-        0x0000000080402010,
-        0x0000008040201008,
-        0x0000804020100804,
-        0x0080402010080402,
-        0x8040201008040201,
-        0x4020100804020100,
-        0x2010080402010000,
-        0x1008040201000000,
-        0x0804020100000000,
-        0x0402010000000000,
-        0x0201000000000000,
-        0x0100000000000000,
-    };
 
     constexpr Bitboard DiagBB(Diag diag)
     {
-        return kDiagTable[diag];
+        return bitboard::kDiagTable[diag];
     }
-
-    constexpr std::array<Bitboard, kAntiNB> kAntiTable = 
-    {
-        0x0000000000000001,
-        0x0000000000000102,
-        0x0000000000010204,
-        0x0000000001020408,
-        0x0000000102040810,
-        0x0000010204081020,
-        0x0001020408102040,
-        0x0102040810204080,
-        0x0204081020408000,
-        0x0408102040800000,
-        0x0810204080000000,
-        0x1020408000000000,
-        0x2040800000000000,
-        0x4080000000000000,
-        0x8000000000000000,
-    };
 
     constexpr Bitboard AntiBB(Anti anti)
     {
-        return kAntiTable[anti];
+        return bitboard::kAntiTable[anti];
     }
-
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kLineTable = []()
-    {
-        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> line_table = {};
-        for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
-        {
-            for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
-            {
-                Bitboard bb = kEmptyBB;
-                Direction dir = RayBetween(sq1, sq2);
-                if (dir)
-                {
-                    Square itr = sq1;
-                    while (itr != sq2)
-                    {
-                        bb |= SquareBB(itr);
-                        itr += dir;
-                    }
-                    bb |= SquareBB(sq2);
-                }
-                line_table[sq1][sq2] = bb;
-                line_table[sq2][sq1] = bb;
-            }
-        }
-        return line_table;
-    }();
 
     constexpr Bitboard LineBB(Square sq1, Square sq2)
     {
-        return kLineTable[sq1][sq2];
+        return bitboard::kLineTable[sq1][sq2];
     }
-
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenTable = []()
-    {
-        std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
-        for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
-        {
-            for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
-            {
-                Bitboard bb = kEmptyBB;
-                Direction dir = RayBetween(sq1, sq2);
-                if (dir)
-                {
-                    Square itr = sq1 + dir;
-                    while (itr != sq2)
-                    {
-                        bb |= SquareBB(itr);
-                        itr += dir;
-                    }
-                }
-                between_table[sq1][sq2] = bb;
-                between_table[sq2][sq1] = bb;
-            }
-        }
-        return between_table;
-    }();
 
     constexpr Bitboard BetweenBB(Square sq1, Square sq2)
     {
-        return kBetweenTable[sq1][sq2];
+        return bitboard::kBetweenTable[sq1][sq2];
     }
-
-    constexpr std::array<Bitboard, kSquareNB> MakeRayTable(Direction dir)
-    {
-        std::array<Bitboard, kSquareNB> ray_table = {};
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
-        {
-            Bitboard bb = kEmptyBB;
-            Square itr = sq;
-            while (CanStep(itr, dir))
-            {
-                itr += dir;
-                bb |= SquareBB(itr);
-            }
-            ray_table[sq] = bb;
-        }
-        return ray_table;
-    }
-
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthTable            = MakeRayTable(kNorth);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthTable            = MakeRayTable(kSouth);
-    constexpr std::array<Bitboard, kSquareNB> kRayEastTable             = MakeRayTable(kEast);
-    constexpr std::array<Bitboard, kSquareNB> kRayWestTable             = MakeRayTable(kWest);
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthEastTable        = MakeRayTable(kNorthEast);
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthWestTable        = MakeRayTable(kNorthWest);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthEastTable        = MakeRayTable(kSouthEast);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthWestTable        = MakeRayTable(kSouthWest);
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthTable       = MakeRayTable(kNorthNorth);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthTable       = MakeRayTable(kSouthSouth);
-    constexpr std::array<Bitboard, kSquareNB> kRayEastEastTable         = MakeRayTable(kEastEast);
-    constexpr std::array<Bitboard, kSquareNB> kRayWestWestTable         = MakeRayTable(kWestWest);
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthEastTable   = MakeRayTable(kNorthNorthEast);
-    constexpr std::array<Bitboard, kSquareNB> kRayNorthNorthWestTable   = MakeRayTable(kNorthNorthWest);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthEastTable   = MakeRayTable(kSouthSouthEast);
-    constexpr std::array<Bitboard, kSquareNB> kRaySouthSouthWestTable   = MakeRayTable(kSouthSouthWest);
-    constexpr std::array<Bitboard, kSquareNB> kRayEastEastNorthTable    = MakeRayTable(kEastEastNorth);
-    constexpr std::array<Bitboard, kSquareNB> kRayEastEastSouthTable    = MakeRayTable(kEastEastSouth);
-    constexpr std::array<Bitboard, kSquareNB> kRayWestWestNorthTable    = MakeRayTable(kWestWestNorth);
-    constexpr std::array<Bitboard, kSquareNB> kRayWestWestSouthTable    = MakeRayTable(kWestWestSouth);
 
     template <Direction dir>
     constexpr Bitboard RayBB(Square sq)
@@ -277,121 +281,121 @@ namespace cohen_chess
     template <>
     constexpr Bitboard RayBB<kNorth>(Square sq)
     {
-        return kRayNorthTable[sq];
+        return bitboard::kRayNorthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouth>(Square sq)
     {
-        return kRaySouthTable[sq];
+        return bitboard::kRaySouthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kEast>(Square sq)
     {
-        return kRayEastTable[sq];
+        return bitboard::kRayEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kWest>(Square sq)
     {
-        return kRayWestTable[sq];
+        return bitboard::kRayWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kNorthEast>(Square sq)
     {
-        return kRayNorthEastTable[sq];
+        return bitboard::kRayNorthEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kNorthWest>(Square sq)
     {
-        return kRayNorthWestTable[sq];
+        return bitboard::kRayNorthWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouthEast>(Square sq)
     {
-        return kRaySouthEastTable[sq];
+        return bitboard::kRaySouthEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouthWest>(Square sq)
     {
-        return kRaySouthWestTable[sq];
+        return bitboard::kRaySouthWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kNorthNorth>(Square sq)
     {
-        return kRayNorthNorthTable[sq];
+        return bitboard::kRayNorthNorthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouthSouth>(Square sq)
     {
-        return kRaySouthSouthTable[sq];
+        return bitboard::kRaySouthSouthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kEastEast>(Square sq)
     {
-        return kRayEastEastTable[sq];
+        return bitboard::kRayEastEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kWestWest>(Square sq)
     {
-        return kRayWestWestTable[sq];
+        return bitboard::kRayWestWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kNorthNorthEast>(Square sq)
     {
-        return kRayNorthNorthEastTable[sq];
+        return bitboard::kRayNorthNorthEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kNorthNorthWest>(Square sq)
     {
-        return kRayNorthNorthWestTable[sq];
+        return bitboard::kRayNorthNorthWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouthSouthEast>(Square sq)
     {
-        return kRaySouthSouthEastTable[sq];
+        return bitboard::kRaySouthSouthEastTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kSouthSouthWest>(Square sq)
     {
-        return kRaySouthSouthWestTable[sq];
+        return bitboard::kRaySouthSouthWestTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kEastEastNorth>(Square sq)
     {
-        return kRayEastEastNorthTable[sq];
+        return bitboard::kRayEastEastNorthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kEastEastSouth>(Square sq)
     {
-        return kRayEastEastSouthTable[sq];
+        return bitboard::kRayEastEastSouthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kWestWestNorth>(Square sq)
     {
-        return kRayWestWestNorthTable[sq];
+        return bitboard::kRayWestWestNorthTable[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kWestWestSouth>(Square sq)
     {
-        return kRayWestWestSouthTable[sq];
+        return bitboard::kRayWestWestSouthTable[sq];
     }
 
     template <Direction dir>

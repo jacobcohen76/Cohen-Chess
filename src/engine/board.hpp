@@ -11,11 +11,11 @@ namespace cohen_chess
 {
     struct BoardState
     {
-        constexpr void set_side(Color);
-        constexpr void set_ep_file(File);
-        constexpr void set_castling_rights(CastlingRights);
-        constexpr void mask_castling_rights(CastlingRights);
-        constexpr void update_castling_rights(Square, Square);
+        constexpr void  set_side(Color);
+        constexpr void  set_ep_file(File);
+        constexpr void  set_castling_rights(CastlingRights);
+        constexpr void  mask_castling_rights(CastlingRights);
+        constexpr void  update_castling_rights(Square, Square);
 
         Key             key, pawn_key;
         Bitboard        checks;
@@ -29,19 +29,19 @@ namespace cohen_chess
 
     struct Board
     {
-        constexpr Piece     on(Square) const;
-        constexpr void      put(Piece, Square);
+        constexpr Piece on(Square) const;
+        constexpr void  put(Piece, Square);
 
-        constexpr void      clear();
-        constexpr void      make(Move);
-        constexpr void      unmake(Move, const BoardState&);
+        constexpr void  clear();
+        constexpr void  make(Move);
+        constexpr void  unmake(Move, const BoardState&);
 
     private:
-        constexpr Piece     capture(Square);
-        constexpr void      emplace(Piece, Square);
-        constexpr void      remove(Piece, Square);
-        constexpr void      promote(PieceType, Square);
-        constexpr void      push(Square, Square);
+        constexpr Piece capture(Square);
+        constexpr void  emplace(Piece, Square);
+        constexpr void  remove(Piece, Square);
+        constexpr void  promote(PieceType, Square);
+        constexpr void  push(Square, Square);
 
     public:
         Bitboard        bitboards[kPieceNB];

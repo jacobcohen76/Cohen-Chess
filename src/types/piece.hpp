@@ -7,7 +7,7 @@
 
 namespace cohen_chess
 {
-    typedef uint8_t PieceType;
+    typedef uint8_t PieceType, Piece;
 
     enum : PieceType
     {
@@ -21,8 +21,6 @@ namespace cohen_chess
         kPieceTypeAll   = 7,
         kPieceTypeNB    = 8,
     };
-
-    typedef uint8_t Piece;
 
     enum : Piece
     {

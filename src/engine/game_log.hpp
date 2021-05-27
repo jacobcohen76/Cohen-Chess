@@ -7,57 +7,64 @@
 
 namespace cohen_chess
 {
-    class GameLog
+    struct GameLog
     {
-    public:
         inline void clear() noexcept;
 
-        inline bool contains(const std::string&) const;
+        inline bool contains_tag(const std::string&) const;
+        inline bool contains_comment(const size_t&) const;
+        inline bool contains_move(const size_t&) const;
 
         inline std::string& operator[](const std::string&);
-        inline std::string& operator[](std::string&&);
+        inline const std::string& operator[](const std::string&) const;
 
-        constexpr void push_back(const std::string&);
-        constexpr void push_back(std::string&&);
+        inline std::string& operator[](const size_t&);
+        inline const std::string& operator[](const size_t&) const;
 
-        constexpr std::string& at(size_t);
-        constexpr const std::string& at(size_t) const;
+        inline std::vector<std::string>& comments(const size_t&);
+        inline const std::vector<std::string>& comments(const size_t&) const;
 
-        constexpr std::string& operator[](size_t);
-        constexpr const std::string& operator[](size_t) const;
+        inline std::map<size_t, std::string>::iterator begin() noexcept;
+        inline std::map<size_t, std::string>::const_iterator begin() const noexcept;
+        inline std::map<size_t, std::string>::const_iterator cbegin() const noexcept;
 
-        constexpr std::vector<std::string>::iterator begin() noexcept;
-        constexpr std::vector<std::string>::const_iterator begin() const noexcept;
-        constexpr std::vector<std::string>::const_iterator cbegin() const noexcept;
+        inline std::map<size_t, std::string>::iterator end() noexcept;
+        inline std::map<size_t, std::string>::const_iterator end() const noexcept;
+        inline std::map<size_t, std::string>::const_iterator cend() const noexcept;
 
-        constexpr std::vector<std::string>::iterator end() noexcept;
-        constexpr std::vector<std::string>::const_iterator end() const noexcept;
-        constexpr std::vector<std::string>::const_iterator cend() const noexcept;
+        inline std::map<size_t, std::string>::reverse_iterator rbegin() noexcept;
+        inline std::map<size_t, std::string>::const_reverse_iterator rbegin() const noexcept;
+        inline std::map<size_t, std::string>::const_reverse_iterator crbegin() const noexcept;
 
-        constexpr std::vector<std::string>::reverse_iterator rbegin() noexcept;
-        constexpr std::vector<std::string>::const_reverse_iterator rbegin() const noexcept;
-        constexpr std::vector<std::string>::const_reverse_iterator crbegin() const noexcept;
+        inline std::map<size_t, std::string>::reverse_iterator rend() noexcept;
+        inline std::map<size_t, std::string>::const_reverse_iterator rend() const noexcept;
+        inline std::map<size_t, std::string>::const_reverse_iterator crend() const noexcept;
 
-        constexpr std::vector<std::string>::reverse_iterator rend() noexcept;
-        constexpr std::vector<std::string>::const_reverse_iterator rend() const noexcept;
-        constexpr std::vector<std::string>::const_reverse_iterator crend() const noexcept;
-
-    // private:
-        std::vector<std::string> move_list;
-        std::multimap<size_t, std::string> comment_map;
         std::map<std::string, std::string> tag_map;
+        std::map<size_t, std::vector<std::string>> comment_map;
+        std::map<size_t, std::string> move_map;
     };
 
     inline void GameLog::clear() noexcept
     {
-        move_list.clear();
-        comment_map.clear();
         tag_map.clear();
+        comment_map.clear();
+        move_map.clear();
     }
 
-    inline bool GameLog::contains(const std::string& key) const
+    inline bool GameLog::contains_tag(const std::string& key) const
     {
-        return tag_map.find(key) != tag_map.end();
+        return tag_map.contains(key);
+    }
+
+    inline bool GameLog::contains_comment(const size_t& halfmove) const
+    {
+        return comment_map.contains(halfmove);
+    }
+
+    inline bool GameLog::contains_move(const size_t& halfmove) const
+    {
+        return move_map.contains(halfmove);
     }
 
     inline std::string& GameLog::operator[](const std::string& key)
@@ -65,99 +72,89 @@ namespace cohen_chess
         return tag_map[key];
     }
 
-    inline std::string& GameLog::operator[](std::string&& key)
+    inline const std::string& GameLog::operator[](const std::string& key) const
     {
-        return tag_map[key];
+        return tag_map.at(key);
     }
 
-    constexpr void GameLog::push_back(const std::string& value)
+    inline std::string& GameLog::operator[](const size_t& halfmove)
     {
-        move_list.push_back(value);
+        return move_map[halfmove];
     }
 
-    constexpr void GameLog::push_back(std::string&& value)
+    inline const std::string& GameLog::operator[](const size_t& halfmove) const
     {
-        move_list.push_back(value);
+        return move_map.at(halfmove);
     }
 
-    constexpr std::string& GameLog::at(size_t index)
+    inline std::vector<std::string>& GameLog::comments(const size_t& halfmove)
     {
-        return move_list.at(index);
+        return comment_map[halfmove];
     }
 
-    constexpr const std::string& GameLog::at(size_t index) const
+    inline const std::vector<std::string>& GameLog::comments(const size_t& halfmove) const
     {
-        return move_list.at(index);
+        return comment_map.at(halfmove);
     }
 
-    constexpr std::string& GameLog::operator[](size_t ply)
+    inline std::map<size_t, std::string>::iterator GameLog::begin() noexcept
     {
-        return move_list[ply];
+        return move_map.begin();
     }
 
-    constexpr const std::string& GameLog::operator[](size_t ply) const
+    inline std::map<size_t, std::string>::const_iterator GameLog::begin() const noexcept
     {
-        return move_list[ply];
+        return move_map.begin();
     }
 
-    constexpr std::vector<std::string>::iterator GameLog::begin() noexcept
+    inline std::map<size_t, std::string>::const_iterator GameLog::cbegin() const noexcept
     {
-        return move_list.begin();
+        return move_map.cbegin();
     }
 
-    constexpr std::vector<std::string>::const_iterator GameLog::begin() const noexcept
+    inline std::map<size_t, std::string>::iterator GameLog::end() noexcept
     {
-        return move_list.begin();
+        return move_map.end();
     }
 
-    constexpr std::vector<std::string>::const_iterator GameLog::cbegin() const noexcept
+    inline std::map<size_t, std::string>::const_iterator GameLog::end() const noexcept
     {
-        return move_list.cbegin();
+        return move_map.end();
     }
 
-    constexpr std::vector<std::string>::iterator GameLog::end() noexcept
+    inline std::map<size_t, std::string>::const_iterator GameLog::cend() const noexcept
     {
-        return move_list.end();
+        return move_map.cend();
     }
 
-    constexpr std::vector<std::string>::const_iterator GameLog::end() const noexcept
+    inline std::map<size_t, std::string>::reverse_iterator GameLog::rbegin() noexcept
     {
-        return move_list.end();
+        return move_map.rbegin();
     }
 
-    constexpr std::vector<std::string>::const_iterator GameLog::cend() const noexcept
+    inline std::map<size_t, std::string>::const_reverse_iterator GameLog::rbegin() const noexcept
     {
-        return move_list.cend();
+        return move_map.rbegin();
     }
 
-    constexpr std::vector<std::string>::reverse_iterator GameLog::rbegin() noexcept
+    inline std::map<size_t, std::string>::const_reverse_iterator GameLog::crbegin() const noexcept
     {
-        return move_list.rbegin();
+        return move_map.crbegin();
     }
 
-    constexpr std::vector<std::string>::const_reverse_iterator GameLog::rbegin() const noexcept
+    inline std::map<size_t, std::string>::reverse_iterator GameLog::rend() noexcept
     {
-        return move_list.rbegin();
+        return move_map.rend();
     }
 
-    constexpr std::vector<std::string>::const_reverse_iterator GameLog::crbegin() const noexcept
+    inline std::map<size_t, std::string>::const_reverse_iterator GameLog::rend() const noexcept
     {
-        return move_list.crbegin();
+        return move_map.rend();
     }
 
-    constexpr std::vector<std::string>::reverse_iterator GameLog::rend() noexcept
+    inline std::map<size_t, std::string>::const_reverse_iterator GameLog::crend() const noexcept
     {
-        return move_list.rend();
-    }
-
-    constexpr std::vector<std::string>::const_reverse_iterator GameLog::rend() const noexcept
-    {
-        return move_list.rend();
-    }
-
-    constexpr std::vector<std::string>::const_reverse_iterator GameLog::crend() const noexcept
-    {
-        return move_list.crend();
+        return move_map.crend();
     }
 }
 

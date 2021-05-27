@@ -70,7 +70,7 @@ const std::string kTestExportPgn =
     "[BlackElo \"\"]\n"
     "[ECO \"B29\"]\n"
     "\n"
-    "1.e4 c5 2...Nf3 Nf6 3.e5 Nd5 4.Nc3 e6 5.Ne4 Qc7 6.b3 Nc6 7.Bb2 Nd4 8.Bc4 Nb4\n"
+    "1.e4 c5 2.Nf3 Nf6 3.e5 Nd5 4.Nc3 e6 5.Ne4 Qc7 6.b3 Nc6 7.Bb2 Nd4 8.Bc4 Nb4\n"
     "9.O-O Nbxc2 10.Rc1 Qc6 11.Rxc2 Qxe4 12.Nxd4 cxd4 13.Qc1 Bb4 14.Bd3 Qxd3 15.Rxc8+ Ke7\n"
     "16.Rxh8 Rxh8 17.a3 Bxd2 18.Qc5+ Kd8 19.Qxa7 Bc3 20.Qb8+ Ke7 21.Qd6+ Kd8 22.Qb8+ Ke7\n"
     "23.Qd6+ Kd8 24.Bxc3 Qxc3 25.Rd1 f6 26.g3 Qc7 27.Qxd4 fxe5 28.Qg4 Re8 29.Qxg7 d5\n"
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
     std::cout << "Hello World!" << std::endl;
 
     std::cout << sizeof(cohen_chess::Token<char>) << std:: endl;
-    
+
     cohen_chess::Board board = {};
     cohen_chess::SetFenPosition(cohen_chess::kFenStartingPosition, board);
     std::cout << cohen_chess::AsciiBoard(board) << std::endl;
@@ -96,6 +96,11 @@ int main(int argc, char* argv[])
 
     log.clear(); 
     pgn_iss = std::istringstream(kTestExportPgn);
-    cohen_chess::ParseImportPgn(pgn_iss, log);
+    cohen_chess::ParsePgnImport(pgn_iss, log);
+    for (auto itr : log)
+    {
+        std::cout << itr.first << "," << itr.second << std::endl;
+    }
+
     return 0;
 }

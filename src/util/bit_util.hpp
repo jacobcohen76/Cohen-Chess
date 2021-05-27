@@ -11,6 +11,18 @@
 
 namespace cohen_chess
 {
+    template <typename T>
+    constexpr size_t NumBits(T x)
+    {
+        return sizeof(x) * 8;
+    }
+
+    template <typename T>
+    constexpr size_t NumBits()
+    {
+        return sizeof(T) * 8;
+    }
+
     /**
      * Performs a bitwise circular shift left on an unsigned integral type.
      * 
@@ -46,7 +58,7 @@ namespace cohen_chess
     template <std::integral T>
     constexpr T RotateRight(T x, int r)
     {
-        constexpr int kNumBits = std::numeric_limits<T>::digits;
+        constexpr int kNumBits = std::numeric_limits<T>::digits + std::numeric_limits<T>::is_signed;
         if ((r %= kNumBits) == 0)
         {
             return x;

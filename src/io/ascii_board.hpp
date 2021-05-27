@@ -47,7 +47,12 @@ namespace cohen_chess
             '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
         };
 
-        static constexpr size_t index(Square, Color);
+        static constexpr size_t index(Square sq, Color side)
+        {
+            Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
+            File file = RelativeFile(FileOf(sq), side);
+            return 16 * rank + 2 * file;
+        }
 
         Color side = kWhite;
         std::array<char, 128> data = kInitialData;
@@ -127,13 +132,6 @@ namespace cohen_chess
     constexpr const char* AsciiBoard::end() const
     {
         return std::end(data);
-    }
-
-    constexpr size_t AsciiBoard::index(Square sq, Color side)
-    {
-        Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
-        File file = RelativeFile(FileOf(sq), side);
-        return 16 * rank + 2 * file;
     }
 
     inline std::ostream& operator <<(std::ostream& os, const AsciiBoard& ascii_board)

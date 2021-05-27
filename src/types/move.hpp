@@ -8,7 +8,7 @@
 
 namespace cohen_chess
 {
-    typedef uint16_t MoveType;
+    typedef uint16_t MoveType, Move;
 
     enum : MoveType
     {
@@ -17,8 +17,6 @@ namespace cohen_chess
         kEnPassant = 0x8000,
         kCastling  = 0xC000,
     };
-
-    typedef uint16_t Move;
 
     enum : Move
     {
