@@ -20,7 +20,7 @@ INCL   := -I $(SRC)
 
 CPPFLAGS := $(INCL)
 CFLAGS   := 
-CXXFLAGS := $(CXXSTD) $(CXXVRB) $(CXXOPT) -lstdc++ -fconstexpr-steps=2147483647
+CXXFLAGS := $(CXXSTD) $(CXXVRB) $(CXXOPT) -fconstexpr-steps=2147483647
 
 all: cohen_chess
 
