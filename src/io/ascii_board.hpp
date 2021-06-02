@@ -18,15 +18,14 @@ namespace cohen_chess
     {
     public:
         constexpr AsciiBoard() = default;
-        constexpr AsciiBoard(Color);
         constexpr AsciiBoard(Bitboard, char, Color);
         constexpr AsciiBoard(const Board&, Color);
 
-        constexpr void set(Square, char);
-        constexpr void set_all(Bitboard, char);
-        constexpr void set_state(const Board&);
-        constexpr void clear();
-        constexpr void flip();
+        constexpr AsciiBoard& set(Square, char);
+        constexpr AsciiBoard& set_all(Bitboard, char);
+        constexpr AsciiBoard& set_state(const Board&);
+        constexpr AsciiBoard& clear();
+        constexpr AsciiBoard& flip();
 
         constexpr char* begin();
         constexpr char* end();
@@ -58,10 +57,7 @@ namespace cohen_chess
         std::array<char, 128> data = kInitialData;
     };
 
-    constexpr AsciiBoard::AsciiBoard(Color side) :
-        side(side) {}
-
-    constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch, Color side = kWhite) :
+    constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch = '1', Color side = kWhite) :
         side(side)
     {
         set_all(bb, ch);
@@ -73,20 +69,22 @@ namespace cohen_chess
         set_state(board);
     }
 
-    constexpr void AsciiBoard::set(Square sq, char ch)
+    constexpr AsciiBoard& AsciiBoard::set(Square sq, char ch)
     {
         data[index(sq, side)] = ch;
+        return *this;
     }
 
-    constexpr void AsciiBoard::set_all(Bitboard bb, char ch)
+    constexpr AsciiBoard& AsciiBoard::set_all(Bitboard bb, char ch)
     {
         while (bb)
         {
             set(PopLSB(bb), ch);
         }
+        return *this;
     }
 
-    constexpr void AsciiBoard::set_state(const Board& board)
+    constexpr AsciiBoard& AsciiBoard::set_state(const Board& board)
     {
         data = kInitialData;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -96,14 +94,16 @@ namespace cohen_chess
                 set(sq, PieceChar(board.on(sq)));
             }
         }
+        return *this;
     }
 
-    constexpr void AsciiBoard::clear()
+    constexpr AsciiBoard& AsciiBoard::clear()
     {
         data = kInitialData;
+        return *this;
     }
 
-    constexpr void AsciiBoard::flip()
+    constexpr AsciiBoard& AsciiBoard::flip()
     {
         auto flipped = kInitialData;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -112,6 +112,7 @@ namespace cohen_chess
         }
         side ^= kBlack;
         data = flipped;
+        return *this;
     }
 
     constexpr char* AsciiBoard::begin()

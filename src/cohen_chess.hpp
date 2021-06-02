@@ -1,8 +1,6 @@
 #ifndef COHEN_CHESS_COHEN_CHESS_HPP_INCLUDED
 #define COHEN_CHESS_COHEN_CHESS_HPP_INCLUDED
 
-#define NDEBUG
-
 #include <engine/attacks.hpp>
 #include <engine/board.hpp>
 #include <engine/move_gen.hpp>

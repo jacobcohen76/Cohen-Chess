@@ -1,31 +1,34 @@
-SHELL    := /bin/sh
+SHELL     = /bin/sh
 
-SRC      := src
-BIN      := bin
+SRC       = src
+BIN       = bin
 
-CC       := gcc-10
-CXX      := clang++
+CC        = clang
+CXX       = clang++
 
-# C++ standard
-CXXSTD := -std=c++20
+CPPNDEBUG = -DNDEBUG
 
-# C++ verboisty
-CXXVRB := -Wall
+CXXVER    = -std=c++20
+CXXVRB    = -Wall
+CXXOPT    = -Ofast
+CXXINCL   = -Isrc
 
-# C++ optimizations
-CXXOPT := -Ofast
+CXXSTDLIB = -stdlib=libstdc++
+CXXLIMITS = -fconstexpr-steps=2147483647
 
-# include paths
-INCL   := -I $(SRC)
+CPPFLAGS  = $(CPPNDEBUG)
+CFLAGS    = 
+CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) -S
 
-CPPFLAGS := $(INCL)
-CFLAGS   := 
-CXXFLAGS := $(CXXSTD) $(CXXVRB) $(CXXOPT) -fconstexpr-steps=2147483647
+ifeq ($(CXX),clang++)
+	CXXFLAGS += $(CXXSTDLIB)
+	CXXFLAGS += $(CXXLIMITS)
+endif
 
 all: cohen_chess
 
 cohen_chess:
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 clean:
 	rm -rf $(BIN) *.o

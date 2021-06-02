@@ -24,9 +24,9 @@ namespace cohen_chess
     }
 
     /**
-     * Performs a bitwise circular shift left on an unsigned integral type.
+     * Performs a bitwise circular shift left on an integral type.
      * 
-     * @param x The unsigned integral to circular shift left.
+     * @param x The integral to circular shift left.
      * @param r The shift amount.
      * @return The bitwise circular shift left of x.
      */
@@ -49,9 +49,9 @@ namespace cohen_chess
     }
 
     /**
-     * Performs a bitwise cicular shift right on an unsigned integral type.
+     * Performs a bitwise cicular shift right on an integral type.
      * 
-     * @param x The unsigned integral to circular shift right.
+     * @param x The integral to circular shift right.
      * @param r The shift amount.
      * @return The bitwise circular shift right of x.
      */

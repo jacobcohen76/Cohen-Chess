@@ -1061,7 +1061,7 @@ _ZN11cohen_chess4util15HorizontalMergeERKNSt7__cxx1112basic_stringIcSt11char_tra
 	jmp	.LBB1_47
 .LBB1_65:
 .Ltmp7:
-	movl	$.L.str.26, %edi
+	movl	$.L.str.6, %edi
 	movq	%r14, %rsi
 	movq	%rcx, %rdx
 	xorl	%eax, %eax
@@ -1070,7 +1070,7 @@ _ZN11cohen_chess4util15HorizontalMergeERKNSt7__cxx1112basic_stringIcSt11char_tra
 # %bb.66:
 .LBB1_84:
 .Ltmp13:
-	movl	$.L.str.26, %edi
+	movl	$.L.str.6, %edi
 	movq	%r14, %rsi
 	xorl	%eax, %eax
 	callq	_ZSt24__throw_out_of_range_fmtPKcz
@@ -1078,7 +1078,7 @@ _ZN11cohen_chess4util15HorizontalMergeERKNSt7__cxx1112basic_stringIcSt11char_tra
 # %bb.85:
 .LBB1_183:
 .Ltmp41:
-	movl	$.L.str.26, %edi
+	movl	$.L.str.6, %edi
 	movq	%r14, %rsi
 	xorl	%eax, %eax
 	callq	_ZSt24__throw_out_of_range_fmtPKcz
@@ -1086,7 +1086,7 @@ _ZN11cohen_chess4util15HorizontalMergeERKNSt7__cxx1112basic_stringIcSt11char_tra
 # %bb.184:
 .LBB1_123:
 .Ltmp56:
-	movl	$.L.str.25, %edi
+	movl	$.L.str.4, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .Ltmp57:
 # %bb.124:
@@ -1097,7 +1097,7 @@ _ZN11cohen_chess4util15HorizontalMergeERKNSt7__cxx1112basic_stringIcSt11char_tra
 # %bb.127:
 .LBB1_110:
 .Ltmp51:
-	movl	$.L.str.25, %edi
+	movl	$.L.str.4, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .Ltmp52:
 # %bb.154:
@@ -1575,7 +1575,7 @@ _ZN11cohen_chess4util8PadRightERSt6vectorINSt7__cxx1112basic_stringIcSt11char_tr
 # %bb.8:
 .LBB2_4:
 .Ltmp67:
-	movl	$.L.str.25, %edi
+	movl	$.L.str.4, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .Ltmp68:
 # %bb.5:
@@ -1645,2270 +1645,142 @@ GCC_except_table2:
 main:                                   # @main
 	.cfi_startproc
 # %bb.0:
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
 	pushq	%r15
-	.cfi_def_cfa_offset 24
+	.cfi_def_cfa_offset 16
 	pushq	%r14
-	.cfi_def_cfa_offset 32
-	pushq	%r13
-	.cfi_def_cfa_offset 40
+	.cfi_def_cfa_offset 24
 	pushq	%r12
-	.cfi_def_cfa_offset 48
+	.cfi_def_cfa_offset 32
 	pushq	%rbx
-	.cfi_def_cfa_offset 56
+	.cfi_def_cfa_offset 40
 	subq	$136, %rsp
-	.cfi_def_cfa_offset 192
-	.cfi_offset %rbx, -56
-	.cfi_offset %r12, -48
-	.cfi_offset %r13, -40
-	.cfi_offset %r14, -32
-	.cfi_offset %r15, -24
-	.cfi_offset %rbp, -16
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.2, %esi
-	movl	$6, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.1:
-	cmpb	$0, 56(%rbx)
+	.cfi_def_cfa_offset 176
+	.cfi_offset %rbx, -40
+	.cfi_offset %r12, -32
+	.cfi_offset %r14, -24
+	.cfi_offset %r15, -16
+	leaq	1(%rsp), %r14
+	xorl	%r12d, %r12d
+	jmp	.LBB3_1
+	.p2align	4, 0x90
+.LBB3_6:                                #   in Loop: Header=BB3_1 Depth=1
+	movq	%rbx, %rdi
+	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
+	movq	(%rbx), %rax
+	movq	%rbx, %rdi
+	movl	$10, %esi
+	callq	*48(%rax)
+.LBB3_7:                                #   in Loop: Header=BB3_1 Depth=1
+	movsbl	%al, %esi
+	movq	%r15, %rdi
+	callq	_ZNSo3putEc
+	movq	%rax, %rdi
+	callq	_ZNSo5flushEv
+	addq	$1, %r12
+	cmpq	$64, %r12
+	je	.LBB3_8
+.LBB3_1:                                # =>This Loop Header: Depth=1
+                                        #     Child Loop BB3_2 Depth 2
+	movq	_ZN11cohen_chess8bitboard9kRayTableILa8EEE(,%r12,8), %rax
+	movb	$0, (%rsp)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
+	movups	%xmm0, 112(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
+	movups	%xmm0, 96(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
+	movups	%xmm0, 80(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
+	movups	%xmm0, 64(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
+	movups	%xmm0, 48(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
+	movups	%xmm0, 32(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
+	movups	%xmm0, 16(%r14)
+	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
+	movups	%xmm0, (%r14)
+	xorl	%edx, %edx
+	testq	%rax, %rax
 	je	.LBB3_3
-# %bb.2:
-	movb	67(%rbx), %al
-	jmp	.LBB3_4
-.LBB3_3:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_4:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$72057594037927935, %rcx # imm = 0xFFFFFFFFFFFFFF
-	xorl	%edi, %edi
 	.p2align	4, 0x90
-.LBB3_5:                                # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_7
-# %bb.6:                                #   in Loop: Header=BB3_5 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_5
-.LBB3_7:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.8:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_10
-# %bb.9:
-	movb	67(%rbx), %al
-	jmp	.LBB3_11
-.LBB3_10:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_11:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.3, %esi
-	movl	$5, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.12:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_14
-# %bb.13:
-	movb	67(%rbx), %al
-	jmp	.LBB3_15
-.LBB3_14:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_15:
-	movabsq	$9187201950435704832, %r15 # imm = 0x7F7F7F7F7F7F0000
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	32639(%r15), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_16:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_18
-# %bb.17:                               #   in Loop: Header=BB3_16 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_16
-.LBB3_18:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.19:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_21
-# %bb.20:
-	movb	67(%rbx), %al
-	jmp	.LBB3_22
-.LBB3_21:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_22:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.4, %esi
-	movl	$6, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.23:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_25
-# %bb.24:
-	movb	67(%rbx), %al
-	jmp	.LBB3_26
-.LBB3_25:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_26:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movq	$-256, %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_27:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_29
-# %bb.28:                               #   in Loop: Header=BB3_27 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_27
-.LBB3_29:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.30:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_32
-# %bb.31:
-	movb	67(%rbx), %al
-	jmp	.LBB3_33
-.LBB3_32:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_33:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.5, %esi
-	movl	$5, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.34:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_36
-# %bb.35:
-	movb	67(%rbx), %al
-	jmp	.LBB3_37
-.LBB3_36:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_37:
-	movabsq	$-72340172838141952, %r12 # imm = 0xFEFEFEFEFEFE0000
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	65278(%r12), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_38:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_40
-# %bb.39:                               #   in Loop: Header=BB3_38 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_38
-.LBB3_40:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.41:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_43
-# %bb.42:
-	movb	67(%rbx), %al
-	jmp	.LBB3_44
-.LBB3_43:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_44:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.6, %esi
-	movl	$10, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.45:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_47
-# %bb.46:
-	movb	67(%rbx), %al
-	jmp	.LBB3_48
-.LBB3_47:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_48:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$35887507618889599, %rcx # imm = 0x7F7F7F7F7F7F7F
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_49:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_51
-# %bb.50:                               #   in Loop: Header=BB3_49 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_49
-.LBB3_51:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.52:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_54
-# %bb.53:
-	movb	67(%rbx), %al
-	jmp	.LBB3_55
-.LBB3_54:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_55:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.7, %esi
-	movl	$10, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.56:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_58
-# %bb.57:
-	movb	67(%rbx), %al
-	jmp	.LBB3_59
-.LBB3_58:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_59:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	32512(%r15), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_60:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_62
-# %bb.61:                               #   in Loop: Header=BB3_60 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_60
-.LBB3_62:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.63:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_65
-# %bb.64:
-	movb	67(%rbx), %al
-	jmp	.LBB3_66
-.LBB3_65:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_66:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.8, %esi
-	movl	$10, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.67:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_69
-# %bb.68:
-	movb	67(%rbx), %al
-	jmp	.LBB3_70
-.LBB3_69:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_70:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	65024(%r12), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_71:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_73
-# %bb.72:                               #   in Loop: Header=BB3_71 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_71
-.LBB3_73:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.74:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_76
-# %bb.75:
-	movb	67(%rbx), %al
-	jmp	.LBB3_77
-.LBB3_76:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_77:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.9, %esi
-	movl	$10, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.78:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_80
-# %bb.79:
-	movb	67(%rbx), %al
-	jmp	.LBB3_81
-.LBB3_80:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_81:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$71775015237779198, %rcx # imm = 0xFEFEFEFEFEFEFE
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_82:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_84
-# %bb.83:                               #   in Loop: Header=BB3_82 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_82
-.LBB3_84:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.85:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_87
-# %bb.86:
-	movb	67(%rbx), %al
-	jmp	.LBB3_88
-.LBB3_87:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_88:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.10, %esi
-	movl	$11, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.89:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_91
-# %bb.90:
-	movb	67(%rbx), %al
-	jmp	.LBB3_92
-.LBB3_91:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_92:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$281474976710655, %rcx  # imm = 0xFFFFFFFFFFFF
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_93:                               # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_95
-# %bb.94:                               #   in Loop: Header=BB3_93 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_93
-.LBB3_95:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.96:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_98
-# %bb.97:
-	movb	67(%rbx), %al
-	jmp	.LBB3_99
-.LBB3_98:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_99:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.11, %esi
-	movl	$9, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.100:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_102
-# %bb.101:
-	movb	67(%rbx), %al
-	jmp	.LBB3_103
-.LBB3_102:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_103:
-	movabsq	$4557430888798830336, %r14 # imm = 0x3F3F3F3F3F3F3F00
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	63(%r14), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_104:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbx
-	addq	$-1, %rcx
-	movl	%ebx, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %ebp
-	subl	%edi, %ebp
-	movl	%edi, %edx
-	xorb	$1, %dl
+.LBB3_2:                                #   Parent Loop BB3_1 Depth=1
+                                        # =>  This Inner Loop Header: Depth=2
+	bsfq	%rax, %rsi
+	leaq	-1(%rax), %r8
+	movl	%esi, %ebx
+	shrb	$3, %bl
 	movzbl	%dl, %edx
 	leal	(,%rdx,8), %edi
 	subl	%edx, %edi
-	xorb	%r9b, %dil
-	andb	$7, %bl
-	xorb	%bl, %bpl
+                                        # kill: def $dl killed $dl killed $rdx
+	xorb	$1, %dl
+	movzbl	%dl, %edx
+	leal	(,%rdx,8), %ecx
+	subl	%edx, %ecx
+	xorb	%bl, %cl
+	andb	$7, %sil
+	xorb	%sil, %dil
+	movsbl	%cl, %ecx
+	shll	$4, %ecx
 	movsbl	%dil, %edx
-	shll	$4, %edx
-	movsbl	%bpl, %edi
-	leal	(%rdx,%rdi,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_106
-# %bb.105:                              #   in Loop: Header=BB3_104 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_104
-.LBB3_106:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.107:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_109
-# %bb.108:
-	movb	67(%rbx), %al
-	jmp	.LBB3_110
-.LBB3_109:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_110:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.12, %esi
-	movl	$11, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.111:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_113
-# %bb.112:
-	movb	67(%rbx), %al
-	jmp	.LBB3_114
-.LBB3_113:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_114:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movq	$-65536, %rcx           # imm = 0xFFFF0000
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_115:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_117
-# %bb.116:                              #   in Loop: Header=BB3_115 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_115
-.LBB3_117:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.118:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_120
-# %bb.119:
-	movb	67(%rbx), %al
-	jmp	.LBB3_121
-.LBB3_120:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_121:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.13, %esi
-	movl	$9, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.122:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_124
-# %bb.123:
-	movb	67(%rbx), %al
-	jmp	.LBB3_125
-.LBB3_124:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_125:
-	movabsq	$-217020518514230272, %r13 # imm = 0xFCFCFCFCFCFCFC00
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	leaq	252(%r13), %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_126:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_128
-# %bb.127:                              #   in Loop: Header=BB3_126 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_126
-.LBB3_128:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.129:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_131
-# %bb.130:
-	movb	67(%rbx), %al
-	jmp	.LBB3_132
-.LBB3_131:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_132:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.14, %esi
-	movl	$15, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.133:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_135
-# %bb.134:
-	movb	67(%rbx), %al
-	jmp	.LBB3_136
-.LBB3_135:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_136:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$140185576636287, %rcx  # imm = 0x7F7F7F7F7F7F
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_137:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_139
-# %bb.138:                              #   in Loop: Header=BB3_137 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_137
-.LBB3_139:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.140:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_142
-# %bb.141:
-	movb	67(%rbx), %al
-	jmp	.LBB3_143
-.LBB3_142:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_143:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.15, %esi
-	movl	$15, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.144:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_146
-# %bb.145:
-	movb	67(%rbx), %al
-	jmp	.LBB3_147
-.LBB3_146:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_147:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$280371153272574, %rcx  # imm = 0xFEFEFEFEFEFE
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_148:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_150
-# %bb.149:                              #   in Loop: Header=BB3_148 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_148
-.LBB3_150:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.151:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_153
-# %bb.152:
-	movb	67(%rbx), %al
-	jmp	.LBB3_154
-.LBB3_153:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_154:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.16, %esi
-	movl	$14, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.155:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_157
-# %bb.156:
-	movb	67(%rbx), %al
-	jmp	.LBB3_158
-.LBB3_157:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_158:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$17802464409370431, %rcx # imm = 0x3F3F3F3F3F3F3F
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_159:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_161
-# %bb.160:                              #   in Loop: Header=BB3_159 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_159
-.LBB3_161:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %rbp
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%rbp,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.162:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_164
-# %bb.163:
-	movb	67(%rbx), %al
-	jmp	.LBB3_165
-.LBB3_164:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_165:
-	movsbl	%al, %esi
-	movq	%rbp, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.17, %esi
-	movl	$14, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.166:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_168
-# %bb.167:
-	movb	67(%rbx), %al
-	jmp	.LBB3_169
-.LBB3_168:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_169:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	xorl	%edx, %edx
-	.p2align	4, 0x90
-.LBB3_170:                              # =>This Inner Loop Header: Depth=1
-	movq	%r14, %r8
-	bsfq	%r14, %rdi
-	addq	$-1, %r14
-	movl	%edi, %ebx
-	shrb	$3, %bl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ebp
-	subl	%edx, %ebp
-                                        # kill: def $dl killed $dl killed $rdx
-	xorb	$1, %dl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ecx
-	subl	%edx, %ecx
-	xorb	%bl, %cl
-	andb	$7, %dil
-	xorb	%dil, %bpl
-	movsbl	%cl, %ecx
-	shll	$4, %ecx
-	movsbl	%bpl, %edx
 	leal	(%rcx,%rdx,2), %ecx
 	movslq	%ecx, %rcx
 	movb	$49, 1(%rsp,%rcx)
-	andq	%r8, %r14
-	je	.LBB3_172
-# %bb.171:                              #   in Loop: Header=BB3_170 Depth=1
 	movzbl	(%rsp), %edx
-	jmp	.LBB3_170
-.LBB3_172:
+	andq	%r8, %rax
+	jne	.LBB3_2
+.LBB3_3:                                #   in Loop: Header=BB3_1 Depth=1
+	movl	%r12d, %eax
+	sarb	$3, %al
+	movzbl	%dl, %ecx
+	leal	(,%rcx,8), %edx
+	subl	%ecx, %edx
+                                        # kill: def $cl killed $cl killed $rcx
+	xorb	$1, %cl
+	movzbl	%cl, %ecx
+	leal	(,%rcx,8), %esi
+	subl	%ecx, %esi
+	xorb	%al, %sil
+	movl	%r12d, %eax
+	andb	$7, %al
+	xorb	%al, %dl
+	movsbl	%sil, %eax
+	shll	$4, %eax
+	movsbl	%dl, %ecx
+	leal	(%rax,%rcx,2), %eax
+	cltq
+	movb	$120, 1(%rsp,%rax)
+	movl	$_ZSt4cout, %edi
 	movl	$128, %edx
-	movq	%rax, %rdi
+	movq	%r14, %rsi
 	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
+	movq	%rax, %r15
 	movq	(%rax), %rax
 	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
+	movq	240(%r15,%rax), %rbx
 	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.173:
+	je	.LBB3_9
+# %bb.4:                                #   in Loop: Header=BB3_1 Depth=1
 	cmpb	$0, 56(%rbx)
-	je	.LBB3_175
-# %bb.174:
+	je	.LBB3_6
+# %bb.5:                                #   in Loop: Header=BB3_1 Depth=1
 	movb	67(%rbx), %al
-	jmp	.LBB3_176
-.LBB3_175:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_176:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.18, %esi
-	movl	$15, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.177:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_179
-# %bb.178:
-	movb	67(%rbx), %al
-	jmp	.LBB3_180
-.LBB3_179:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_180:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	xorl	%edx, %edx
-	.p2align	4, 0x90
-.LBB3_181:                              # =>This Inner Loop Header: Depth=1
-	movq	%r15, %r8
-	bsfq	%r15, %rdi
-	addq	$-1, %r15
-	movl	%edi, %ebx
-	shrb	$3, %bl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ebp
-	subl	%edx, %ebp
-                                        # kill: def $dl killed $dl killed $rdx
-	xorb	$1, %dl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ecx
-	subl	%edx, %ecx
-	xorb	%bl, %cl
-	andb	$7, %dil
-	xorb	%dil, %bpl
-	movsbl	%cl, %ecx
-	shll	$4, %ecx
-	movsbl	%bpl, %edx
-	leal	(%rcx,%rdx,2), %ecx
-	movslq	%ecx, %rcx
-	movb	$49, 1(%rsp,%rcx)
-	andq	%r8, %r15
-	je	.LBB3_183
-# %bb.182:                              #   in Loop: Header=BB3_181 Depth=1
-	movzbl	(%rsp), %edx
-	jmp	.LBB3_181
-.LBB3_183:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.184:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_186
-# %bb.185:
-	movb	67(%rbx), %al
-	jmp	.LBB3_187
-.LBB3_186:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_187:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.19, %esi
-	movl	$15, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.188:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_190
-# %bb.189:
-	movb	67(%rbx), %al
-	jmp	.LBB3_191
-.LBB3_190:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_191:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	xorl	%edx, %edx
-	.p2align	4, 0x90
-.LBB3_192:                              # =>This Inner Loop Header: Depth=1
-	movq	%r12, %r8
-	bsfq	%r12, %rdi
-	addq	$-1, %r12
-	movl	%edi, %ebx
-	shrb	$3, %bl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ebp
-	subl	%edx, %ebp
-                                        # kill: def $dl killed $dl killed $rdx
-	xorb	$1, %dl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ecx
-	subl	%edx, %ecx
-	xorb	%bl, %cl
-	andb	$7, %dil
-	xorb	%dil, %bpl
-	movsbl	%cl, %ecx
-	shll	$4, %ecx
-	movsbl	%bpl, %edx
-	leal	(%rcx,%rdx,2), %ecx
-	movslq	%ecx, %rcx
-	movb	$49, 1(%rsp,%rcx)
-	andq	%r8, %r12
-	je	.LBB3_194
-# %bb.193:                              #   in Loop: Header=BB3_192 Depth=1
-	movzbl	(%rsp), %edx
-	jmp	.LBB3_192
-.LBB3_194:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.195:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_197
-# %bb.196:
-	movb	67(%rbx), %al
-	jmp	.LBB3_198
-.LBB3_197:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_198:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.20, %esi
-	movl	$14, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.199:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_201
-# %bb.200:
-	movb	67(%rbx), %al
-	jmp	.LBB3_202
-.LBB3_201:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_202:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movabsq	$71209857637481724, %rcx # imm = 0xFCFCFCFCFCFCFC
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_203:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_205
-# %bb.204:                              #   in Loop: Header=BB3_203 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_203
-.LBB3_205:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.206:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_208
-# %bb.207:
-	movb	67(%rbx), %al
-	jmp	.LBB3_209
-.LBB3_208:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_209:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.21, %esi
-	movl	$14, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.210:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_212
-# %bb.211:
-	movb	67(%rbx), %al
-	jmp	.LBB3_213
-.LBB3_212:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_213:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	xorl	%edx, %edx
-	.p2align	4, 0x90
-.LBB3_214:                              # =>This Inner Loop Header: Depth=1
-	movq	%r13, %r8
-	bsfq	%r13, %rdi
-	addq	$-1, %r13
-	movl	%edi, %ebx
-	shrb	$3, %bl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ebp
-	subl	%edx, %ebp
-                                        # kill: def $dl killed $dl killed $rdx
-	xorb	$1, %dl
-	movzbl	%dl, %edx
-	leal	(,%rdx,8), %ecx
-	subl	%edx, %ecx
-	xorb	%bl, %cl
-	andb	$7, %dil
-	xorb	%dil, %bpl
-	movsbl	%cl, %ecx
-	shll	$4, %ecx
-	movsbl	%bpl, %edx
-	leal	(%rcx,%rdx,2), %ecx
-	movslq	%ecx, %rcx
-	movb	$49, 1(%rsp,%rcx)
-	andq	%r8, %r13
-	je	.LBB3_216
-# %bb.215:                              #   in Loop: Header=BB3_214 Depth=1
-	movzbl	(%rsp), %edx
-	jmp	.LBB3_214
-.LBB3_216:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.217:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_219
-# %bb.218:
-	movb	67(%rbx), %al
-	jmp	.LBB3_220
-.LBB3_219:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_220:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movl	$_ZSt4cout, %edi
-	movl	$.L.str.22, %esi
-	movl	$14, %edx
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	_ZSt4cout(%rip), %rax
-	movq	-24(%rax), %rax
-	movq	_ZSt4cout+240(%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.221:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_223
-# %bb.222:
-	movb	67(%rbx), %al
-	jmp	.LBB3_224
-.LBB3_223:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_224:
-	movsbl	%al, %esi
-	movl	$_ZSt4cout, %edi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
-	movb	$0, (%rsp)
-	leaq	1(%rsp), %rsi
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE(%rip), %xmm0
-	movups	%xmm0, 1(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+16(%rip), %xmm0
-	movups	%xmm0, 17(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+32(%rip), %xmm0
-	movups	%xmm0, 33(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+48(%rip), %xmm0
-	movups	%xmm0, 49(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+64(%rip), %xmm0
-	movups	%xmm0, 65(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+80(%rip), %xmm0
-	movups	%xmm0, 81(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+96(%rip), %xmm0
-	movups	%xmm0, 97(%rsp)
-	movups	_ZN11cohen_chess10AsciiBoard12kInitialDataE+112(%rip), %xmm0
-	movups	%xmm0, 113(%rsp)
-	movq	$-1, %rcx
-	xorl	%edi, %edi
-	.p2align	4, 0x90
-.LBB3_225:                              # =>This Inner Loop Header: Depth=1
-	movq	%rcx, %r8
-	bsfq	%rcx, %rbp
-	addq	$-1, %rcx
-	movl	%ebp, %r9d
-	shrb	$3, %r9b
-	movzbl	%dil, %edi
-	leal	(,%rdi,8), %edx
-	subl	%edi, %edx
-	movl	%edi, %ebx
-	xorb	$1, %bl
-	movzbl	%bl, %edi
-	leal	(,%rdi,8), %ebx
-	subl	%edi, %ebx
-	xorb	%r9b, %bl
-	andb	$7, %bpl
-	xorb	%bpl, %dl
-	movsbl	%bl, %edi
-	shll	$4, %edi
-	movsbl	%dl, %edx
-	leal	(%rdi,%rdx,2), %edx
-	movslq	%edx, %rdx
-	movb	$49, 1(%rsp,%rdx)
-	andq	%r8, %rcx
-	je	.LBB3_227
-# %bb.226:                              #   in Loop: Header=BB3_225 Depth=1
-	movzbl	(%rsp), %edi
-	jmp	.LBB3_225
-.LBB3_227:
-	movl	$128, %edx
-	movq	%rax, %rdi
-	callq	_ZSt16__ostream_insertIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_PKS3_l
-	movq	%rax, %r14
-	movq	(%rax), %rax
-	movq	-24(%rax), %rax
-	movq	240(%r14,%rax), %rbx
-	testq	%rbx, %rbx
-	je	.LBB3_232
-# %bb.228:
-	cmpb	$0, 56(%rbx)
-	je	.LBB3_230
-# %bb.229:
-	movb	67(%rbx), %al
-	jmp	.LBB3_231
-.LBB3_230:
-	movq	%rbx, %rdi
-	callq	_ZNKSt5ctypeIcE13_M_widen_initEv
-	movq	(%rbx), %rax
-	movq	%rbx, %rdi
-	movl	$10, %esi
-	callq	*48(%rax)
-.LBB3_231:
-	movsbl	%al, %esi
-	movq	%r14, %rdi
-	callq	_ZNSo3putEc
-	movq	%rax, %rdi
-	callq	_ZNSo5flushEv
+	jmp	.LBB3_7
+.LBB3_8:
 	xorl	%eax, %eax
 	addq	$136, %rsp
-	.cfi_def_cfa_offset 56
-	popq	%rbx
-	.cfi_def_cfa_offset 48
-	popq	%r12
 	.cfi_def_cfa_offset 40
-	popq	%r13
+	popq	%rbx
 	.cfi_def_cfa_offset 32
-	popq	%r14
+	popq	%r12
 	.cfi_def_cfa_offset 24
-	popq	%r15
+	popq	%r14
 	.cfi_def_cfa_offset 16
-	popq	%rbp
+	popq	%r15
 	.cfi_def_cfa_offset 8
 	retq
-.LBB3_232:
-	.cfi_def_cfa_offset 192
+.LBB3_9:
+	.cfi_def_cfa_offset 176
 	callq	_ZSt16__throw_bad_castv
 .Lfunc_end3:
 	.size	main, .Lfunc_end3-main
@@ -4080,13 +1952,13 @@ _ZN11cohen_chess4util8TokenizeB5cxx11EPKcc: # @_ZN11cohen_chess4util8TokenizeB5c
 .LBB4_25:
 	.cfi_def_cfa_offset 96
 .Ltmp70:
-	movl	$.L.str.24, %edi
+	movl	$.L.str.3, %edi
 	callq	_ZSt19__throw_logic_errorPKc
 .Ltmp71:
 # %bb.26:
 .LBB4_27:
 .Ltmp80:
-	movl	$.L.str.25, %edi
+	movl	$.L.str.4, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .Ltmp81:
 # %bb.28:
@@ -4371,7 +2243,7 @@ _ZNSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_re
 	jne	.LBB5_23
 	jmp	.LBB5_24
 .LBB5_25:
-	movl	$.L.str.23, %edi
+	movl	$.L.str.2, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .Lfunc_end5:
 	.size	_ZNSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_realloc_insertIJS5_EEEvN9__gnu_cxx17__normal_iteratorIPS5_S7_EEDpOT_, .Lfunc_end5-_ZNSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_realloc_insertIJS5_EEEvN9__gnu_cxx17__normal_iteratorIPS5_S7_EEDpOT_
@@ -4460,7 +2332,7 @@ _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE9_M_mutateEmmPKcm: # @_ZNSt
 	testq	%r13, %r13
 	jns	.LBB6_4
 .LBB6_25:
-	movl	$.L.str.25, %edi
+	movl	$.L.str.4, %edi
 	callq	_ZSt20__throw_length_errorPKc
 .LBB6_11:
 	movq	%r12, %rdi
@@ -4604,123 +2476,82 @@ _ZN11cohen_chess8bitboard9kRayTableILa0EEE:
 
 	.type	.L.str.2,@object        # @.str.2
 .L.str.2:
-	.asciz	"kNorth"
-	.size	.L.str.2, 7
+	.asciz	"vector::_M_realloc_insert"
+	.size	.L.str.2, 26
 
 	.type	.L.str.3,@object        # @.str.3
 .L.str.3:
-	.asciz	"kEast"
-	.size	.L.str.3, 6
+	.asciz	"basic_string::_M_construct null not valid"
+	.size	.L.str.3, 42
 
 	.type	.L.str.4,@object        # @.str.4
 .L.str.4:
-	.asciz	"kSouth"
-	.size	.L.str.4, 7
-
-	.type	.L.str.5,@object        # @.str.5
-.L.str.5:
-	.asciz	"kWest"
-	.size	.L.str.5, 6
-
-	.type	.L.str.6,@object        # @.str.6
-.L.str.6:
-	.asciz	"kNorthEast"
-	.size	.L.str.6, 11
-
-	.type	.L.str.7,@object        # @.str.7
-.L.str.7:
-	.asciz	"kSouthEast"
-	.size	.L.str.7, 11
-
-	.type	.L.str.8,@object        # @.str.8
-.L.str.8:
-	.asciz	"kSouthWest"
-	.size	.L.str.8, 11
-
-	.type	.L.str.9,@object        # @.str.9
-.L.str.9:
-	.asciz	"kNorthWest"
-	.size	.L.str.9, 11
-
-	.type	.L.str.10,@object       # @.str.10
-.L.str.10:
-	.asciz	"kNorthNorth"
-	.size	.L.str.10, 12
-
-	.type	.L.str.11,@object       # @.str.11
-.L.str.11:
-	.asciz	"kEastEast"
-	.size	.L.str.11, 10
-
-	.type	.L.str.12,@object       # @.str.12
-.L.str.12:
-	.asciz	"kSouthSouth"
-	.size	.L.str.12, 12
-
-	.type	.L.str.13,@object       # @.str.13
-.L.str.13:
-	.asciz	"kWestWest"
-	.size	.L.str.13, 10
-
-	.type	.L.str.14,@object       # @.str.14
-.L.str.14:
-	.asciz	"kNorthNorthEast"
-	.size	.L.str.14, 16
-
-	.type	.L.str.15,@object       # @.str.15
-.L.str.15:
-	.asciz	"kNorthNorthWest"
-	.size	.L.str.15, 16
-
-	.type	.L.str.16,@object       # @.str.16
-.L.str.16:
-	.asciz	"kEastEastNorth"
-	.size	.L.str.16, 15
-
-	.type	.L.str.17,@object       # @.str.17
-.L.str.17:
-	.asciz	"kEastEastSouth"
-	.size	.L.str.17, 15
-
-	.type	.L.str.18,@object       # @.str.18
-.L.str.18:
-	.asciz	"kSouthSouthEast"
-	.size	.L.str.18, 16
-
-	.type	.L.str.19,@object       # @.str.19
-.L.str.19:
-	.asciz	"kSouthSouthWest"
-	.size	.L.str.19, 16
-
-	.type	.L.str.20,@object       # @.str.20
-.L.str.20:
-	.asciz	"kWestWestNorth"
-	.size	.L.str.20, 15
-
-	.type	.L.str.21,@object       # @.str.21
-.L.str.21:
-	.asciz	"kWestWestSouth"
-	.size	.L.str.21, 15
-
-	.type	.L.str.22,@object       # @.str.22
-.L.str.22:
-	.asciz	"kDirectionNone"
-	.size	.L.str.22, 15
-
-	.type	.L.str.23,@object       # @.str.23
-.L.str.23:
-	.asciz	"vector::_M_realloc_insert"
-	.size	.L.str.23, 26
-
-	.type	.L.str.24,@object       # @.str.24
-.L.str.24:
-	.asciz	"basic_string::_M_construct null not valid"
-	.size	.L.str.24, 42
-
-	.type	.L.str.25,@object       # @.str.25
-.L.str.25:
 	.asciz	"basic_string::_M_create"
-	.size	.L.str.25, 24
+	.size	.L.str.4, 24
+
+	.type	_ZN11cohen_chess8bitboard9kRayTableILa8EEE,@object # @_ZN11cohen_chess8bitboard9kRayTableILa8EEE
+	.section	.rodata._ZN11cohen_chess8bitboard9kRayTableILa8EEE,"aG",@progbits,_ZN11cohen_chess8bitboard9kRayTableILa8EEE,comdat
+	.weak	_ZN11cohen_chess8bitboard9kRayTableILa8EEE
+	.p2align	3
+_ZN11cohen_chess8bitboard9kRayTableILa8EEE:
+	.quad	72340172838076672       # 0x101010101010100
+	.quad	144680345676153344      # 0x202020202020200
+	.quad	289360691352306688      # 0x404040404040400
+	.quad	578721382704613376      # 0x808080808080800
+	.quad	1157442765409226752     # 0x1010101010101000
+	.quad	2314885530818453504     # 0x2020202020202000
+	.quad	4629771061636907008     # 0x4040404040404000
+	.quad	-9187201950435737600    # 0x8080808080808000
+	.quad	72340172838076416       # 0x101010101010000
+	.quad	144680345676152832      # 0x202020202020000
+	.quad	289360691352305664      # 0x404040404040000
+	.quad	578721382704611328      # 0x808080808080000
+	.quad	1157442765409222656     # 0x1010101010100000
+	.quad	2314885530818445312     # 0x2020202020200000
+	.quad	4629771061636890624     # 0x4040404040400000
+	.quad	-9187201950435770368    # 0x8080808080800000
+	.quad	72340172838010880       # 0x101010101000000
+	.quad	144680345676021760      # 0x202020202000000
+	.quad	289360691352043520      # 0x404040404000000
+	.quad	578721382704087040      # 0x808080808000000
+	.quad	1157442765408174080     # 0x1010101010000000
+	.quad	2314885530816348160     # 0x2020202020000000
+	.quad	4629771061632696320     # 0x4040404040000000
+	.quad	-9187201950444158976    # 0x8080808080000000
+	.quad	72340172821233664       # 0x101010100000000
+	.quad	144680345642467328      # 0x202020200000000
+	.quad	289360691284934656      # 0x404040400000000
+	.quad	578721382569869312      # 0x808080800000000
+	.quad	1157442765139738624     # 0x1010101000000000
+	.quad	2314885530279477248     # 0x2020202000000000
+	.quad	4629771060558954496     # 0x4040404000000000
+	.quad	-9187201952591642624    # 0x8080808000000000
+	.quad	72340168526266368       # 0x101010000000000
+	.quad	144680337052532736      # 0x202020000000000
+	.quad	289360674105065472      # 0x404040000000000
+	.quad	578721348210130944      # 0x808080000000000
+	.quad	1157442696420261888     # 0x1010100000000000
+	.quad	2314885392840523776     # 0x2020200000000000
+	.quad	4629770785681047552     # 0x4040400000000000
+	.quad	-9187202502347456512    # 0x8080800000000000
+	.quad	72339069014638592       # 0x101000000000000
+	.quad	144678138029277184      # 0x202000000000000
+	.quad	289356276058554368      # 0x404000000000000
+	.quad	578712552117108736      # 0x808000000000000
+	.quad	1157425104234217472     # 0x1010000000000000
+	.quad	2314850208468434944     # 0x2020000000000000
+	.quad	4629700416936869888     # 0x4040000000000000
+	.quad	-9187343239835811840    # 0x8080000000000000
+	.quad	72057594037927936       # 0x100000000000000
+	.quad	144115188075855872      # 0x200000000000000
+	.quad	288230376151711744      # 0x400000000000000
+	.quad	576460752303423488      # 0x800000000000000
+	.quad	1152921504606846976     # 0x1000000000000000
+	.quad	2305843009213693952     # 0x2000000000000000
+	.quad	4611686018427387904     # 0x4000000000000000
+	.quad	-9223372036854775808    # 0x8000000000000000
+	.zero	64
+	.size	_ZN11cohen_chess8bitboard9kRayTableILa8EEE, 512
 
 	.type	_ZN11cohen_chess10AsciiBoard12kInitialDataE,@object # @_ZN11cohen_chess10AsciiBoard12kInitialDataE
 	.section	.rodata._ZN11cohen_chess10AsciiBoard12kInitialDataE,"aG",@progbits,_ZN11cohen_chess10AsciiBoard12kInitialDataE,comdat
@@ -4729,11 +2560,11 @@ _ZN11cohen_chess10AsciiBoard12kInitialDataE:
 	.ascii	". . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n"
 	.size	_ZN11cohen_chess10AsciiBoard12kInitialDataE, 128
 
-	.type	.L.str.26,@object       # @.str.26
+	.type	.L.str.6,@object        # @.str.6
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.L.str.26:
+.L.str.6:
 	.asciz	"vector::_M_range_check: __n (which is %zu) >= this->size() (which is %zu)"
-	.size	.L.str.26, 74
+	.size	.L.str.6, 74
 
 	.section	.init_array,"aw",@init_array
 	.p2align	3
