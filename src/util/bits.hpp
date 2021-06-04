@@ -10,11 +10,11 @@
 
 namespace cohen_chess
 {
+    template <std::integral T> constexpr int BitScanForward(T x) noexcept;
+    template <std::integral T> constexpr int PopCount(T x) noexcept;
+
     namespace bits
     {
-        template <std::integral T> constexpr int BitScanForward(T x) noexcept;
-        template <std::integral T> constexpr int PopCount(T x) noexcept;
-
         template <typename T>
         constexpr size_t kNumBits = sizeof(T) * 8;
 
@@ -222,48 +222,6 @@ namespace cohen_chess
             assert(x != 0);
             return PopCount((x & -x) - 1);
         }
-
-        template <std::integral T>
-        constexpr int CountTrailingZeroes(T x) noexcept
-        {
-            return BuiltinCountTrailingZeroes(x);
-        }
-
-        template <std::integral T>
-        constexpr int CountTrailingOnes(T x) noexcept
-        {
-            return BuiltinCountTrailingOnes(x);
-        }
-
-        template <std::integral T>
-        constexpr int BitScanForward(T x) noexcept
-        {
-            return BuiltinBitScanForward(x);
-        }
-
-        template <std::integral T>
-        constexpr int CountLeadingZeroes(T x) noexcept
-        {
-            return BuiltinCountLeadingZeroes(x);
-        }
-
-        template <std::integral T>
-        constexpr int CountLeadingOnes(T x) noexcept
-        {
-            return BuiltinCountLeadingOnes(x);
-        }
-
-        template <std::integral T>
-        constexpr int BitScanReverse(T x) noexcept
-        {
-            return BuiltinBitScanReverse(x);
-        }
-
-        template <std::integral T>
-        constexpr int PopCount(T x) noexcept
-        {
-            return BuiltinPopCount(x);
-        }
     }
 
     using bits::kNumBits;
@@ -271,13 +229,48 @@ namespace cohen_chess
     using bits::RotateRight;
     using bits::FlipLSB;
     using bits::PopLSB;
-    using bits::CountTrailingZeroes;
-    using bits::CountTrailingOnes;
-    using bits::BitScanForward;
-    using bits::CountLeadingZeroes;
-    using bits::CountLeadingOnes;
-    using bits::BitScanReverse;
-    using bits::PopCount;
+
+    template <std::integral T>
+    constexpr int CountTrailingZeroes(T x) noexcept
+    {
+        return bits::BuiltinCountTrailingZeroes(x);
+    }
+
+    template <std::integral T>
+    constexpr int CountTrailingOnes(T x) noexcept
+    {
+        return bits::BuiltinCountTrailingOnes(x);
+    }
+
+    template <std::integral T>
+    constexpr int BitScanForward(T x) noexcept
+    {
+        return bits::BuiltinBitScanForward(x);
+    }
+
+    template <std::integral T>
+    constexpr int CountLeadingZeroes(T x) noexcept
+    {
+        return bits::BuiltinCountLeadingZeroes(x);
+    }
+
+    template <std::integral T>
+    constexpr int CountLeadingOnes(T x) noexcept
+    {
+        return bits::BuiltinCountLeadingOnes(x);
+    }
+
+    template <std::integral T>
+    constexpr int BitScanReverse(T x) noexcept
+    {
+        return bits::BuiltinBitScanReverse(x);
+    }
+
+    template <std::integral T>
+    constexpr int PopCount(T x) noexcept
+    {
+        return bits::BuiltinPopCount(x);
+    }
 }
 
 #endif

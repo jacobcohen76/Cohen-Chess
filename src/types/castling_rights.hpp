@@ -8,9 +8,9 @@
 
 namespace cohen_chess
 {
-    typedef uint8_t CastlingRights;
+    using CastlingRights = uint8_t;
 
-    enum : CastlingRights
+    enum CastlingRightsConstant : CastlingRights
     {
         kCastlingNone   = 0x0,
         kCastlingAll    = 0xF,
@@ -29,17 +29,17 @@ namespace cohen_chess
         kCastlingNB     = 16,
     };
 
-    constexpr CastlingRights CastlingRightsSide(Color side)
+    constexpr CastlingRights CastlingRightsSide(Color side) noexcept
     {
         return kCastlingWhite << (side << 1);
     }
 
-    constexpr CastlingRights CastlingRightsQueenSide(Color side)
+    constexpr CastlingRights CastlingRightsQueenSide(Color side) noexcept
     {
         return kWhiteOO << (side << 1);
     }
 
-    constexpr CastlingRights CastlingRightsKingSide(Color side)
+    constexpr CastlingRights CastlingRightsKingSide(Color side) noexcept
     {
         return kWhiteOOO << (side << 1);
     }

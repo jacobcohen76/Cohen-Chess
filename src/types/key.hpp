@@ -5,13 +5,18 @@
 
 namespace cohen_chess
 {
-    typedef uint64_t Key;
-
-    enum : Key
+    namespace key
     {
-        kKeyZero    = 0x0000000000000000,
-        kKeyAll     = 0xFFFFFFFFFFFFFFFF,
-    };
+        using Key = uint64_t;
+
+        enum KeyConstant : Key
+        {
+            kKeyZero    = 0x0000000000000000,
+            kKeyAll     = 0xFFFFFFFFFFFFFFFF,
+        };
+    }
+
+    using namespace key;
 }
 
 #endif

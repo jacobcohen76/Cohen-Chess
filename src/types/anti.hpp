@@ -7,7 +7,7 @@
 
 namespace cohen_chess
 {
-    typedef uint8_t Anti;
+    using Anti = uint8_t;
 
     enum : Anti
     {
@@ -29,12 +29,12 @@ namespace cohen_chess
         kAntiNB = 15,
     };
 
-    constexpr Anti MirroAnti(Anti anti)
+    constexpr Anti MirroAnti(Anti anti) noexcept
     {
         return kAntiF - anti;
     }
 
-    constexpr Anti RelativeAnti(Anti anti, Color side)
+    constexpr Anti RelativeAnti(Anti anti, Color side) noexcept
     {
         return side ? anti : MirroAnti(anti);
     }

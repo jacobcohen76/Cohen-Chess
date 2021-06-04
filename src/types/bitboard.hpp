@@ -19,33 +19,99 @@ namespace cohen_chess
     {
         using Bitboard = uint64_t;
 
-        constexpr Bitboard kEmptyBB        = 0x0000000000000000;
-        constexpr Bitboard kUniverseBB     = 0xFFFFFFFFFFFFFFFF;
-        constexpr Bitboard kDarkSquaresBB  = 0xAA55AA55AA55AA55;
-        constexpr Bitboard kLightSquaresBB = 0x55AA55AA55AA55AA;
-        constexpr Bitboard kRankEdgesBB    = 0x8181818181818181;
-        constexpr Bitboard kFileEdgesBB    = 0xFF000000000000FF;
-        constexpr Bitboard kEdgesBB        = 0xFF818181818181FF;
+        enum BitboardConstant : Bitboard
+        {
+            kEmptyBB        = 0x0000000000000000,
+            kUniverseBB     = 0xFFFFFFFFFFFFFFFF,
+            kDarkSquaresBB  = 0xAA55AA55AA55AA55,
+            kLightSquaresBB = 0x55AA55AA55AA55AA,
+            kRankEdgesBB    = 0x8181818181818181,
+            kFileEdgesBB    = 0xFF000000000000FF,
+            kEdgesBB        = 0xFF818181818181FF,
+        };
+
+        constexpr Bitboard kBitboardA1 = 0x0000000000000001;
+        constexpr std::array<Bitboard, kSquareNB> kSquareTable = []()
+        {
+            std::array<Bitboard, kSquareNB> square_table = {};
+            for (Square sq = kA1; sq < kSquareNB; ++sq)
+            {
+                square_table[sq] = kBitboardA1 << sq;
+            }
+            return square_table;
+        }();
+
+        constexpr Bitboard ComputeSquareBB(Square sq) noexcept
+        {
+            assert(kA1 <= sq && sq < kSquareNB);
+            return kBitboardA1 << sq;
+        }
+
+        constexpr Bitboard LookupSquareBB(Square sq) noexcept
+        {
+            assert(kA1 <= sq && sq < kSquareNB);
+            return kSquareTable[sq];
+        }
 
         constexpr Bitboard SquareBB(Square sq) noexcept
         {
-            assert(kA1 <= sq && sq < kSquareNB);
-            constexpr Bitboard kBitboardA1 = 0x0000000000000001;
-            return kBitboardA1 << sq;
+            return ComputeSquareBB(sq);
+        }
+
+        constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
+        constexpr std::array<Bitboard, kRankNB> kRankTable = []()
+        {
+            std::array<Bitboard, kRankNB> rank_table = {};
+            for (Rank rank = kRank1; rank < kRankNB; ++rank)
+            {
+                rank_table[rank] = kBitboardRank1 << (rank << 3);
+            }
+            return rank_table;
+        }();
+
+        constexpr Bitboard ComputeRankBB(Rank rank) noexcept
+        {
+            assert(kRank1 <= rank && rank < kRankNB);
+            return kBitboardRank1 << (rank << 3);
+        }
+
+        constexpr Bitboard LookupRankBB(Rank rank) noexcept
+        {
+            assert(kRank1 <= rank && rank < kRankNB);
+            return kRankTable[rank];
         }
 
         constexpr Bitboard RankBB(Rank rank) noexcept
         {
-            assert(kRank1 <= rank && rank < kRankNB);
-            constexpr Bitboard kBitboardRank1 = 0x00000000000000FF;
-            return kBitboardRank1 << (rank << 3);
+            return ComputeRankBB(rank);
+        }
+
+        constexpr Bitboard kBitboardFileA = 0x0101010101010101;
+        constexpr std::array<Bitboard, kFileNB> kFileTable = []()
+        {
+            std::array<Bitboard, kFileNB> file_table = {};
+            for (File file = kFileA; file < kFileNB; ++file)
+            {
+                file_table[file] = kBitboardFileA << file;
+            }
+            return file_table;
+        }();
+
+        constexpr Bitboard ComputeFileBB(File file) noexcept
+        {
+            assert(kFileA <= file && file < kFileNB);
+            return kBitboardFileA << file;
+        }
+
+        constexpr Bitboard LookupFileBB(File file) noexcept
+        {
+            assert(kFileA <= file && file < kFileNB);
+            return kFileTable[file];
         }
 
         constexpr Bitboard FileBB(File file) noexcept
         {
-            assert(kFileA <= file && file < kFileNB);
-            constexpr Bitboard kBitboardFileA = 0x0101010101010101;
-            return kBitboardFileA << file;
+            return ComputeFileBB(file);
         }
 
         constexpr std::array<Bitboard, kDiagNB> kDiagTable =
@@ -67,9 +133,14 @@ namespace cohen_chess
             0x0100000000000000,
         };
 
-        constexpr Bitboard DiagBB(Diag diag) noexcept
+        constexpr Bitboard LookupDiagBB(Diag diag) noexcept
         {
             return kDiagTable[diag];
+        }
+
+        constexpr Bitboard DiagBB(Diag diag) noexcept
+        {
+            return LookupDiagBB(diag);
         }
 
         constexpr std::array<Bitboard, kAntiNB> kAntiTable = 
@@ -91,9 +162,14 @@ namespace cohen_chess
             0x8000000000000000,
         };
 
-        constexpr Bitboard AntiBB(Anti anti) noexcept
+        constexpr Bitboard LookupAntiBB(Anti anti) noexcept
         {
             return kAntiTable[anti];
+        }
+
+        constexpr Bitboard AntiBB(Anti anti) noexcept
+        {
+            return LookupAntiBB(anti);
         }
 
         template <Direction dir>
@@ -173,18 +249,10 @@ namespace cohen_chess
 
         constexpr Bitboard RayBB(Bitboard occ, Square sq, Direction dir) noexcept
         {
-            if (dir > 0)
-            {
-                Bitboard ray_bb = RayBB(sq, dir);
-                int blocker = BitScanForward((occ & ray_bb) | 0x8000000000000000);
-                return ray_bb ^ RayBB(blocker, dir);
-            }
-            else
-            {
-                Bitboard ray_bb = RayBB(sq, dir);
-                int blocker = BitScanReverse((occ & ray_bb) | 0x0000000000000001);
-                return ray_bb ^ RayBB(blocker, dir);
-            }
+            Bitboard ray_bb = RayBB(sq, dir);
+            int blocker = (dir > 0) ? BitScanForward((occ & ray_bb) | 0x8000000000000000) :
+                                      BitScanReverse((occ & ray_bb) | 0x0000000000000001);
+            return ray_bb ^ RayBB(blocker, dir);
         }
 
         constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenTable = []()
@@ -201,13 +269,18 @@ namespace cohen_chess
             return between_table;
         }();
 
-        constexpr Bitboard BetweenBB(Square sq1, Square sq2) noexcept
+        constexpr Bitboard LookupBetweenBB(Square sq1, Square sq2) noexcept
         {
             return kBetweenTable[sq1][sq2];
         }
 
-        template <Direction shift_dir>
-        constexpr Bitboard kShiftMask = [](Direction dir)
+        constexpr Bitboard BetweenBB(Square sq1, Square sq2) noexcept
+        {
+            return LookupBetweenBB(sq1, sq2);
+        }
+
+        template <Direction dir>
+        constexpr Bitboard kShiftMask = []()
         {
             Bitboard mask = kEmptyBB;
             for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -215,7 +288,7 @@ namespace cohen_chess
                 mask |= CanStep(sq, dir) * SquareBB(sq);
             }
             return mask;
-        }(shift_dir);
+        }();
 
         template <Direction dir>
         constexpr Bitboard ShiftBB(Bitboard bb) noexcept
@@ -282,15 +355,7 @@ namespace cohen_chess
     }
 
     using bitboard::Bitboard;
-
-    using bitboard::kEmptyBB;
-    using bitboard::kUniverseBB;
-    using bitboard::kDarkSquaresBB;
-    using bitboard::kLightSquaresBB;
-    using bitboard::kRankEdgesBB;
-    using bitboard::kFileEdgesBB;
-    using bitboard::kEdgesBB;
-
+    using enum bitboard::BitboardConstant;
     using bitboard::SquareBB;
     using bitboard::RankBB;
     using bitboard::FileBB;
