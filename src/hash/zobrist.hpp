@@ -6,7 +6,7 @@
 #include <types/key.hpp>
 #include <types/piece.hpp>
 #include <types/square.hpp>
-#include <util/bit_util.hpp>
+#include <util/bits.hpp>
 #include <util/random.hpp>
 
 #include <array>

@@ -41,37 +41,32 @@ namespace cohen_chess
 
     namespace direction
     {
-        constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kRayBetweenTable = []
+        constexpr std::array<std::array<int, kSquareNB>, kSquareNB> kRayBetweenTable = []
         {
-            std::array<std::array<int8_t, kSquareNB>, kSquareNB> ray_between_table = {};
+            std::array<std::array<int, kSquareNB>, kSquareNB> ray_between_table = {};
             for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
             {
-                for (Square sq2 = sq1; sq2 < kSquareNB; ++sq2)
+                for (Square sq2 = kA1; sq2 < kSquareNB; ++sq2)
                 {
                     if (sq1 == sq2)
                     {
                         ray_between_table[sq1][sq2] = kDirectionNone;
-                        ray_between_table[sq2][sq1] = kDirectionNone;
                     }
                     else if (RankOf(sq1) == RankOf(sq2))
                     {
                         ray_between_table[sq1][sq2] = (sq1 < sq2) ? kEast : kWest;
-                        ray_between_table[sq2][sq1] = -ray_between_table[sq1][sq2];
                     }
                     else if (FileOf(sq1) == FileOf(sq2))
                     {
                         ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorth : kSouth;
-                        ray_between_table[sq2][sq1] = -ray_between_table[sq1][sq2];
                     }
                     else if (DiagOf(sq1) == DiagOf(sq2))
                     {
                         ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorthEast : kSouthWest;
-                        ray_between_table[sq2][sq1] = -ray_between_table[sq1][sq2];
                     }
                     else if (AntiOf(sq1) == AntiOf(sq2))
                     {
                         ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorthWest : kSouthEast;
-                        ray_between_table[sq2][sq1] = -ray_between_table[sq1][sq2];
                     }
                 }
             }
@@ -79,12 +74,12 @@ namespace cohen_chess
         }();
     }
 
-    constexpr Direction RayBetween(Square sq1, Square sq2)
+    constexpr Direction RayBetween(Square sq1, Square sq2) noexcept
     {
         return direction::kRayBetweenTable[sq1][sq2];
     }
 
-    constexpr int8_t Magnitude(Direction dir)
+    constexpr int Magnitude(Direction dir)
     {
         return SquareManhattanDistance(kE4, kE4 + dir);
     }

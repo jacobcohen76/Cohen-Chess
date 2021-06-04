@@ -28,7 +28,7 @@
 #include <types/rank.hpp>
 #include <types/square.hpp>
 
-#include <util/bit_util.hpp>
+#include <util/bits.hpp>
 #include <util/random.hpp>
 #include <util/string_util.hpp>
 

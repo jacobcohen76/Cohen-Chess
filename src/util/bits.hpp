@@ -1,0 +1,283 @@
+#ifndef COHEN_CHESS_UTIL_BITS_HPP_INCLUDED
+#define COHEN_CHESS_UTIL_BITS_HPP_INCLUDED
+
+#include <array>
+#include <bit>
+#include <cassert>
+#include <concepts>
+#include <cstdint>
+#include <type_traits>
+
+namespace cohen_chess
+{
+    namespace bits
+    {
+        template <std::integral T> constexpr int BitScanForward(T x) noexcept;
+        template <std::integral T> constexpr int PopCount(T x) noexcept;
+
+        template <typename T>
+        constexpr size_t kNumBits = sizeof(T) * 8;
+
+        template <std::integral T>
+        constexpr T RotateLeft(T x, int s) noexcept
+        {
+            return std::rotl(static_cast<std::make_unsigned_t<T>>(x), s);
+        }
+
+        template <std::integral T>
+        constexpr T RotateRight(T x, int s) noexcept
+        {
+            return std::rotr(static_cast<std::make_unsigned_t<T>>(x), s);
+        }
+
+        template <std::integral T>
+        constexpr T FlipLSB(T x) noexcept
+        {
+            return x & (x - 1);
+        }
+
+        template <std::integral T>
+        constexpr int PopLSB(T& x) noexcept
+        {
+            int lsb = BitScanForward(x);
+            x = FlipLSB(x);
+            return lsb;
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinCountTrailingZeroes(T x) noexcept
+        {
+            static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
+            if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
+            {
+                return __builtin_ctz(x);
+            }
+            else if constexpr (kNumBits<T> <= kNumBits<unsigned long>)
+            {
+                return __builtin_ctzl(x);
+            }
+            else
+            {
+                return __builtin_ctzll(x);
+            }
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinCountTrailingOnes(T x) noexcept
+        {
+            return BuiltinCountTrailingZeroes(~x);
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinBitScanForward(T x) noexcept
+        {
+            assert(x != 0);
+            return BuiltinCountTrailingZeroes(x);
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinCountLeadingZeroes(T x) noexcept
+        {
+            static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
+            if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
+            {
+                constexpr int diff = kNumBits<unsigned int> - kNumBits<T>;
+                return __builtin_clz(x) - diff;
+            }
+            else if constexpr (kNumBits<T> <= kNumBits<unsigned long>)
+            {
+                constexpr int diff = kNumBits<unsigned long> - kNumBits<T>;
+                return __builtin_clzl(x) - diff;
+            }
+            else
+            {
+                constexpr int diff = kNumBits<unsigned long long> - kNumBits<T>;
+                return __builtin_clzll(x) - diff;
+            }
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinCountLeadingOnes(T x) noexcept
+        {
+            return BuiltinCountLeadingZeroes(~x);
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinBitScanReverse(T x) noexcept
+        {
+            assert(x != 0);
+            return BuiltinCountLeadingZeroes(x) ^ (kNumBits<T> - 1);
+        }
+
+        constexpr uint64_t kDebruijn64 = 0x03F79D71B4CB0A89;
+        constexpr std::array<int, 64> kDeBruijnIndex64 =
+        {
+             0, 47,  1, 56, 48, 27,  2, 60,
+            57, 49, 41, 37, 28, 16,  3, 61,
+            54, 58, 35, 52, 50, 42, 21, 44,
+            38, 32, 29, 23, 17, 11,  4, 62,
+            46, 55, 26, 59, 40, 36, 15, 53,
+            34, 51, 20, 43, 31, 22, 10, 45,
+            25, 39, 14, 33, 19, 30,  9, 24,
+            13, 18,  8, 12,  7,  6,  5, 63,
+        };
+
+        /**
+         * Performs a forward bit scan on an integral type.
+         * https://www.chessprogramming.org/BitScan#With_separated_LS1B
+         * 
+         * @author Kim Walisch
+         * @param x integral to scan
+         * @precondition x != 0
+         * @return index (0..63) of least significant one bit
+         */
+        template <std::integral T>
+        constexpr int DeBruijnBitScanForward(T x) noexcept
+        {
+            assert(x != 0);
+            return kDeBruijnIndex64[(x ^ (x - 1)) * kDebruijn64 >> 58];
+        }
+
+        template <std::integral T>
+        constexpr int DeBruijnCountTrailingZeroes(T x) noexcept
+        {
+            return x ? DeBruijnBitScanForward(x) : kNumBits<T>;
+        }
+
+        template <std::integral T>
+        constexpr int DeBruijnCountTrailingOnes(T x) noexcept
+        {
+            return DeBruijnCountTrailingZeroes(~x);
+        }
+
+        /**
+         * Performs a reverse bit scan on an integral type.
+         * https://www.chessprogramming.org/BitScan#De_Bruijn_Multiplication_2
+         * 
+         * @author Kim Wallisch, Mark Dickinson
+         * @param x integral to scan
+         * @precondition x != 0
+         * @return index (0..63) of most significant one bit
+         */
+        template <std::integral T>
+        constexpr int DeBruijnBitScanReverse(T x) noexcept
+        {
+            assert(x != 0);
+            static_assert(kNumBits<T> <= kNumBits<uint64_t>);
+            x |= x >> 1, x |= x >> 2, x |= x >> 4;
+            if constexpr (kNumBits<uint16_t> <= kNumBits<T>)
+                x |= x >>  8;
+            if constexpr (kNumBits<uint32_t> <= kNumBits<T>)
+                x |= x >> 16;
+            if constexpr (kNumBits<uint64_t> <= kNumBits<T>)
+                x |= x >> 32;
+            return kDeBruijnIndex64[(x * kDebruijn64) >> 58];
+        }
+
+        template <std::integral T>
+        constexpr int DeBruijnCountLeadingZeroes(T x) noexcept
+        {
+            return x ? DeBruijnBitScanReverse(x) ^ (kNumBits<T> - 1) : kNumBits<T>;
+        }
+
+        template <std::integral T>
+        constexpr int DeBruijnCountLeadingOnes(T x) noexcept
+        {
+            return DeBruijnCountLeadingZeroes(~x);
+        }
+
+        template <std::integral T>
+        constexpr int BuiltinPopCount(T x) noexcept
+        {
+            static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
+            if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
+            {
+                return __builtin_popcount(x);
+            }
+            else if constexpr (kNumBits<T> <= kNumBits<unsigned long>)
+            {
+                return __builtin_popcountl(x);
+            }
+            else
+            {
+                return __builtin_popcountll(x);
+            }
+        }
+
+        template <std::integral T>
+        constexpr int PopCountLSB(T x) noexcept
+        {
+            int count = 0;
+            while (x)
+            {
+                ++count;
+                x = FlipLSB(x);
+            }
+            return count;
+        }
+
+        template <std::integral T>
+        constexpr int PopCountBitScanForward(T x) noexcept
+        {
+            assert(x != 0);
+            return PopCount((x & -x) - 1);
+        }
+
+        template <std::integral T>
+        constexpr int CountTrailingZeroes(T x) noexcept
+        {
+            return BuiltinCountTrailingZeroes(x);
+        }
+
+        template <std::integral T>
+        constexpr int CountTrailingOnes(T x) noexcept
+        {
+            return BuiltinCountTrailingOnes(x);
+        }
+
+        template <std::integral T>
+        constexpr int BitScanForward(T x) noexcept
+        {
+            return BuiltinBitScanForward(x);
+        }
+
+        template <std::integral T>
+        constexpr int CountLeadingZeroes(T x) noexcept
+        {
+            return BuiltinCountLeadingZeroes(x);
+        }
+
+        template <std::integral T>
+        constexpr int CountLeadingOnes(T x) noexcept
+        {
+            return BuiltinCountLeadingOnes(x);
+        }
+
+        template <std::integral T>
+        constexpr int BitScanReverse(T x) noexcept
+        {
+            return BuiltinBitScanReverse(x);
+        }
+
+        template <std::integral T>
+        constexpr int PopCount(T x) noexcept
+        {
+            return BuiltinPopCount(x);
+        }
+    }
+
+    using bits::kNumBits;
+    using bits::RotateLeft;
+    using bits::RotateRight;
+    using bits::FlipLSB;
+    using bits::PopLSB;
+    using bits::CountTrailingZeroes;
+    using bits::CountTrailingOnes;
+    using bits::BitScanForward;
+    using bits::CountLeadingZeroes;
+    using bits::CountLeadingOnes;
+    using bits::BitScanReverse;
+    using bits::PopCount;
+}
+
+#endif
