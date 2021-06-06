@@ -9,7 +9,7 @@ namespace cohen_chess::type::key
 
     enum KeyConstant : Key
     {
-        kKeyZero    = 0x0000000000000000,
+        kKeyNone    = 0x0000000000000000,
         kKeyAll     = 0xFFFFFFFFFFFFFFFF,
     };
 }
@@ -18,7 +18,7 @@ namespace cohen_chess
 {
     using type::key::Key;
     
-    using type::key::kKeyZero;
+    using type::key::kKeyNone;
     using type::key::kKeyAll;
 }
 

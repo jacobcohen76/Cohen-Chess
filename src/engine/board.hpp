@@ -1,7 +1,7 @@
 #ifndef COHEN_CHESS_ENGINE_BOARD_HPP_INCLUDED
 #define COHEN_CHESS_ENGINE_BOARD_HPP_INCLUDED
 
-#include <hash/zobrist.hpp>
+#include <engine/zobrist.hpp>
 #include <type/bitboard.hpp>
 #include <type/key.hpp>
 #include <type/move.hpp>
@@ -53,7 +53,7 @@ namespace cohen_chess
     {
         if (side != color)
         {
-            key ^= kZobristSideKey;
+            key ^= ZobristSideKey(color);
         }
         side = color;
     }
@@ -160,7 +160,7 @@ namespace cohen_chess
         push(from, to);
         state.update_castling_rights(from, to);
         state.side ^= kBlack;
-        state.key ^= kZobristSideKey;
+        state.key ^= ZobristSideKey(state.side);
         ++state.halfmove_clock;
     }
 

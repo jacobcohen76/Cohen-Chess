@@ -143,7 +143,7 @@ namespace cohen_chess::io::ascii_board
 
 namespace cohen_chess
 {
-    using cohen_chess::io::ascii_board::AsciiBoard;
+    using io::ascii_board::AsciiBoard;
 }
 
 #endif

@@ -130,7 +130,7 @@ namespace cohen_chess
 
     constexpr size_t MagicSize(Magic m)
     {
-        Key max_key = kKeyZero;
+        Key max_key = kKeyNone;
         Bitboard occ = kEmptyBB;
         do
         {

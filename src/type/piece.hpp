@@ -48,9 +48,9 @@ namespace cohen_chess::type::piece
         kPieceNB     = 16,
     };
 
-    constexpr Piece MakePiece(PieceType type, Color side) noexcept
+    constexpr Piece MakePiece(Color side, PieceType type) noexcept
     {
-        return type | (side << 3);
+        return (side << 3) | type;
     }
 
     constexpr PieceType PieceTypeOf(Piece pc) noexcept

@@ -4,8 +4,7 @@
 #include <engine/attacks.hpp>
 #include <engine/board.hpp>
 #include <engine/move_gen.hpp>
-
-#include <hash/zobrist.hpp>
+#include <engine/zobrist.hpp>
 
 #include <io/algebraic_notation.hpp>
 #include <io/ascii_board.hpp>

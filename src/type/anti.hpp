@@ -5,7 +5,7 @@
 
 #include <type/color.hpp>
 
-namespace cohen_chess::anti
+namespace cohen_chess::type::anti
 {
     using Anti = uint8_t;
 
@@ -42,27 +42,27 @@ namespace cohen_chess::anti
 
 namespace cohen_chess
 {
-    using anti::Anti;
+    using type::anti::Anti;
 
-    using anti::kAnti1;
-    using anti::kAnti2;
-    using anti::kAnti3;
-    using anti::kAnti4;
-    using anti::kAnti5;
-    using anti::kAnti6;
-    using anti::kAnti7;
-    using anti::kAnti8;
-    using anti::kAnti9;
-    using anti::kAntiA;
-    using anti::kAntiB;
-    using anti::kAntiC;
-    using anti::kAntiD;
-    using anti::kAntiE;
-    using anti::kAntiF;
-    using anti::kAntiNB;
+    using type::anti::kAnti1;
+    using type::anti::kAnti2;
+    using type::anti::kAnti3;
+    using type::anti::kAnti4;
+    using type::anti::kAnti5;
+    using type::anti::kAnti6;
+    using type::anti::kAnti7;
+    using type::anti::kAnti8;
+    using type::anti::kAnti9;
+    using type::anti::kAntiA;
+    using type::anti::kAntiB;
+    using type::anti::kAntiC;
+    using type::anti::kAntiD;
+    using type::anti::kAntiE;
+    using type::anti::kAntiF;
+    using type::anti::kAntiNB;
 
-    using anti::MirrorAnti;
-    using anti::RelativeAnti;
+    using type::anti::MirrorAnti;
+    using type::anti::RelativeAnti;
 }
 
 #endif
