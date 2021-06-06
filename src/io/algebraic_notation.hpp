@@ -1,11 +1,11 @@
 #ifndef COHEN_CHESS_ALGEBRAIC_NOTATION_HPP_INCLUDED
 #define COHEN_CHESS_ALGEBRAIC_NOTATION_HPP_INCLUDED
 
-#include <types/color.hpp>
-#include <types/file.hpp>
-#include <types/piece.hpp>
-#include <types/rank.hpp>
-#include <types/square.hpp>
+#include <type/color.hpp>
+#include <type/file.hpp>
+#include <type/piece.hpp>
+#include <type/rank.hpp>
+#include <type/square.hpp>
 
 #include <array>
 #include <cassert>

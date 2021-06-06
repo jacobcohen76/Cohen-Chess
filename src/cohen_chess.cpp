@@ -7,27 +7,26 @@
 
 int main(int argc, char* argv[])
 {
-    using namespace cohen_chess;
-    std::cout << "kNorth" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorth>) << std::endl;
-    std::cout << "kEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kEast>) << std::endl;
-    std::cout << "kSouth" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouth>) << std::endl;
-    std::cout << "kWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kWest>) << std::endl;
-    std::cout << "kNorthEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorthEast>) << std::endl;
-    std::cout << "kSouthEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouthEast>) << std::endl;
-    std::cout << "kSouthWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouthWest>) << std::endl;
-    std::cout << "kNorthWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorthWest>) << std::endl;
-    std::cout << "kNorthNorth" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorthNorth>) << std::endl;
-    std::cout << "kEastEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kEastEast>) << std::endl;
-    std::cout << "kSouthSouth" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouthSouth>) << std::endl;
-    std::cout << "kWestWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kWestWest>) << std::endl;
-    std::cout << "kNorthNorthEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorthNorthEast>) << std::endl;
-    std::cout << "kNorthNorthWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kNorthNorthWest>) << std::endl;
-    std::cout << "kEastEastNorth" << std::endl << AsciiBoard(bitboard::kShiftMask<kEastEastNorth>) << std::endl;
-    std::cout << "kEastEastSouth" << std::endl << AsciiBoard(bitboard::kShiftMask<kEastEastSouth>) << std::endl;
-    std::cout << "kSouthSouthEast" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouthSouthEast>) << std::endl;
-    std::cout << "kSouthSouthWest" << std::endl << AsciiBoard(bitboard::kShiftMask<kSouthSouthWest>) << std::endl;
-    std::cout << "kWestWestNorth" << std::endl << AsciiBoard(bitboard::kShiftMask<kWestWestNorth>) << std::endl;
-    std::cout << "kWestWestSouth" << std::endl << AsciiBoard(bitboard::kShiftMask<kWestWestSouth>) << std::endl;
-    std::cout << "kDirectionNone" << std::endl << AsciiBoard(bitboard::kShiftMask<kDirectionNone>) << std::endl;
+    std::cout << "kNorth"           << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorth>)           << std::endl;
+    std::cout << "kEast"            << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEast>)            << std::endl;
+    std::cout << "kSouth"           << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouth>)           << std::endl;
+    std::cout << "kWest"            << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWest>)            << std::endl;
+    std::cout << "kNorthEast"       << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthEast>)       << std::endl;
+    std::cout << "kSouthEast"       << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthEast>)       << std::endl;
+    std::cout << "kSouthWest"       << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthWest>)       << std::endl;
+    std::cout << "kNorthWest"       << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthWest>)       << std::endl;
+    std::cout << "kNorthNorth"      << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorth>)      << std::endl;
+    std::cout << "kEastEast"        << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEast>)        << std::endl;
+    std::cout << "kSouthSouth"      << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouth>)      << std::endl;
+    std::cout << "kWestWest"        << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWest>)        << std::endl;
+    std::cout << "kNorthNorthEast"  << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorthEast>)  << std::endl;
+    std::cout << "kNorthNorthWest"  << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorthWest>)  << std::endl;
+    std::cout << "kEastEastNorth"   << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEastNorth>)   << std::endl;
+    std::cout << "kEastEastSouth"   << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEastSouth>)   << std::endl;
+    std::cout << "kSouthSouthEast"  << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouthEast>)  << std::endl;
+    std::cout << "kSouthSouthWest"  << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouthWest>)  << std::endl;
+    std::cout << "kWestWestNorth"   << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWestNorth>)   << std::endl;
+    std::cout << "kWestWestSouth"   << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWestSouth>)   << std::endl;
+    std::cout << "kDirectionNone"   << std::endl << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kDirectionNone>)   << std::endl;
     return 0;
 }

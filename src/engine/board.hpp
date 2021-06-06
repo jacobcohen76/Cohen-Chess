@@ -2,10 +2,10 @@
 #define COHEN_CHESS_ENGINE_BOARD_HPP_INCLUDED
 
 #include <hash/zobrist.hpp>
-#include <types/bitboard.hpp>
-#include <types/key.hpp>
-#include <types/move.hpp>
-#include <types/piece.hpp>
+#include <type/bitboard.hpp>
+#include <type/key.hpp>
+#include <type/move.hpp>
+#include <type/piece.hpp>
 
 namespace cohen_chess
 {
@@ -13,8 +13,8 @@ namespace cohen_chess
     {
         constexpr void  set_side(Color);
         constexpr void  set_ep_file(File);
-        constexpr void  set_castling_rights(CastlingRights);
-        constexpr void  mask_castling_rights(CastlingRights);
+        constexpr void  set_castling_rights(Castling);
+        constexpr void  mask_castling_rights(Castling);
         constexpr void  update_castling_rights(Square, Square);
 
         Key             key, pawn_key;
@@ -23,7 +23,7 @@ namespace cohen_chess
         uint16_t        fullmove_count;
         Piece           captured;
         File            ep_file;
-        CastlingRights  castling_rights;
+        Castling        castling_rights;
         Color           side;
     };
 
@@ -65,14 +65,14 @@ namespace cohen_chess
         ep_file = file;
     }
 
-    constexpr void BoardState::set_castling_rights(CastlingRights cr)
+    constexpr void BoardState::set_castling_rights(Castling cr)
     {
         key ^= ZobristCastlingKey(castling_rights);
         key ^= ZobristCastlingKey(cr);
         castling_rights = cr;
     }
 
-    constexpr void BoardState::mask_castling_rights(CastlingRights mask)
+    constexpr void BoardState::mask_castling_rights(Castling mask)
     {
         set_castling_rights(castling_rights & mask);
     }
@@ -153,7 +153,7 @@ namespace cohen_chess
                         push(RelativeSquareRank(kH1, state.side), RelativeSquareRank(kF1, state.side));
                     }
                 }
-                state.mask_castling_rights(~CastlingRightsSide(state.side));
+                state.mask_castling_rights(~CastlingSide(state.side));
             }
             state.set_ep_file(kFileNB);
         }

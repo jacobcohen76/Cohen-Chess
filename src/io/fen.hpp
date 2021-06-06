@@ -36,7 +36,7 @@ namespace cohen_chess
         is >> token;
         board.state.set_side(token == "b");
         is >> token;
-        CastlingRights cr = kCastlingNone;
+        Castling cr = kCastlingNone;
         for (const char ch : token)
         {
             switch (ch)

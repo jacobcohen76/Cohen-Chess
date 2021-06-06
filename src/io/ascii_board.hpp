@@ -2,17 +2,17 @@
 #define COHEN_CHESS_IO_ASCII_BOARD_HPP_INCLUDED
 
 #include <engine/board.hpp>
-#include <types/bitboard.hpp>
-#include <types/rank.hpp>
-#include <types/color.hpp>
-#include <types/file.hpp>
-#include <types/square.hpp>
+#include <type/bitboard.hpp>
+#include <type/rank.hpp>
+#include <type/color.hpp>
+#include <type/file.hpp>
+#include <type/square.hpp>
 
 #include <iostream>
 #include <cstdint>
 #include <string>
 
-namespace cohen_chess
+namespace cohen_chess::io::ascii_board
 {
     class AsciiBoard
     {
@@ -135,10 +135,15 @@ namespace cohen_chess
         return std::end(data);
     }
 
-    inline std::ostream& operator <<(std::ostream& os, const AsciiBoard& ascii_board)
+    inline std::ostream& operator<<(std::ostream& os, const AsciiBoard& ascii_board)
     {
         return os << std::string_view(std::begin(ascii_board), std::end(ascii_board));
     }
+}
+
+namespace cohen_chess
+{
+    using cohen_chess::io::ascii_board::AsciiBoard;
 }
 
 #endif

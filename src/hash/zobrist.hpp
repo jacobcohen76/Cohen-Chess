@@ -1,11 +1,11 @@
 #ifndef COHEN_CHESS_HASH_ZOBRIST_HPP_INCLUDED
 #define COHEN_CHESS_HASH_ZOBRIST_HPP_INCLUDED
 
-#include <types/castling_rights.hpp>
-#include <types/file.hpp>
-#include <types/key.hpp>
-#include <types/piece.hpp>
-#include <types/square.hpp>
+#include <type/castling.hpp>
+#include <type/file.hpp>
+#include <type/key.hpp>
+#include <type/piece.hpp>
+#include <type/square.hpp>
 #include <util/bits.hpp>
 #include <util/random.hpp>
 
@@ -46,7 +46,7 @@ namespace cohen_chess
         castling_keys[kWhiteOOO] = randomizer();
         castling_keys[kBlackOO]  = randomizer();
         castling_keys[kBlackOOO] = randomizer();
-        for (CastlingRights cr = kCastlingNone; cr < kCastlingNB; ++cr)
+        for (Castling cr = kCastlingNone; cr < kCastlingNB; ++cr)
         {
             if (FlipLSB(cr))
             {
@@ -63,7 +63,7 @@ namespace cohen_chess
         return castling_keys;
     }(LinearCongruentialGenerator(0xA7D1552684A6FC08));
 
-    constexpr Key ZobristCastlingKey(CastlingRights cr)
+    constexpr Key ZobristCastlingKey(Castling cr)
     {
         return kZobristCastlingKeys[cr];
     }

@@ -1,11 +1,11 @@
 #ifndef COHEN_CHESS_ENGINE_ATTACKS_HPP_INCLUDED
 #define COHEN_CHESS_ENGINE_ATTACKS_HPP_INCLUDED
 
-#include <types/bitboard.hpp>
-#include <types/direction.hpp>
-#include <types/key.hpp>
-#include <types/piece.hpp>
-#include <types/square.hpp>
+#include <type/bitboard.hpp>
+#include <type/direction.hpp>
+#include <type/key.hpp>
+#include <type/piece.hpp>
+#include <type/square.hpp>
 
 #include <array>
 

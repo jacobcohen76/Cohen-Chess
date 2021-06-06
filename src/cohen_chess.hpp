@@ -15,18 +15,18 @@
 #include <io/pgn.hpp>
 #include <io/uci.hpp>
 
-#include <types/anti.hpp>
-#include <types/bitboard.hpp>
-#include <types/castling_rights.hpp>
-#include <types/color.hpp>
-#include <types/diag.hpp>
-#include <types/direction.hpp>
-#include <types/file.hpp>
-#include <types/key.hpp>
-#include <types/move.hpp>
-#include <types/piece.hpp>
-#include <types/rank.hpp>
-#include <types/square.hpp>
+#include <type/anti.hpp>
+#include <type/bitboard.hpp>
+#include <type/castling.hpp>
+#include <type/color.hpp>
+#include <type/diag.hpp>
+#include <type/direction.hpp>
+#include <type/file.hpp>
+#include <type/key.hpp>
+#include <type/move.hpp>
+#include <type/piece.hpp>
+#include <type/rank.hpp>
+#include <type/square.hpp>
 
 #include <util/bits.hpp>
 #include <util/random.hpp>
