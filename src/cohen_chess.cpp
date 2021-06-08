@@ -5,28 +5,28 @@
 #include <string>
 #include <locale>
 
+using namespace cohen_chess;
+
 int main(int argc, char* argv[])
 {
-    std::cout << "kNorth"           << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorth>)           << '\n';
-    std::cout << "kEast"            << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEast>)            << '\n';
-    std::cout << "kSouth"           << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouth>)           << '\n';
-    std::cout << "kWest"            << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWest>)            << '\n';
-    std::cout << "kNorthEast"       << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthEast>)       << '\n';
-    std::cout << "kSouthEast"       << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthEast>)       << '\n';
-    std::cout << "kSouthWest"       << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthWest>)       << '\n';
-    std::cout << "kNorthWest"       << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthWest>)       << '\n';
-    std::cout << "kNorthNorth"      << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorth>)      << '\n';
-    std::cout << "kEastEast"        << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEast>)        << '\n';
-    std::cout << "kSouthSouth"      << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouth>)      << '\n';
-    std::cout << "kWestWest"        << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWest>)        << '\n';
-    std::cout << "kNorthNorthEast"  << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorthEast>)  << '\n';
-    std::cout << "kNorthNorthWest"  << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kNorthNorthWest>)  << '\n';
-    std::cout << "kEastEastNorth"   << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEastNorth>)   << '\n';
-    std::cout << "kEastEastSouth"   << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kEastEastSouth>)   << '\n';
-    std::cout << "kSouthSouthEast"  << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouthEast>)  << '\n';
-    std::cout << "kSouthSouthWest"  << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kSouthSouthWest>)  << '\n';
-    std::cout << "kWestWestNorth"   << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWestNorth>)   << '\n';
-    std::cout << "kWestWestSouth"   << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kWestWestSouth>)   << '\n';
-    std::cout << "kDirectionNone"   << '\n' << cohen_chess::AsciiBoard(cohen_chess::type::bitboard::kShiftMask<cohen_chess::kDirectionNone>)   << '\n';
+    const auto lambda = [](auto mask_generator, auto attacks_generator, auto alt_attacks_generator)
+    {
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard mask = mask_generator(sq);
+            Bitboard occ  = kEmptyBB;
+            do
+            {
+                assert(attacks_generator(occ, sq) == alt_attacks_generator(occ, sq));
+                // std::cout << AsciiBoard(occ) << std::endl;
+                // std::cout << AsciiBoard(attacks_generator(occ, sq)) << std::endl;
+                // std::cout << AsciiBoard(alt_attacks_generator(occ, sq)) << std::endl << std::endl;
+            }
+            while ((occ = (occ - mask) & mask));
+        }
+    };
+    lambda(MagicBishopMask, MagicBishopAttacks, RayBishopAttacks);
+    lambda(MagicRookMask, MagicRookAttacks, RayRookAttacks);
+    std::cout << "Success!" << std::endl;
     return 0;
 }

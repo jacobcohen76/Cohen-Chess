@@ -3,6 +3,7 @@
 
 #include <engine/attacks.hpp>
 #include <engine/board.hpp>
+#include <engine/magic.hpp>
 #include <engine/move_gen.hpp>
 #include <engine/zobrist.hpp>
 
@@ -29,6 +30,6 @@
 
 #include <util/bits.hpp>
 #include <util/random.hpp>
-#include <util/string_util.hpp>
+// #include <util/string_util.hpp>
 
 #endif

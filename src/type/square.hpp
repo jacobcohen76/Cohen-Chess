@@ -11,7 +11,7 @@
 
 namespace cohen_chess::type::square
 {
-    using Square = uint8_t;
+    using Square = int;
 
     enum SquareConstant : Square
     {
@@ -138,7 +138,7 @@ namespace cohen_chess::type::square
 namespace cohen_chess
 {
     using type::square::Square;
-    
+
     using type::square::kA1, type::square::kB1, type::square::kC1, type::square::kD1,
           type::square::kE1, type::square::kF1, type::square::kG1, type::square::kH1,
           type::square::kA2, type::square::kB2, type::square::kC2, type::square::kD2,

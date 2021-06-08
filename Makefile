@@ -6,7 +6,7 @@ BIN       = bin
 CC        = clang
 CXX       = clang++
 
-CPPNDEBUG = -DNDEBUG
+CPPNDEBUG = # -DNDEBUG
 
 CXXVER    = -std=c++20
 CXXVRB    = -Wall
@@ -18,7 +18,7 @@ CXXLIMITS = -fconstexpr-steps=2147483647
 
 CPPFLAGS  = $(CPPNDEBUG)
 CFLAGS    = 
-CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL)
+CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) # -S -fverbose-asm
 
 ifeq ($(CXX),clang++)
 	CXXFLAGS += $(CXXSTDLIB)

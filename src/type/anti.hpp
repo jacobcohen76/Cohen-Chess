@@ -1,13 +1,14 @@
 #ifndef COHEN_CHESS_TYPE_ANTI_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_ANTI_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/color.hpp>
 
 namespace cohen_chess::type::anti
 {
-    using Anti = uint8_t;
+    using Anti = int;
 
     enum AntiConstant : Anti
     {
@@ -31,11 +32,14 @@ namespace cohen_chess::type::anti
 
     constexpr Anti MirrorAnti(Anti anti) noexcept
     {
+        assert(kAnti1 <= anti && anti < kAntiNB);
         return kAntiF - anti;
     }
 
     constexpr Anti RelativeAnti(Anti anti, Color side) noexcept
     {
+        assert(kAnti1 <= anti && anti < kAntiNB);
+        assert(color == kWhite || color == kBlack);
         return side ? anti : MirrorAnti(anti);
     }
 }

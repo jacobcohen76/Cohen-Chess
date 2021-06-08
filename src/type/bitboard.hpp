@@ -37,24 +37,26 @@ namespace cohen_chess::type::bitboard
         return kBitboardA1 << sq;
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kSquareTable = []()
+    constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        std::generate(begin(square_table), end(square_table),
+        [sq = Square(kA1)]() mutable
         {
-            square_table[sq] = RuntimeSquareBB(sq);
-        }
+            return RuntimeSquareBB(sq++);
+        });
         return square_table;
     }();
 
     constexpr Bitboard LookupSquareBB(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kSquareTable[sq];
+        return kSquareBitboardTable[sq];
     }
 
     constexpr Bitboard SquareBB(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return LookupSquareBB(sq);
     }
 
@@ -65,24 +67,26 @@ namespace cohen_chess::type::bitboard
         return kBitboardRank1 << (rank << 3);
     }
 
-    constexpr std::array<Bitboard, kRankNB> kRankTable = []()
+    constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
-        for (Rank rank = kRank1; rank < kRankNB; ++rank)
+        std::generate(begin(rank_table), end(rank_table),
+        [rank = Rank(kRank1)]() mutable
         {
-            rank_table[rank] = RuntimeRankBB(rank);
-        }
+            return RuntimeRankBB(rank++);
+        });
         return rank_table;
     }();
 
     constexpr Bitboard LookupRankBB(Rank rank) noexcept
     {
         assert(kRank1 <= rank && rank < kRankNB);
-        return kRankTable[rank];
+        return kRankBitboardTable[rank];
     }
 
     constexpr Bitboard RankBB(Rank rank) noexcept
     {
+        assert(kRank1 <= rank && rank < kRankNB);
         return LookupRankBB(rank);
     }
 
@@ -93,28 +97,30 @@ namespace cohen_chess::type::bitboard
         return kBitboardFileA << file;
     }
 
-    constexpr std::array<Bitboard, kFileNB> kFileTable = []()
+    constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
-        for (File file = kFileA; file < kFileNB; ++file)
+        std::generate(begin(file_table), end(file_table),
+        [file = File(kFileA)]() mutable
         {
-            file_table[file] = RuntimeFileBB(file);
-        }
+            return RuntimeFileBB(file++);
+        });
         return file_table;
     }();
 
     constexpr Bitboard LookupFileBB(File file) noexcept
     {
         assert(kFileA <= file && file < kFileNB);
-        return kFileTable[file];
+        return kFileBitboardTable[file];
     }
 
     constexpr Bitboard FileBB(File file) noexcept
     {
+        assert(kFileA <= file && file < kFileNB);
         return LookupFileBB(file);
     }
 
-    constexpr std::array<Bitboard, kDiagNB> kDiagTable =
+    constexpr std::array<Bitboard, kDiagNB> kDiagBitboardTable =
     {
         0x0000000000000080,
         0x0000000000008040,
@@ -136,15 +142,16 @@ namespace cohen_chess::type::bitboard
     constexpr Bitboard LookupDiagBB(Diag diag) noexcept
     {
         assert(kDiag1 <= diag && diag < kDiagNB);
-        return kDiagTable[diag];
+        return kDiagBitboardTable[diag];
     }
 
     constexpr Bitboard DiagBB(Diag diag) noexcept
     {
+        assert(kDiag1 <= diag && diag < kDiagNB);
         return LookupDiagBB(diag);
     }
 
-    constexpr std::array<Bitboard, kAntiNB> kAntiTable = 
+    constexpr std::array<Bitboard, kAntiNB> kAntiBitboardTable = 
     {
         0x0000000000000001,
         0x0000000000000102,
@@ -166,57 +173,62 @@ namespace cohen_chess::type::bitboard
     constexpr Bitboard LookupAntiBB(Anti anti) noexcept
     {
         assert(kAnti1 <= anti && anti < kAntiNB);
-        return kAntiTable[anti];
+        return kAntiBitboardTable[anti];
     }
 
     constexpr Bitboard AntiBB(Anti anti) noexcept
     {
+        assert(kAnti1 <= anti && anti < kAntiNB);
         return LookupAntiBB(anti);
     }
 
     template <Direction dir>
-    constexpr std::array<Bitboard, kSquareNB> kRayTable = []()
+    constexpr std::array<Bitboard, kSquareNB> kRayBitboardTable = []()
     {
         static_assert(dir != kDirectionNone);
         std::array<Bitboard, kSquareNB> ray_table = {};
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        std::generate(begin(ray_table), end(ray_table),
+        [sq = Square(kA1)]() mutable
         {
-            Bitboard bb = kEmptyBB;
-            Square  itr = sq;
+            Bitboard ray_bb = kEmptyBB;
+            Square itr = sq++;
             while (CanStep(itr, dir))
             {
-                bb |= SquareBB(itr += dir);
+                ray_bb |= SquareBB(itr += dir);
             }
-            ray_table[sq] = bb;
-        }
+            return ray_bb;
+        });
         return ray_table;
     }();
 
     template <Direction dir>
     constexpr Bitboard RayBB(Square sq) noexcept
     {
-        return kRayTable<dir>[sq];
+        assert(kA1 <= sq && sq < kSquareNB);
+        return kRayBitboardTable<dir>[sq];
     }
 
     template <>
     constexpr Bitboard RayBB<kDirectionNone>(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return kEmptyBB;
     }
 
     template <Direction dir>
     constexpr Bitboard RayBB(Bitboard occ, Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         if constexpr (dir > 0)
         {
             Bitboard ray_bb = RayBB<dir>(sq);
-            int blocker = BitScanForward((occ & ray_bb) | 0x8000000000000000);
+            int blocker = BitScanForward((occ & ray_bb) | SquareBB(kH8));
             return ray_bb ^ RayBB<dir>(blocker);
         }
         else
         {
             Bitboard ray_bb = RayBB<dir>(sq);
-            int blocker = BitScanReverse((occ & ray_bb) | 0x0000000000000001);
+            int blocker = BitScanReverse((occ & ray_bb) | SquareBB(kA1));
             return ray_bb ^ RayBB<dir>(blocker);
         }
     }
@@ -265,16 +277,21 @@ namespace cohen_chess::type::bitboard
                RayBB(sq2, RayBetween(sq2, sq1));
     }
 
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenTable = []()
+    constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB>
+    kBetweenBitboardTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
-        for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
+        std::generate(begin(between_table), end(between_table),
+        [sq1 = Square(kA1)]() mutable
         {
-            for (Square sq2 = kA1; sq2 < kSquareNB; ++sq2)
+            std::array<Bitboard, kSquareNB> sub_table = {};
+            std::generate(begin(sub_table), end(sub_table),
+            [sq1, sq2 = Square(kA1)]() mutable
             {
-                between_table[sq1][sq2] = RuntimeBetweenBB(sq1, sq2);
-            }
-        }
+                return RuntimeBetweenBB(sq1, sq2++);
+            });
+            return ++sq1, sub_table;
+        });
         return between_table;
     }();
 
@@ -282,67 +299,49 @@ namespace cohen_chess::type::bitboard
     {
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kBetweenTable[sq1][sq2];
+        return kBetweenBitboardTable[sq1][sq2];
     }
 
     constexpr Bitboard BetweenBB(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return LookupBetweenBB(sq1, sq2);
     }
 
     template <Direction dir>
-    constexpr Bitboard kShiftMask = []()
-    {
-        Bitboard mask = kEmptyBB;
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
-        {
-            mask |= CanStep(sq, dir) * SquareBB(sq);
-        }
-        return mask;
-    }();
+    constexpr Bitboard kShiftMask = kUniverseBB;
+
+    template <> constexpr Bitboard kShiftMask<kEast>           = ~FileBB(kFileH);
+    template <> constexpr Bitboard kShiftMask<kNorthEast>      = kShiftMask<kEast>;
+    template <> constexpr Bitboard kShiftMask<kSouthEast>      = kShiftMask<kEast>;
+    template <> constexpr Bitboard kShiftMask<kNorthNorthEast> = kShiftMask<kEast>;
+    template <> constexpr Bitboard kShiftMask<kSouthSouthEast> = kShiftMask<kEast>;
+
+    template <> constexpr Bitboard kShiftMask<kEastEast>       = ~FileBB(kFileH) & ~FileBB(kFileG);
+    template <> constexpr Bitboard kShiftMask<kEastEastNorth>  = kShiftMask<kEastEast>;
+    template <> constexpr Bitboard kShiftMask<kEastEastSouth>  = kShiftMask<kEastEast>;
+
+    template <> constexpr Bitboard kShiftMask<kWest>           = ~FileBB(kFileA);
+    template <> constexpr Bitboard kShiftMask<kNorthWest>      = kShiftMask<kWest>;
+    template <> constexpr Bitboard kShiftMask<kSouthWest>      = kShiftMask<kWest>;
+    template <> constexpr Bitboard kShiftMask<kNorthNorthWest> = kShiftMask<kWest>;
+    template <> constexpr Bitboard kShiftMask<kSouthSouthWest> = kShiftMask<kWest>;
+
+    template <> constexpr Bitboard kShiftMask<kWestWest>       = ~FileBB(kFileA) & ~FileBB(kFileB);
+    template <> constexpr Bitboard kShiftMask<kWestWestNorth>  = kShiftMask<kWestWest>;
+    template <> constexpr Bitboard kShiftMask<kWestWestSouth>  = kShiftMask<kWestWest>;
 
     template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb) noexcept
     {
-        if constexpr (dir == 0)
-        {
-            return bb;
-        }
-        else if constexpr (dir > 0)
+        if constexpr (dir > 0)
         {
             return (bb & kShiftMask<dir>) << +dir;
         }
         else
         {
             return (bb & kShiftMask<dir>) >> -dir;
-        }
-    }
-
-    constexpr Bitboard ShiftBB(Bitboard bb, Direction dir) noexcept
-    {
-        switch (dir)
-        {
-            case kNorth:          return ShiftBB<kNorth>          (bb);
-            case kEast:           return ShiftBB<kEast>           (bb);
-            case kSouth:          return ShiftBB<kSouth>          (bb);
-            case kWest:           return ShiftBB<kWest>           (bb);
-            case kNorthEast:      return ShiftBB<kNorthEast>      (bb);
-            case kSouthEast:      return ShiftBB<kSouthEast>      (bb);
-            case kSouthWest:      return ShiftBB<kSouthWest>      (bb);
-            case kNorthWest:      return ShiftBB<kNorthWest>      (bb);
-            case kNorthNorth:     return ShiftBB<kNorthNorth>     (bb);
-            case kEastEast:       return ShiftBB<kEastEast>       (bb);
-            case kSouthSouth:     return ShiftBB<kSouthSouth>     (bb);
-            case kWestWest:       return ShiftBB<kWestWest>       (bb);
-            case kNorthNorthEast: return ShiftBB<kNorthNorthEast> (bb);
-            case kNorthNorthWest: return ShiftBB<kNorthNorthWest> (bb);
-            case kEastEastNorth:  return ShiftBB<kEastEastNorth>  (bb);
-            case kEastEastSouth:  return ShiftBB<kEastEastSouth>  (bb);
-            case kSouthSouthEast: return ShiftBB<kSouthSouthEast> (bb);
-            case kSouthSouthWest: return ShiftBB<kSouthSouthWest> (bb);
-            case kWestWestNorth:  return ShiftBB<kWestWestNorth>  (bb);
-            case kWestWestSouth:  return ShiftBB<kWestWestSouth>  (bb);
-            default:              return ShiftBB<kDirectionNone>  (bb);
         }
     }
 

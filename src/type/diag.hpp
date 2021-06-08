@@ -7,7 +7,7 @@
 
 namespace cohen_chess::type::diag
 {
-    using Diag = uint8_t;
+    using Diag = int;
 
     enum DiagConstant : Diag
     {

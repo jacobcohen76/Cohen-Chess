@@ -1,6 +1,10 @@
 #ifndef COHEN_CHESS_IO_ASCII_BOARD_HPP_INCLUDED
 #define COHEN_CHESS_IO_ASCII_BOARD_HPP_INCLUDED
 
+#include <cstdint>
+#include <iostream>
+#include <string>
+
 #include <engine/board.hpp>
 #include <type/bitboard.hpp>
 #include <type/rank.hpp>
@@ -8,30 +12,26 @@
 #include <type/file.hpp>
 #include <type/square.hpp>
 
-#include <iostream>
-#include <cstdint>
-#include <string>
-
 namespace cohen_chess::io::ascii_board
 {
     class AsciiBoard
     {
     public:
-        constexpr AsciiBoard() = default;
-        constexpr AsciiBoard(Bitboard, char, Color);
-        constexpr AsciiBoard(const Board&, Color);
+        constexpr AsciiBoard() noexcept = default;
+        constexpr AsciiBoard(Bitboard, char, Color) noexcept;
+        constexpr AsciiBoard(const Board&, Color) noexcept;
 
-        constexpr AsciiBoard& set(Square, char);
-        constexpr AsciiBoard& set_all(Bitboard, char);
-        constexpr AsciiBoard& set_state(const Board&);
-        constexpr AsciiBoard& clear();
-        constexpr AsciiBoard& flip();
+        constexpr AsciiBoard& set(Square, char) noexcept;
+        constexpr AsciiBoard& set_all(Bitboard, char) noexcept;
+        constexpr AsciiBoard& set_state(const Board&) noexcept;
+        constexpr AsciiBoard& clear() noexcept;
+        constexpr AsciiBoard& flip() noexcept;
 
-        constexpr char* begin();
-        constexpr char* end();
+        constexpr char* begin() noexcept;
+        constexpr char* end() noexcept;
 
-        constexpr const char* begin() const;
-        constexpr const char* end() const;
+        constexpr const char* begin() const noexcept;
+        constexpr const char* end() const noexcept;
 
     private:
         static constexpr std::array<char, 128> kInitialData =
@@ -46,7 +46,7 @@ namespace cohen_chess::io::ascii_board
             '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
         };
 
-        static constexpr size_t index(Square sq, Color side)
+        static constexpr size_t index(Square sq, Color side) noexcept
         {
             Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
             File file = RelativeFile(FileOf(sq), side);
@@ -57,25 +57,25 @@ namespace cohen_chess::io::ascii_board
         std::array<char, 128> data = kInitialData;
     };
 
-    constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch = '1', Color side = kWhite) :
+    constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch = '1', Color side = kWhite) noexcept :
         side(side)
     {
         set_all(bb, ch);
     }
 
-    constexpr AsciiBoard::AsciiBoard(const Board& board, Color side = kWhite) :
+    constexpr AsciiBoard::AsciiBoard(const Board& board, Color side = kWhite) noexcept :
         side(side)
     {
         set_state(board);
     }
 
-    constexpr AsciiBoard& AsciiBoard::set(Square sq, char ch)
+    constexpr AsciiBoard& AsciiBoard::set(Square sq, char ch = '1') noexcept
     {
         data[index(sq, side)] = ch;
         return *this;
     }
 
-    constexpr AsciiBoard& AsciiBoard::set_all(Bitboard bb, char ch)
+    constexpr AsciiBoard& AsciiBoard::set_all(Bitboard bb, char ch = '1') noexcept
     {
         while (bb)
         {
@@ -84,7 +84,7 @@ namespace cohen_chess::io::ascii_board
         return *this;
     }
 
-    constexpr AsciiBoard& AsciiBoard::set_state(const Board& board)
+    constexpr AsciiBoard& AsciiBoard::set_state(const Board& board) noexcept
     {
         data = kInitialData;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -97,13 +97,13 @@ namespace cohen_chess::io::ascii_board
         return *this;
     }
 
-    constexpr AsciiBoard& AsciiBoard::clear()
+    constexpr AsciiBoard& AsciiBoard::clear() noexcept
     {
         data = kInitialData;
         return *this;
     }
 
-    constexpr AsciiBoard& AsciiBoard::flip()
+    constexpr AsciiBoard& AsciiBoard::flip() noexcept
     {
         auto flipped = kInitialData;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -115,22 +115,22 @@ namespace cohen_chess::io::ascii_board
         return *this;
     }
 
-    constexpr char* AsciiBoard::begin()
+    constexpr char* AsciiBoard::begin() noexcept
     {
         return std::begin(data);
     }
 
-    constexpr char* AsciiBoard::end()
+    constexpr char* AsciiBoard::end() noexcept
     {
         return std::end(data);
     }
 
-    constexpr const char* AsciiBoard::begin() const
+    constexpr const char* AsciiBoard::begin() const noexcept
     {
         return std::begin(data);
     }
 
-    constexpr const char* AsciiBoard::end() const
+    constexpr const char* AsciiBoard::end() const noexcept
     {
         return std::end(data);
     }
