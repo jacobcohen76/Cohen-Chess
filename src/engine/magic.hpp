@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <numeric>
 
 #include <engine/attacks.hpp>
 #include <type/bitboard.hpp>

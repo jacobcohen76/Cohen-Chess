@@ -39,7 +39,7 @@ namespace cohen_chess::type::anti
     constexpr Anti RelativeAnti(Anti anti, Color side) noexcept
     {
         assert(kAnti1 <= anti && anti < kAntiNB);
-        assert(color == kWhite || color == kBlack);
+        assert(side == kWhite || side == kBlack);
         return side ? anti : MirrorAnti(anti);
     }
 }
