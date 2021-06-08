@@ -2,6 +2,7 @@
 #define COHEN_CHESS_TYPE_DIRECTION_HPP_INCLUDED
 
 #include <array>
+#include <cassert>
 #include <cstdint>
 
 #include <type/square.hpp>

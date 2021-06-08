@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_PIECE_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_PIECE_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/color.hpp>
@@ -50,6 +51,7 @@ namespace cohen_chess::type::piece
 
     constexpr Piece MakePiece(Color side, PieceType type) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         return (side << 3) | type;
     }
 

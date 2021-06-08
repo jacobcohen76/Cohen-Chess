@@ -263,6 +263,7 @@ namespace cohen_chess::type::bitboard
 
     constexpr Bitboard RayBB(Bitboard occ, Square sq, Direction dir) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         Bitboard ray_bb = RayBB(sq, dir);
         int blocker = (dir > 0) ? BitScanForward((occ & ray_bb) | 0x8000000000000000) :
                                   BitScanReverse((occ & ray_bb) | 0x0000000000000001);

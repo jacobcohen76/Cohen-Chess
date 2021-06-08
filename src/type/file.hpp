@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_FILE_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_FILE_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/color.hpp>
@@ -24,12 +25,15 @@ namespace cohen_chess::type::file
 
     constexpr File MirrorFile(File file) noexcept
     {
-        return file ^ kFileH;
+        assert(kFileA <= file && file < kFileNB);
+        return file ^ 0b111;
     }
 
     constexpr File RelativeFile(File file, Color side) noexcept
     {
-        return file ^ (side * kFileH);
+        assert(kFileA <= file && file < kFileNB);
+        assert(side == kWhite || side == kBlack);
+        return file ^ (side * 0b111);
     }
 }
 

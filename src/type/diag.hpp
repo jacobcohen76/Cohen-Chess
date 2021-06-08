@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_DIAG_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_DIAG_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/color.hpp>
@@ -31,11 +32,14 @@ namespace cohen_chess::type::diag
 
     constexpr Diag MirrorDiag(Diag diag) noexcept
     {
+        assert(kDiag1 <= diag && diag < kDiagNB);
         return kDiagF - diag;
     }
 
     constexpr Diag RelativeDiag(Diag diag, Color side) noexcept
     {
+        assert(kDiag1 <= diag && diag < kDiagNB);
+        assert(side == kWhite || side == kBlack);
         return side ? diag : MirrorDiag(diag);
     }
 }

@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_RANK_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_RANK_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/color.hpp>
@@ -24,11 +25,14 @@ namespace cohen_chess::type::rank
 
     constexpr Rank MirrorRank(Rank rank) noexcept
     {
+        assert(kRank1 <= rank && rank < kRankNB);
         return rank ^ 0b111;
     }
 
     constexpr Rank RelativeRank(Rank rank, Color side) noexcept
     {
+        assert(kRank1 <= rank && rank < kRankNB);
+        assert(side == kWhite || side == kBlack);
         return rank ^ (side * 0b111);
     }
 }

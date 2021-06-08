@@ -2,6 +2,7 @@
 #define COHEN_CHESS_TYPE_SQUARE_HPP_INCLUDED
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 
 #include <type/anti.hpp>
@@ -29,83 +30,103 @@ namespace cohen_chess::type::square
 
     constexpr Square MakeSquare(Rank rank, File file) noexcept
     {
+        assert(kRank1 <= rank && rank < kRankNB);
+        assert(kFileA <= file && file < kFileNB);
         return (rank << 3) | file;
     }
 
     constexpr Rank RankOf(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq >> 3;
     }
 
     constexpr File FileOf(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq & 0b000111;
     }
 
     constexpr Diag DiagOf(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return RankOf(sq) - FileOf(sq) + kDiag8;
     }
 
     constexpr Anti AntiOf(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return RankOf(sq) + FileOf(sq);
     }
 
     constexpr Square MirrorSquareRank(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ 0b111000;
     }
 
     constexpr Square MirrorSquareFile(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ 0b000111;
     }
 
     constexpr Square MirrorSquareDiag(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return ((sq << 3) | (sq >> 3)) & 0b111111;
     }
 
     constexpr Square MirrorSquareAnti(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return MirrorSquareDiag(sq) ^ 0b111111;
     }
 
     constexpr Square MirrorSquare(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ 0b111111;
     }
 
     constexpr Square RelativeSquare(Square sq, Color side) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b111111);
     }
 
     constexpr Square RelativeSquareRank(Square sq, Color side) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b111000);
     }
 
     constexpr Square RelativeSquareFile(Square sq, Color side) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b000111);
     }
 
     constexpr int SquareRankDistance(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         const auto diff = RankOf(sq1) - RankOf(sq2);
         return (diff < 0) ? -diff : +diff;
     }
 
     constexpr int SquareFileDistance(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         const auto diff = FileOf(sq1) - FileOf(sq2);
         return (diff < 0) ? -diff : +diff;
     }
 
     constexpr int SquareDistance(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return SquareRankDistance(sq1, sq2) + SquareFileDistance(sq1, sq2);
     }
 
@@ -116,21 +137,29 @@ namespace cohen_chess::type::square
 
     constexpr bool OnSameRank(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return RankOf(sq1 ^ sq2) == 0;
     }
 
     constexpr bool OnSameFile(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return FileOf(sq1 ^ sq2) == 0;
     }
 
     constexpr bool OnSameDiag(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return (sq2 - sq1) % 9 == 0;
     }
 
     constexpr bool OnSameAnti(Square sq1, Square sq2) noexcept
     {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
         return RankOf(sq1) + FileOf(sq1) == RankOf(sq2) + FileOf(sq2);
     }
 }

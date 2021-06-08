@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_MOVE_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_MOVE_HPP_INCLUDED
 
+#include <cassert>
 #include <cstdint>
 
 #include <type/piece.hpp>
@@ -28,11 +29,15 @@ namespace cohen_chess::type::move
 
     constexpr Move MakeMove(Square from, Square to) noexcept
     {
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   && to   < kSquareNB);
         return (to << 6) | from;
     }
 
     constexpr Move MakeMove(Square from, Square to, MoveType type) noexcept
     {
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   && to   < kSquareNB);
         return MakeMove(from, to) | type;
     }
 

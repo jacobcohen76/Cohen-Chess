@@ -1,10 +1,11 @@
 #ifndef COHEN_CHESS_TYPE_CASTLING_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_CASTLING_HPP_INCLUDED
 
+#include <cassert>
+#include <cstdint>
+
 #include <type/color.hpp>
 #include <type/square.hpp>
-
-#include <cstdint>
 
 namespace cohen_chess::type::castling
 {
@@ -31,16 +32,19 @@ namespace cohen_chess::type::castling
 
     constexpr Castling CastlingSide(Color side) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         return kCastlingWhite << (side << 1);
     }
 
     constexpr Castling CastlingQueenSide(Color side) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         return kWhiteOO << (side << 1);
     }
 
     constexpr Castling CastlingKingSide(Color side) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         return kWhiteOOO << (side << 1);
     }
 }
