@@ -12,6 +12,21 @@
 
 namespace cohen_chess::engine::magic
 {
+    constexpr Bitboard MagicBishopMask(Square sq) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard mask = DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq));
+        return mask & ~SquareBB(sq) & ~kEdgesBB;
+    }
+
+    constexpr Bitboard MagicRookMask(Square sq) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard mask = (RankBB(RankOf(sq)) & ~kRankEdgesBB) |
+                              (FileBB(FileOf(sq)) & ~kFileEdgesBB);
+        return mask & ~SquareBB(sq);
+    }
+
     struct Magic
     {
         Key             begin;
@@ -47,12 +62,6 @@ namespace cohen_chess::engine::magic
             total += MagicMaxKey(m);
         }
         return total;
-    }
-
-    constexpr Bitboard MagicBishopMask(Square sq) noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        return (DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq))) & ~SquareBB(sq) & ~kEdgesBB;
     }
 
     constexpr std::array<Bitboard, kSquareNB> kMagicBishopNumbers =
@@ -104,12 +113,6 @@ namespace cohen_chess::engine::magic
     {
         assert(kA1 <= sq && sq < kSquareNB);
         return kMagicBishopAttackTable[kMagicBishopTable[sq].key(occ)];
-    }
-
-    constexpr Bitboard MagicRookMask(Square sq) noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        return ((RankBB(RankOf(sq)) & ~kRankEdgesBB) | (FileBB(FileOf(sq)) & ~kFileEdgesBB)) & ~SquareBB(sq);
     }
 
     constexpr std::array<Bitboard, kSquareNB> kMagicRookNumbers =

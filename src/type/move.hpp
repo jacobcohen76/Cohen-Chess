@@ -58,7 +58,7 @@ namespace cohen_chess::type::move
 
     constexpr PieceType PromotedTo(Move move) noexcept
     {
-        return ((move >> 12) & 0x3) + kKnight;
+        return ((move >> 12) & 0b0011) + kKnight;
     }
 
     constexpr MoveType PromotionMoveType(PieceType promoted_to) noexcept

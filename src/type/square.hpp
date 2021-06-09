@@ -92,18 +92,21 @@ namespace cohen_chess::type::square
     constexpr Square RelativeSquare(Square sq, Color side) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
+        assert(side == kWhite || side == kBlack);
         return sq ^ (side * 0b111111);
     }
 
     constexpr Square RelativeSquareRank(Square sq, Color side) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
+        assert(side == kWhite || side == kBlack);
         return sq ^ (side * 0b111000);
     }
 
     constexpr Square RelativeSquareFile(Square sq, Color side) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
+        assert(side == kWhite || side == kBlack);
         return sq ^ (side * 0b000111);
     }
 

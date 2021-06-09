@@ -8,7 +8,7 @@
 
 namespace cohen_chess::type::piece
 {
-    using PieceType = int8_t;
+    using PieceType = uint8_t;
 
     enum PieceTypeConstant : PieceType
     {
@@ -23,7 +23,7 @@ namespace cohen_chess::type::piece
         kPieceTypeNB    = 8,
     };
 
-    using Piece = int8_t;
+    using Piece = uint8_t;
 
     enum PieceConstant : Piece
     {
@@ -52,22 +52,26 @@ namespace cohen_chess::type::piece
     constexpr Piece MakePiece(Color side, PieceType type) noexcept
     {
         assert(side == kWhite || side == kBlack);
+        assert(kPieceTypeNone <= type && type < kPieceTypeNB);
         return (side << 3) | type;
     }
 
     constexpr PieceType PieceTypeOf(Piece pc) noexcept
     {
-        return pc & kPieceTypeAll;
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        return pc & 0b0111;
     }
 
     constexpr Piece FlipPieceColor(Piece pc) noexcept
     {
-        return pc ^ kOccupancy;
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        return pc ^ 0b1000;
     }
 
     constexpr Piece PieceAllColor(Piece pc) noexcept
     {
-        return pc | kPieceTypeAll;
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        return pc | 0b0111;
     }
 }
 

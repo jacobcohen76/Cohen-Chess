@@ -1,6 +1,7 @@
 #ifndef COHEN_CHESS_TYPE_BITBOARD_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_BITBOARD_HPP_INCLUDED
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -265,8 +266,8 @@ namespace cohen_chess::type::bitboard
     {
         assert(kA1 <= sq && sq < kSquareNB);
         Bitboard ray_bb = RayBB(sq, dir);
-        int blocker = (dir > 0) ? BitScanForward((occ & ray_bb) | 0x8000000000000000) :
-                                  BitScanReverse((occ & ray_bb) | 0x0000000000000001);
+        int blocker = (dir > 0) ? BitScanForward((occ & ray_bb) | 0x8000000000000000)
+                                : BitScanReverse((occ & ray_bb) | 0x0000000000000001);
         return ray_bb ^ RayBB(blocker, dir);
     }
 

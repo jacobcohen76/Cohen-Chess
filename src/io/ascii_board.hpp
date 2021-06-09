@@ -1,6 +1,8 @@
 #ifndef COHEN_CHESS_IO_ASCII_BOARD_HPP_INCLUDED
 #define COHEN_CHESS_IO_ASCII_BOARD_HPP_INCLUDED
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -32,6 +34,8 @@ namespace cohen_chess::io::ascii_board
 
         constexpr const char* begin() const noexcept;
         constexpr const char* end() const noexcept;
+
+        constexpr size_t size() const noexcept;
 
     private:
         static constexpr std::array<char, 128> kInitialData =
@@ -135,9 +139,14 @@ namespace cohen_chess::io::ascii_board
         return std::end(data);
     }
 
+    constexpr size_t AsciiBoard::size() const noexcept
+    {
+        return data.size();
+    }
+
     inline std::ostream& operator<<(std::ostream& os, const AsciiBoard& ascii_board)
     {
-        return os << std::string_view(std::begin(ascii_board), std::end(ascii_board));
+        return os.write(ascii_board.begin(), ascii_board.size());
     }
 }
 

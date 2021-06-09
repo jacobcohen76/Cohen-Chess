@@ -19,13 +19,13 @@ namespace cohen_chess::util::bits
     template <std::unsigned_integral T>
     constexpr T RotateLeft(T x, int s) noexcept
     {
-        return std::rotl(static_cast<std::make_unsigned_t<T>>(x), s);
+        return std::rotl(reinterpret_cast<std::make_unsigned_t<T>>(x), s);
     }
 
     template <std::unsigned_integral T>
     constexpr T RotateRight(T x, int s) noexcept
     {
-        return std::rotr(static_cast<std::make_unsigned_t<T>>(x), s);
+        return std::rotr(reinterpret_cast<std::make_unsigned_t<T>>(x), s);
     }
 
     template <std::unsigned_integral T>
