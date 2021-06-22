@@ -5,23 +5,17 @@
 #include <iostream>
 #include <string>
 
-namespace cohen_chess
+namespace cohen_chess::io::parse
 {
-    class ParseError : public std::runtime_error
+    struct ParseError : public std::runtime_error
     {
-    public:
         using std::runtime_error::runtime_error;
     };
+}
 
-    template <typename CharT>
-    struct Token
-    {
-        using Type = size_t;
-        std::basic_string<CharT> str;
-        Type type;
-    };
-
-
+namespace cohen_chess
+{
+    using io::parse::ParseError;
 }
 
 #endif

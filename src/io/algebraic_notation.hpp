@@ -1,184 +1,227 @@
 #ifndef COHEN_CHESS_ALGEBRAIC_NOTATION_HPP_INCLUDED
 #define COHEN_CHESS_ALGEBRAIC_NOTATION_HPP_INCLUDED
 
+#include <array>
+#include <cassert>
+#include <string>
+
 #include <type/color.hpp>
 #include <type/file.hpp>
 #include <type/piece.hpp>
 #include <type/rank.hpp>
 #include <type/square.hpp>
 
-#include <array>
-#include <cassert>
-#include <string>
-
-namespace cohen_chess
+namespace cohen_chess::io::algebraic_notation
 {
-    constexpr char ColorChar(Color color)
+    constexpr char ColorChar(Color side) noexcept
     {
-        return color ? 'b' : 'w';
+        assert(side == kWhite || side == kBlack);
+        return side == kWhite ? 'w' : 'b';
     }
 
-    constexpr bool IsColorChar(char ch)
+    constexpr bool IsColorChar(char token) noexcept
     {
-        return ch == ColorChar(kWhite) || ch == ColorChar(kBlack);
+        return token == ColorChar(kWhite) || token == ColorChar(kBlack);
     }
 
-    constexpr Color CharToColor(char ch)
+    constexpr Color CharToColor(char token) noexcept
     {
-        return ch == ColorChar(kBlack);
+        assert(IsColorChar(token));
+        return token == ColorChar(kBlack);
     }
 
-    constexpr char RankChar(Rank rank)
+    constexpr char RankChar(Rank rank) noexcept
     {
+        assert(kRank1 <= rank && rank < kRankNB);
         return rank + '1';
     }
 
-    constexpr bool IsRankChar(char ch)
+    constexpr bool IsRankChar(char token) noexcept
     {
-        return RankChar(kRank1) <= ch && ch <= RankChar(kRank8);
+        return RankChar(kRank1) <= token && token <= RankChar(kRank8);
     }
 
-    constexpr char CharToRank(char ch)
+    constexpr Rank CharToRank(char token) noexcept
     {
-        return ch - RankChar(kRank1);
+        assert(IsRankChar(token));
+        return token - RankChar(kRank1);
     }
 
-    constexpr char FileChar(File file)
+    constexpr char FileChar(File file) noexcept
     {
+        assert(kFileA <= file && file < kFileNB);
         return file + 'a';
     }
 
-    constexpr bool IsFileChar(char ch)
+    constexpr bool IsFileChar(char token) noexcept
     {
-        return FileChar(kFileA) <= ch && ch <= FileChar(kFileH);
+        return FileChar(kFileA) <= token && token <= FileChar(kFileH);
     }
 
-    constexpr char CharToFile(char ch)
+    constexpr File CharToFile(char token) noexcept
     {
-        return ch - FileChar(kFileA);
+        assert(IsFileChar(token));
+        return token - FileChar(kFileA);
     }
 
-    constexpr std::array<char, kPieceTypeNB> kPieceTypeCharacters =
+    constexpr std::array<char, kPieceTypeNB> kPieceTypeTokens =
     {
-        '?', 'p', 'n', 'b', 'r', 'q', 'k', '?'
+        '.', 'p', 'n', 'b', 'r', 'q', 'k', '*'
     };
 
-    constexpr char PieceTypeChar(PieceType piece_type)
+    constexpr char PieceTypeChar(PieceType type) noexcept
     {
-        return kPieceTypeCharacters[piece_type];
+        assert(kPieceTypeNone <= type && type < kPieceTypeNB);
+        return kPieceTypeTokens[type];
     }
 
-    constexpr bool IsPieceTypeChar(char ch)
+    constexpr bool IsPieceTypeChar(char token) noexcept
     {
-        switch (ch)
+        return token == PieceTypeChar(kPieceTypeNone) ||
+               token == PieceTypeChar(kPawn)          ||
+               token == PieceTypeChar(kKnight)        ||
+               token == PieceTypeChar(kBishop)        ||
+               token == PieceTypeChar(kRook)          ||
+               token == PieceTypeChar(kQueen)         ||
+               token == PieceTypeChar(kKing)          ||
+               token == PieceTypeChar(kPieceTypeAll);
+    }
+
+    constexpr PieceType CharToPieceType(char token) noexcept
+    {
+        assert(IsPieceTypeChar(token));
+        switch (token)
         {
-            case PieceTypeChar(kPawn):
-            case PieceTypeChar(kKnight):
-            case PieceTypeChar(kBishop):
-            case PieceTypeChar(kRook):
-            case PieceTypeChar(kQueen):
-            case PieceTypeChar(kKing):
-                return true;
-            default:
-                return false;
+            case PieceTypeChar(kPieceTypeNone): return kPieceTypeNone;
+            case PieceTypeChar(kPawn):          return kPawn;
+            case PieceTypeChar(kKnight):        return kKnight;
+            case PieceTypeChar(kBishop):        return kBishop;
+            case PieceTypeChar(kRook):          return kRook;
+            case PieceTypeChar(kQueen):         return kQueen;
+            case PieceTypeChar(kKing):          return kKing;
+            case PieceTypeChar(kPieceTypeAll):  return kPieceTypeAll;
+            default:                            return kPieceTypeNB;
         }
     }
 
-    constexpr PieceType CharToPieceType(char ch)
+    constexpr std::array<char, kPieceNB> kPieceTokens =
     {
-        switch (ch)
-        {
-            case PieceTypeChar(kPawn):      return kPawn;
-            case PieceTypeChar(kKnight):    return kKnight;
-            case PieceTypeChar(kBishop):    return kBishop;
-            case PieceTypeChar(kRook):      return kRook;
-            case PieceTypeChar(kQueen):     return kQueen;
-            case PieceTypeChar(kKing):      return kKing;
-            default:                        return kPieceTypeNone;
-        }
-    }
-
-    constexpr std::array<char, kPieceNB> kPieceCharacters =
-    {
-        '.', 'P', 'N', 'B', 'R', 'Q', 'K', '?',
-        '1', 'p', 'n', 'b', 'r', 'q', 'k', '?',
+        '.', 'P', 'N', 'B', 'R', 'Q', 'K', '*',
+        '1', 'p', 'n', 'b', 'r', 'q', 'k', '#',
     };
 
-    constexpr char PieceChar(Piece piece)
+    constexpr char PieceChar(Piece pc) noexcept
     {
-        return kPieceCharacters[piece];
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        return kPieceTokens[pc];
     }
 
-    constexpr bool IsPieceChar(char ch)
+    constexpr bool IsPieceChar(char token) noexcept
     {
-        switch (ch)
+        return token == PieceChar(kPieceNone)   ||
+               token == PieceChar(kWhitePawn)   ||
+               token == PieceChar(kWhiteKnight) ||
+               token == PieceChar(kWhiteBishop) ||
+               token == PieceChar(kWhiteRook)   ||
+               token == PieceChar(kWhiteQueen)  ||
+               token == PieceChar(kWhiteKing)   ||
+               token == PieceChar(kWhiteAll)    ||
+               token == PieceChar(kOccupancy)   ||
+               token == PieceChar(kBlackPawn)   ||
+               token == PieceChar(kBlackKnight) ||
+               token == PieceChar(kBlackBishop) ||
+               token == PieceChar(kBlackRook)   ||
+               token == PieceChar(kBlackQueen)  ||
+               token == PieceChar(kBlackKing)   ||
+               token == PieceChar(kBlackAll);
+    }
+
+    constexpr Piece CharToPiece(char token) noexcept
+    {
+        assert(IsPieceChar(token));
+        switch (token)
         {
-            case PieceChar(kWhitePawn):
-            case PieceChar(kWhiteKnight):
-            case PieceChar(kWhiteBishop):
-            case PieceChar(kWhiteRook):
-            case PieceChar(kWhiteQueen):
-            case PieceChar(kWhiteKing):
-            case PieceChar(kBlackPawn):
-            case PieceChar(kBlackKnight):
-            case PieceChar(kBlackBishop):
-            case PieceChar(kBlackRook):
-            case PieceChar(kBlackQueen):
-            case PieceChar(kBlackKing):
-                return true;
-            default:
-                return false;
+            case PieceChar(kPieceNone):   return kPieceNone;
+            case PieceChar(kWhitePawn):   return kWhitePawn;
+            case PieceChar(kWhiteKnight): return kWhiteKnight;
+            case PieceChar(kWhiteBishop): return kWhiteBishop;
+            case PieceChar(kWhiteRook):   return kWhiteRook;
+            case PieceChar(kWhiteQueen):  return kWhiteQueen;
+            case PieceChar(kWhiteKing):   return kWhiteKing;
+            case PieceChar(kWhiteAll):    return kWhiteAll;
+            case PieceChar(kOccupancy):   return kOccupancy;
+            case PieceChar(kBlackPawn):   return kBlackPawn;
+            case PieceChar(kBlackKnight): return kBlackKnight;
+            case PieceChar(kBlackBishop): return kBlackBishop;
+            case PieceChar(kBlackRook):   return kBlackRook;
+            case PieceChar(kBlackQueen):  return kBlackQueen;
+            case PieceChar(kBlackKing):   return kBlackKing;
+            case PieceChar(kBlackAll):    return kBlackAll;
+            default:                      return kPieceNB;
         }
     }
 
-    constexpr Piece CharToPiece(char ch)
+    inline std::string CoordinateString(Square sq)
     {
-        switch (ch)
+        if (kA1 <= sq && sq < kSquareNB)
         {
-            case PieceChar(kWhitePawn):     return kWhitePawn;
-            case PieceChar(kWhiteKnight):   return kWhiteKnight;
-            case PieceChar(kWhiteBishop):   return kWhiteBishop;
-            case PieceChar(kWhiteRook):     return kWhiteRook;
-            case PieceChar(kWhiteQueen):    return kWhiteQueen;
-            case PieceChar(kWhiteKing):     return kWhiteKing;
-            case PieceChar(kBlackPawn):     return kBlackPawn;
-            case PieceChar(kBlackKnight):   return kBlackKnight;
-            case PieceChar(kBlackBishop):   return kBlackBishop;
-            case PieceChar(kBlackRook):     return kBlackRook;
-            case PieceChar(kBlackQueen):    return kBlackQueen;
-            case PieceChar(kBlackKing):     return kBlackKing;
-            default:                        return kPieceNone;
+            return std::string
+            {
+                FileChar(FileOf(sq)),
+                RankChar(RankOf(sq)),
+            };
+        }
+        else
+        {
+            return "-";
         }
     }
 
-    constexpr Square CoordinateToSquare(std::string_view coord)
+    inline bool IsCoordinateString(std::string coord)
     {
-        if(coord[0] == '-')
+        return (coord.size() == 2 && IsFileChar(coord[0]) && IsRankChar(coord[1])) || coord == "-";
+    }
+
+    inline Square CoordinateToSquare(std::string coord)
+    {
+        if (coord == "-")
         {
             return kSquareNone;
         }
         else
         {
-            return MakeSquare(CharToRank(coord[1]), CharToFile(coord[0]));
+            Rank rank = CharToRank(coord[1]);
+            File file = CharToFile(coord[0]);
+            return MakeSquare(rank, file);
         }
     }
+}
 
-    constexpr bool IsCoordinateString(std::string_view view)
-    {
-        return view[0] == '-' || (IsFileChar(view[0]) && IsRankChar(view[1]));
-    }
+namespace cohen_chess
+{
+    using io::algebraic_notation::ColorChar;
+    using io::algebraic_notation::IsColorChar;
+    using io::algebraic_notation::CharToColor;
 
-    inline std::string CoordinateString(Square sq)
-    {
-        if(IsNormalSquare(sq))
-        {
-            return std::string{ FileChar(FileOf(sq)), RankChar(RankOf(sq)) };
-        }
-        else
-        {
-            return std::string('-', 1);
-        }
-    }
+    using io::algebraic_notation::RankChar;
+    using io::algebraic_notation::IsRankChar;
+    using io::algebraic_notation::CharToRank;
+
+    using io::algebraic_notation::FileChar;
+    using io::algebraic_notation::IsFileChar;
+    using io::algebraic_notation::CharToFile;
+
+    using io::algebraic_notation::PieceTypeChar;
+    using io::algebraic_notation::IsPieceTypeChar;
+    using io::algebraic_notation::CharToPieceType;
+
+    using io::algebraic_notation::PieceChar;
+    using io::algebraic_notation::IsPieceChar;
+    using io::algebraic_notation::CharToPiece;
+
+    using io::algebraic_notation::CoordinateString;
+    using io::algebraic_notation::IsCoordinateString;
+    using io::algebraic_notation::CoordinateToSquare;
 }
 
 #endif

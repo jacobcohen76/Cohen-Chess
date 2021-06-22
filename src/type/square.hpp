@@ -12,7 +12,7 @@
 
 namespace cohen_chess::type::square
 {
-    using Square = int;
+    using Square = int8_t;
 
     enum SquareConstant : Square
     {

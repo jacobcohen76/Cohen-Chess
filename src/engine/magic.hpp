@@ -15,26 +15,30 @@ namespace cohen_chess::engine::magic
     constexpr Bitboard MagicBishopMask(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        const Bitboard mask = DiagBB(DiagOf(sq)) | AntiBB(AntiOf(sq));
-        return mask & ~SquareBB(sq) & ~kEdgesBB;
+        Bitboard mask = kEmptyBB;
+        mask |=  DiagBB(DiagOf(sq));
+        mask |=  AntiBB(AntiOf(sq));
+        mask &= ~SquareBB(sq) & ~kEdgesBB;
+        return mask;
     }
 
     constexpr Bitboard MagicRookMask(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        const Bitboard mask = (RankBB(RankOf(sq)) & ~kRankEdgesBB) |
-                              (FileBB(FileOf(sq)) & ~kFileEdgesBB);
-        return mask & ~SquareBB(sq);
+        Bitboard mask = kEmptyBB;
+        mask |=  RankBB(RankOf(sq)) & ~kRankEdgesBB;
+        mask |=  FileBB(FileOf(sq)) & ~kFileEdgesBB;
+        mask &= ~SquareBB(sq);
+        return mask;
     }
 
     struct Magic
     {
-        Key             begin;
-        Bitboard        magic;
-        Bitboard        mask;
-        int             shift;
+        Key      begin;
+        Bitboard magic, mask;
+        int      shift;
 
-        constexpr Key   key(Bitboard) const noexcept;
+        constexpr Key key(Bitboard) const noexcept;
     };
 
     constexpr Key Magic::key(Bitboard occ) const noexcept
@@ -44,7 +48,7 @@ namespace cohen_chess::engine::magic
 
     constexpr Key MagicMaxKey(Magic m) noexcept
     {
-        Key max_key  = kKeyNone;
+        Key  max_key = kKeyNone;
         Bitboard occ = kEmptyBB;
         do
         {

@@ -12,7 +12,7 @@ namespace cohen_chess
         constexpr LinearCongruentialGenerator(uint64_t seed = 0)
             : state(seed) {}
 
-        constexpr uint64_t operator ()()
+        constexpr uint64_t operator()()
         {
             return state = state * a + c;
         }

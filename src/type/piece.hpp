@@ -27,6 +27,8 @@ namespace cohen_chess::type::piece
 
     enum PieceConstant : Piece
     {
+        kPieceNone   = (kWhite << 3) | kPieceTypeNone,
+
         kWhitePawn   = (kWhite << 3) | kPawn,
         kWhiteKnight = (kWhite << 3) | kKnight,
         kWhiteBishop = (kWhite << 3) | kBishop,
@@ -35,6 +37,8 @@ namespace cohen_chess::type::piece
         kWhiteKing   = (kWhite << 3) | kKing,
         kWhiteAll    = (kWhite << 3) | kPieceTypeAll,
 
+        kOccupancy   = (kBlack << 3) | kPieceTypeNone,
+
         kBlackPawn   = (kBlack << 3) | kPawn,
         kBlackKnight = (kBlack << 3) | kKnight,
         kBlackBishop = (kBlack << 3) | kBishop,
@@ -42,9 +46,6 @@ namespace cohen_chess::type::piece
         kBlackQueen  = (kBlack << 3) | kQueen,
         kBlackKing   = (kBlack << 3) | kKing,
         kBlackAll    = (kBlack << 3) | kPieceTypeAll,
-
-        kPieceNone   = (kWhite << 3) | kPieceTypeNone,
-        kOccupancy   = (kBlack << 3) | kPieceTypeNone,
 
         kPieceNB     = 16,
     };

@@ -1,241 +1,182 @@
 #ifndef COHEN_CHESS_ENGINE_BOARD_HPP_INCLUDED
 #define COHEN_CHESS_ENGINE_BOARD_HPP_INCLUDED
 
+#include <array>
+#include <cassert>
+#include <cstdint>
+
 #include <engine/zobrist.hpp>
 #include <type/bitboard.hpp>
 #include <type/key.hpp>
 #include <type/move.hpp>
 #include <type/piece.hpp>
+#include <type/square.hpp>
 
-namespace cohen_chess
+namespace cohen_chess::engine::board
 {
     struct BoardState
     {
-        constexpr void  set_side(Color);
-        constexpr void  set_ep_file(File);
-        constexpr void  set_castling_rights(Castling);
-        constexpr void  mask_castling_rights(Castling);
-        constexpr void  update_castling_rights(Square, Square);
-
-        Key             key, pawn_key;
-        Bitboard        checks;
-        uint16_t        halfmove_clock;
-        uint16_t        fullmove_count;
-        Piece           captured;
-        File            ep_file;
-        Castling        castling_rights;
-        Color           side;
+        Key      zobrist_key, pawn_key;
+        Bitboard checks;
+        uint16_t fullmove_clock;
+        uint8_t  halfmove_clock;
+        Square   ep_file;
+        Piece    captured;
+        Castling castling;
+        Color    side;
     };
 
-    struct Board
+    class Board
     {
-        constexpr Piece on(Square) const;
-        constexpr void  put(Piece, Square);
+    public:
+        constexpr Piece on(Square) const noexcept;
 
-        constexpr void  clear();
-        constexpr void  make(Move);
-        constexpr void  unmake(Move, const BoardState&);
+        constexpr void put(Piece, Square) noexcept;
+        constexpr void remove(Piece, Square) noexcept;
+        constexpr void clear() noexcept;
+
+        constexpr void set_side(Color) noexcept;
+        constexpr void set_ep_file(File) noexcept;
+        constexpr void set_castling(Castling) noexcept;
+
+        constexpr void make(Move) noexcept;
+        constexpr void unmake(Move, const BoardState&) noexcept;
 
     private:
-        constexpr Piece capture(Square);
-        constexpr void  emplace(Piece, Square);
-        constexpr void  remove(Piece, Square);
-        constexpr void  promote(PieceType, Square);
-        constexpr void  push(Square, Square);
+        constexpr Piece capture(Square) noexcept;
+
+        constexpr void push(Square, Square) noexcept;
+        constexpr void promote(PieceType, Square) noexcept;
+        constexpr void mask_castling(Castling) noexcept;
+        constexpr void update_castling(Square) noexcept;
 
     public:
-        Bitboard        bitboards[kPieceNB];
-        Piece           pieces[kSquareNB];
-        BoardState      state;
+        std::array<Bitboard, kPieceNB> bitboards = {};
+        std::array<Piece, kSquareNB> pieces = {};
+        BoardState state = {};
     };
 
-    constexpr void BoardState::set_side(Color color)
+    constexpr Piece Board::on(Square sq) const noexcept
     {
-        if (side != color)
-        {
-            key ^= ZobristSideKey(color);
-        }
-        side = color;
-    }
-
-    constexpr void BoardState::set_ep_file(File file)
-    {
-        key ^= ZobristEnPassantKey(ep_file);
-        key ^= ZobristEnPassantKey(file);
-        ep_file = file;
-    }
-
-    constexpr void BoardState::set_castling_rights(Castling cr)
-    {
-        key ^= ZobristCastlingKey(castling_rights);
-        key ^= ZobristCastlingKey(cr);
-        castling_rights = cr;
-    }
-
-    constexpr void BoardState::mask_castling_rights(Castling mask)
-    {
-        set_castling_rights(castling_rights & mask);
-    }
-
-    constexpr void BoardState::update_castling_rights(Square from, Square to)
-    {
-        if (from == kA1 || to == kA1)
-            mask_castling_rights(~kWhiteOO);
-        if (from == kH1 || to == kH1)
-            mask_castling_rights(~kWhiteOOO);
-        if (from == kA8 || to == kA8)
-            mask_castling_rights(~kBlackOO);
-        if (from == kH8 || to == kH8)
-            mask_castling_rights(~kBlackOOO);
-    }
-
-    constexpr Piece Board::on(Square sq) const
-    {
+        assert(kA1 <= sq && sq < kSquareNB);
         return pieces[sq];
     }
 
-    constexpr void Board::put(Piece pc, Square sq)
+    constexpr void Board::put(Piece pc, Square sq) noexcept
     {
-        if (on(sq))
-        {
-            remove(on(sq), sq);
-        }
-        emplace(pc, sq);
-    }
-
-    constexpr void Board::clear()
-    {
-        std::fill(bitboards, bitboards + kPieceNB, kEmptyBB);
-        std::fill(pieces, pieces + kSquareNB, kPieceNone);
-        state = {};
-    }
-
-    constexpr void Board::make(Move move)
-    {
-        Square from = FromSquare(move), to = ToSquare(move);
-        if (on(to))
-        {
-            state.captured = capture(to);
-            state.halfmove_clock = -1;
-        }
-        if (PieceTypeOf(on(from)) == kPawn)
-        {
-            if (SquareRankDistance(from, to) == 2)
-            {
-                state.set_ep_file(FileOf(from));
-            }
-            else
-            {
-                if (MoveTypeOf(move) == kPromotion)
-                {
-                    promote(PromotedTo(move), from);
-                }
-                else if (MoveTypeOf(move) == kEnPassant)
-                {
-                    capture(MakeSquare(RankOf(to), state.ep_file));
-                }
-                state.set_ep_file(kFileNB);
-            }
-            state.halfmove_clock = -1;
-        }
-        else
-        {
-            if (PieceTypeOf(on(from)) == kKing)
-            {
-                if (MoveTypeOf(move) == kCastling)
-                {
-                    if (from > to)
-                    {
-                        push(RelativeSquareRank(kA1, state.side), RelativeSquareRank(kD1, state.side));
-                    }
-                    else
-                    {
-                        push(RelativeSquareRank(kH1, state.side), RelativeSquareRank(kF1, state.side));
-                    }
-                }
-                state.mask_castling_rights(~CastlingSide(state.side));
-            }
-            state.set_ep_file(kFileNB);
-        }
-        push(from, to);
-        state.update_castling_rights(from, to);
-        state.side ^= kBlack;
-        state.key ^= ZobristSideKey(state.side);
-        ++state.halfmove_clock;
-    }
-
-    constexpr void Board::unmake(Move move, const BoardState& prev)
-    {
-        Square from = FromSquare(move), to = ToSquare(move);
-        if (MoveTypeOf(move) == kPromotion)
-        {
-            promote(kPawn, to);
-        }
-        else if (MoveTypeOf(move) == kEnPassant)
-        {
-            put(MakePiece(kPawn, prev.side ^ kBlack), MakeSquare(RankOf(to), prev.ep_file));
-        }
-        else if (MoveTypeOf(move) == kCastling)
-        {
-            if (from > to)
-            {
-                push(RelativeSquareRank(kD1, prev.side), RelativeSquareRank(kA1, prev.side));
-            }
-            else
-            {
-                push(RelativeSquareRank(kF1, prev.side), RelativeSquareRank(kH1, prev.side));
-            }
-        }
-        push(to, from);
-        put(prev.captured, to);
-        state = prev;
-    }
-
-    constexpr Piece Board::capture(Square sq)
-    {
-        Piece pc = on(sq);
-        remove(pc, sq);
-        return pc;
-    }
-
-    constexpr void Board::emplace(Piece pc, Square sq)
-    {
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        assert(on(sq) == kPieceNone);
         bitboards[pc] |= SquareBB(sq);
         bitboards[PieceAllColor(pc)] |= SquareBB(sq);
         bitboards[kOccupancy] |= SquareBB(sq);
         pieces[sq] = pc;
-        state.key ^= ZobristPieceSquareKey(pc, sq);
+        state.zobrist_key ^= ZobristPieceSquareKey(pc, sq);
         if (PieceTypeOf(pc) == kPawn)
         {
             state.pawn_key ^= ZobristPieceSquareKey(pc, sq);
         }
     }
 
-    constexpr void Board::remove(Piece pc, Square sq)
+    constexpr void Board::remove(Piece pc, Square sq) noexcept
     {
+        assert(kPieceNone <= pc && pc < kPieceNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        assert(on(sq) == pc);
         bitboards[pc] &= ~SquareBB(sq);
         bitboards[PieceAllColor(pc)] &= ~SquareBB(sq);
         bitboards[kOccupancy] &= ~SquareBB(sq);
         pieces[sq] = kPieceNone;
-        state.key ^= ZobristPieceSquareKey(pc, sq);
+        state.zobrist_key ^= ZobristPieceSquareKey(pc, sq);
         if (PieceTypeOf(pc) == kPawn)
         {
             state.pawn_key ^= ZobristPieceSquareKey(pc, sq);
         }
     }
 
-    constexpr void Board::promote(PieceType piece_type, Square sq)
+    constexpr void Board::clear() noexcept
     {
-        Piece promoted = capture(sq);
-        promoted &= kPieceTypeNone;
-        promoted |= piece_type;
-        put(promoted, sq);
+        bitboards = {}, pieces = {}, state = {};
     }
 
-    constexpr void Board::push(Square from, Square to)
+    constexpr void Board::set_side(Color side) noexcept
     {
+        assert(side == kWhite || side == kBlack);
+        if (state.side != side)
+        {
+            state.zobrist_key ^= ZobristSideKey(side);
+            state.side ^= kBlack;
+        }
+    }
+
+    constexpr void Board::set_ep_file(File ep_file) noexcept
+    {
+        assert(kFileA <= ep_file && ep_file < kFileNB + 1);
+        state.zobrist_key ^= ZobristEnPassantKey(FileOf(state.ep_file));
+        state.zobrist_key ^= ZobristEnPassantKey(FileOf(ep_file));
+        state.ep_file = ep_file;
+    }
+
+    constexpr void Board::set_castling(Castling castling) noexcept
+    {
+        assert(kCastlingNone <= castling && castling < kCastlingNB);
+        state.zobrist_key ^= ZobristCastlingKey(state.castling);
+        state.zobrist_key ^= ZobristCastlingKey(castling);
+        state.castling = castling;
+    }
+
+    constexpr void Board::make(Move move) noexcept
+    {
+        assert(move != kMoveNone && move != kMoveNull);
+        // TODO
+    }
+
+    constexpr void Board::unmake(Move move, const BoardState& prev_state) noexcept
+    {
+        assert(move != kMoveNone && move != kMoveNull);
+        // TODO
+    }
+
+    constexpr Piece Board::capture(Square sq) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        Piece  pc = on(sq);
+        remove(pc, sq);
+        return pc;
+    }
+
+    constexpr void Board::push(Square from, Square to) noexcept
+    {
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
         put(capture(from), to);
     }
+
+    constexpr void Board::promote(PieceType type, Square sq) noexcept
+    {
+        assert(kPieceTypeNone <= type && type < kPieceTypeNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        put((capture(sq) & kPieceTypeNone) | type, sq);
+    }
+
+    constexpr void Board::mask_castling(Castling mask) noexcept
+    {
+        set_castling(state.castling & mask);
+    }
+
+    constexpr void Board::update_castling(Square sq) noexcept
+    {
+        if (sq == kA1) mask_castling(~kWhiteOO);
+        if (sq == kH1) mask_castling(~kWhiteOOO);
+        if (sq == kA8) mask_castling(~kBlackOO);
+        if (sq == kH8) mask_castling(~kBlackOOO);
+    }
+}
+
+namespace cohen_chess
+{
+    using engine::board::BoardState;
+    using engine::board::Board;
 }
 
 #endif

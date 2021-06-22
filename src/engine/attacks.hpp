@@ -23,8 +23,8 @@ namespace cohen_chess::engine::attacks
     constexpr Bitboard SetwisePawnAttacks(Bitboard pawns, Color side) noexcept
     {
         assert(side == kWhite || side == kBlack);
-        return side == kWhite ? SetwisePawnAttacks<kWhite>(pawns) :
-                                SetwisePawnAttacks<kBlack>(pawns);
+        return side == kWhite ? SetwisePawnAttacks<kWhite>(pawns)
+                              : SetwisePawnAttacks<kBlack>(pawns);
     }
 
     constexpr Bitboard RuntimePawnAttacks(Square sq, Color side) noexcept
