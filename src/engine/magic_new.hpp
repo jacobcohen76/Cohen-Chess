@@ -73,16 +73,6 @@ namespace cohen_chess::engine::magic
         return mask;
     }
 
-    constexpr Bitboard RuntimeMagicBishopMask(Square sq) noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        Bitboard mask = kEmptyBB;
-        mask |=  DiagBB(DiagOf(sq));
-        mask |=  AntiBB(AntiOf(sq));
-        mask &= ~SquareBB(sq) & ~kEdgesBB;
-        return mask;
-    }
-
     constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
