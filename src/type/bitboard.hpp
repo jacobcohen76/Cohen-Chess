@@ -41,8 +41,8 @@ namespace cohen_chess::type::bitboard
     constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
-        std::generate(begin(square_table), end(square_table),
-        [sq = Square(kA1)]() mutable
+        std::generate(std::begin(square_table), std::end(square_table),
+        [sq = Square(kA1)]() mutable -> Bitboard
         {
             return RuntimeSquareBB(sq++);
         });
@@ -71,8 +71,8 @@ namespace cohen_chess::type::bitboard
     constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
-        std::generate(begin(rank_table), end(rank_table),
-        [rank = Rank(kRank1)]() mutable
+        std::generate(std::begin(rank_table), std::end(rank_table),
+        [rank = Rank(kRank1)]() mutable -> Bitboard
         {
             return RuntimeRankBB(rank++);
         });
@@ -101,8 +101,8 @@ namespace cohen_chess::type::bitboard
     constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
-        std::generate(begin(file_table), end(file_table),
-        [file = File(kFileA)]() mutable
+        std::generate(std::begin(file_table), std::end(file_table),
+        [file = File(kFileA)]() mutable -> Bitboard
         {
             return RuntimeFileBB(file++);
         });
@@ -188,8 +188,8 @@ namespace cohen_chess::type::bitboard
     {
         static_assert(dir != kDirectionNone);
         std::array<Bitboard, kSquareNB> ray_table = {};
-        std::generate(begin(ray_table), end(ray_table),
-        [sq = Square(kA1)]() mutable
+        std::generate(std::begin(ray_table), std::end(ray_table),
+        [sq = Square(kA1)]() mutable -> Bitboard
         {
             Bitboard ray_bb = kEmptyBB;
             Square itr = sq++;
@@ -283,12 +283,12 @@ namespace cohen_chess::type::bitboard
     kBetweenBitboardTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
-        std::generate(begin(between_table), end(between_table),
-        [sq1 = Square(kA1)]() mutable
+        std::generate(std::begin(between_table), std::end(between_table),
+        [sq1 = Square(kA1)]() mutable -> std::array<Bitboard, kSquareNB>
         {
             std::array<Bitboard, kSquareNB> sub_table = {};
-            std::generate(begin(sub_table), end(sub_table),
-            [sq1, sq2 = Square(kA1)]() mutable
+            std::generate(std::begin(sub_table), std::end(sub_table),
+            [sq1, sq2 = Square(kA1)]() mutable -> Bitboard
             {
                 return RuntimeBetweenBB(sq1, sq2++);
             });
