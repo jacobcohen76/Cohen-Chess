@@ -1,9 +1,9 @@
-#ifndef COHEN_CHESS_UTIL_RANDOM_HPP_INCLUDED
-#define COHEN_CHESS_UTIL_RANDOM_HPP_INCLUDED
+#ifndef COHEN_UTIL_RANDOM_HPP_INCLUDED
+#define COHEN_UTIL_RANDOM_HPP_INCLUDED
 
 #include <cstdint>
 
-namespace cohen_chess
+namespace cohen
 {
     template <uint64_t a = 6364136223846793005, uint64_t c = 1442695040888963407>
     class LinearCongruentialGenerator

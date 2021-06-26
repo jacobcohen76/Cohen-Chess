@@ -25,9 +25,9 @@ ifeq ($(CXX),clang++)
 	CXXFLAGS += $(CXXLIMITS)
 endif
 
-all: cohen_chess
+all: main
 
-cohen_chess:
+main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
 
 clean:

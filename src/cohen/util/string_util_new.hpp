@@ -1,11 +1,11 @@
-#ifndef COHEN_CHESS_UTIL_STRING_UTIL_HPP_INCLUDED
-#define COHEN_CHESS_UTIL_STRING_UTIL_HPP_INCLUDED
+#ifndef COHEN_UTIL_STRING_UTIL_HPP_INCLUDED
+#define COHEN_UTIL_STRING_UTIL_HPP_INCLUDED
 
 #include <algorithm>
 #include <string_view>
 #include <vector>
 
-namespace cohen_chess
+namespace cohen
 {
     inline std::vector<std::string_view> Tokenize(std::string_view str_view, char delim)
     {

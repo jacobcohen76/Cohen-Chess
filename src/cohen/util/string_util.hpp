@@ -1,11 +1,11 @@
-#ifndef COHEN_CHESS_UTIL_STRING_UTIL_H_INCLUDED
-#define COHEN_CHESS_UTIL_STRING_UTIL_H_INCLUDED
+#ifndef COHEN_UTIL_STRING_UTIL_H_INCLUDED
+#define COHEN_UTIL_STRING_UTIL_H_INCLUDED
 
 #include <algorithm>
 #include <string>
 #include <vector>
 
-namespace cohen_chess
+namespace cohen
 {
     namespace util
     {

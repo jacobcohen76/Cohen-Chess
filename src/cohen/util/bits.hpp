@@ -1,5 +1,5 @@
-#ifndef COHEN_CHESS_UTIL_BITS_HPP_INCLUDED
-#define COHEN_CHESS_UTIL_BITS_HPP_INCLUDED
+#ifndef COHEN_UTIL_BITS_HPP_INCLUDED
+#define COHEN_UTIL_BITS_HPP_INCLUDED
 
 #include <array>
 #include <bit>
@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace cohen_chess::util::bits
+namespace cohen::util::bits
 {
     template <std::unsigned_integral T> constexpr int PopCount(T) noexcept;
     template <std::unsigned_integral T> constexpr int BitScanForward(T) noexcept;
@@ -264,21 +264,21 @@ namespace cohen_chess::util::bits
     }
 }
 
-namespace cohen_chess
+namespace cohen
 {
-    using util::bits::kNumBits;
+    using cohen::util::bits::kNumBits;
 
-    using util::bits::RotateLeft;
-    using util::bits::RotateRight;
-    using util::bits::FlipLSB;
-    using util::bits::PopLSB;
-    using util::bits::PopCount;
-    using util::bits::CountTrailingZeroes;
-    using util::bits::CountTrailingOnes;
-    using util::bits::BitScanForward;
-    using util::bits::CountLeadingZeroes;
-    using util::bits::CountLeadingOnes;
-    using util::bits::BitScanReverse;
+    using cohen::util::bits::RotateLeft;
+    using cohen::util::bits::RotateRight;
+    using cohen::util::bits::FlipLSB;
+    using cohen::util::bits::PopLSB;
+    using cohen::util::bits::PopCount;
+    using cohen::util::bits::CountTrailingZeroes;
+    using cohen::util::bits::CountTrailingOnes;
+    using cohen::util::bits::BitScanForward;
+    using cohen::util::bits::CountLeadingZeroes;
+    using cohen::util::bits::CountLeadingOnes;
+    using cohen::util::bits::BitScanReverse;
 }
 
 #endif
