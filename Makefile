@@ -6,17 +6,15 @@ BIN       = bin
 CC        = clang
 CXX       = clang++
 
-CPPNDEBUG = # -DNDEBUG
-
 CXXVER    = -std=c++20
 CXXVRB    = -Wall
 CXXOPT    = -Ofast
-CXXINCL   = -Isrc
+CXXINCL   = -Iinclude
 
 CXXSTDLIB = -stdlib=libstdc++
 CXXLIMITS = -fconstexpr-steps=2147483647
 
-CPPFLAGS  = $(CPPNDEBUG)
+CPPFLAGS  = -DNDEBUG
 CFLAGS    = 
 CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) # -S -fverbose-asm
 
@@ -28,7 +26,7 @@ endif
 all: main
 
 main:
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
 
 clean:
 	rm -rf $(BIN) *.o
