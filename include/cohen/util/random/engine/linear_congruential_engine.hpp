@@ -1,0 +1,14 @@
+#ifndef COHEN_UTIL_RANDOM_ENGINE_LINEAR_CONGRUENTIAL_ENGINE_HPP_INCLUDED
+#define COHEN_UTIL_RANDOM_ENGINE_LINEAR_CONGRUENTIAL_ENGINE_HPP_INCLUDED
+
+namespace cohen::util::random::engine
+{
+
+}
+
+namespace cohen
+{
+
+}
+
+#endif

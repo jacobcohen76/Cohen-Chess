@@ -8,6 +8,7 @@
 #include <cohen/chess/type/key.hpp>
 #include <cohen/chess/type/square.hpp>
 #include <cohen/chess/attacks.hpp>
+
 #include <cohen/util/bits.hpp>
 
 namespace cohen::chess::magic

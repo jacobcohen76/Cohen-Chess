@@ -8,6 +8,7 @@
 #include <cohen/chess/type/key.hpp>
 #include <cohen/chess/type/piece.hpp>
 #include <cohen/chess/type/square.hpp>
+
 #include <cohen/util/bits.hpp>
 #include <cohen/util/random.hpp>
 
