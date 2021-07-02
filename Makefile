@@ -4,7 +4,7 @@ SRC       = src
 BIN       = bin
 
 CC        = clang
-CXX       = clang++
+CXX       = clang++-11
 
 CXXVER    = -std=c++20
 CXXVRB    = -Wall
@@ -18,7 +18,7 @@ CPPFLAGS  = -DNDEBUG
 CFLAGS    = 
 CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) # -S -fverbose-asm
 
-ifeq ($(CXX),clang++)
+ifeq ($(CXX),clang++-11)
 	CXXFLAGS += $(CXXSTDLIB)
 	CXXFLAGS += $(CXXLIMITS)
 endif
