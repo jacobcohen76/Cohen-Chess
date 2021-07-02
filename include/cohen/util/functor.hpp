@@ -6,8 +6,8 @@
 
 namespace cohen::util::functor
 {
-    template <typename T, typename signature>
-    concept Functor = std::convertible_to<T, std::function<signature>>;
+    template <typename T, typename Signature>
+    concept Functor = std::convertible_to<T, std::function<Signature>>;
 }
 
 namespace cohen

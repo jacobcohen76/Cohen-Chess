@@ -74,8 +74,8 @@ namespace cohen::chess::attacks
     {
         const Bitboard inner = ShiftBB<kEast>    (knights) | ShiftBB<kWest>    (knights);
         const Bitboard outer = ShiftBB<kEastEast>(knights) | ShiftBB<kWestWest>(knights);
-        return ShiftBB<kNorthNorth>(inner) | ShiftBB<kSouthSouth>(inner) |
-               ShiftBB<kNorth>     (outer) | ShiftBB<kSouth>     (outer);
+        return ShiftBB<kNorth>(outer) | ShiftBB<kNorthNorth>(inner) |
+               ShiftBB<kSouth>(outer) | ShiftBB<kSouthSouth>(inner);
     }
 
     constexpr Bitboard RuntimeKnightAttacks(Square sq) noexcept
