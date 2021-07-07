@@ -28,31 +28,5 @@ int main(int argc, char* argv[])
     std::cout << "file_board:" << std::endl << file_board << std::endl;
     std::cout << "diag_board:" << std::endl << diag_board << std::endl;
     std::cout << "anti_board:" << std::endl << anti_board << std::endl;
-
-    using namespace cohen::chess::magic;
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        Bitboard mask = MagicBishopMask(sq);
-        Bitboard  occ = kEmptyBB;
-        do
-        {
-            assert(RayBishopAttacks(occ, sq) == FancyMagicBishopAttacks(occ, sq));
-            assert(RayBishopAttacks(occ, sq) == BlackMagicBishopAttacks(occ, sq));
-        }
-        while((occ = (occ - mask) & mask));
-    }
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        Bitboard mask = MagicRookMask(sq);
-        Bitboard  occ = kEmptyBB;
-        do
-        {
-            assert(RayRookAttacks(occ, sq) == FancyMagicRookAttacks(occ, sq));
-            assert(RayRookAttacks(occ, sq) == BlackMagicRookAttacks(occ, sq));
-        }
-        while((occ = (occ - mask) & mask));
-    }
-    std::cout << "FancyMagic: " << kFancyMagicBishopAttackTable.size() + kFancyMagicRookAttackTable.size() << std::endl;
-    std::cout << "BlackMagic: " << kBlackMagicBishopAttackTable.size() + kBlackMagicRookAttackTable.size() << std::endl;
     return 0;
 }

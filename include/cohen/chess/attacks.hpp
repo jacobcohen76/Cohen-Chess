@@ -39,7 +39,7 @@ namespace cohen::chess::attacks
         return SetwisePawnAttacks(SquareBB(sq), side);
     }
 
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttackTable = []()
+    constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kColorNB> pawn_table = {};
         std::generate(std::begin(pawn_table), std::end(pawn_table),
@@ -60,7 +60,7 @@ namespace cohen::chess::attacks
     {
         assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
-        return kPawnAttackTable[side][sq];
+        return kPawnAttacksTable[side][sq];
     }
 
     constexpr Bitboard PawnAttacks(Square sq, Color side) noexcept
@@ -84,7 +84,7 @@ namespace cohen::chess::attacks
         return SetwiseKnightAttacks(SquareBB(sq));
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kKnightAttackTable = []()
+    constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> knight_table = {};
         std::generate(std::begin(knight_table), std::end(knight_table),
@@ -98,7 +98,7 @@ namespace cohen::chess::attacks
     constexpr Bitboard LookupKnightAttacks(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kKnightAttackTable[sq];
+        return kKnightAttacksTable[sq];
     }
 
     constexpr Bitboard KnightAttacks(Square sq) noexcept
@@ -120,7 +120,7 @@ namespace cohen::chess::attacks
         return SetwiseKingAttacks(SquareBB(sq));
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kKingAttackTable = []()
+    constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> king_table = {};
         std::generate(std::begin(king_table), std::end(king_table),
@@ -134,7 +134,7 @@ namespace cohen::chess::attacks
     constexpr Bitboard LookupKingAttacks(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kKingAttackTable[sq];
+        return kKingAttacksTable[sq];
     }
 
     constexpr Bitboard KingAttacks(Square sq) noexcept

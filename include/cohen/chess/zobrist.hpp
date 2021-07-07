@@ -15,16 +15,9 @@
 
 namespace cohen::chess::zobrist
 {
-    constexpr auto kZobristPieceSquareKeyRandomizer = LinearCongruentialGenerator(0xF5586876FC706684);
     constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<std::array<Key, kSquareNB>, kPieceNB> pc_sq_table = {};
-        std::generate(std::begin(pc_sq_table), std::end(pc_sq_table),
-        []() mutable -> std::array<Key, kSquareNB>
-        {
-            
-        });
-
         for (Color color = kWhite; color < kColorNB; ++color)
         {
             for (Piece piece = kPawn; piece <= kKing; ++piece)
@@ -34,7 +27,7 @@ namespace cohen::chess::zobrist
             }
         }
         return pc_sq_table;
-    }(kZobristPieceSquareKeyRandomizer);
+    }(LinearCongruentialGenerator(0xF5586876FC706684));
 
     constexpr Key ZobristPieceSquareKey(Piece pc, Square sq) noexcept
     {
@@ -43,7 +36,6 @@ namespace cohen::chess::zobrist
         return kZobristPieceSquareKeyTable[pc][sq];
     }
 
-    constexpr auto kZobristCastlingKeyRandomizer = LinearCongruentialGenerator(0xF5586876FC706684);
     constexpr auto kZobristCastlingKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<Key, kCastlingNB> castling_table = {};
@@ -66,7 +58,7 @@ namespace cohen::chess::zobrist
             }
         }
         return castling_table;
-    }(kZobristCastlingKeyRandomizer);
+    }(LinearCongruentialGenerator(0xF5586876FC706684));
 
     constexpr Key ZobristCastlingKey(Castling castling) noexcept
     {
@@ -74,13 +66,12 @@ namespace cohen::chess::zobrist
         return kZobristCastlingKeyTable[castling];
     }
 
-    constexpr auto kZobristEnPassantFileKeyRandomizer = LinearCongruentialGenerator(0x9F0471D8CD082F7B);
     constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<Key, kFileNB + 1> ep_file_table = {};
         std::generate(ep_file_table.begin(), ep_file_table.end() - 1, rand_fn);
         return ep_file_table;
-    }(kZobristEnPassantFileKeyRandomizer);
+    }(LinearCongruentialGenerator(0x9F0471D8CD082F7B));
 
     constexpr Key ZobristEnPassantKey(File file) noexcept
     {
