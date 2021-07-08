@@ -12,6 +12,7 @@ int main(int argc, char* argv[])
 {
     Init();
     using namespace cohen::chess;
+    using namespace cohen::chess::magic;
     auto lambda = [](auto& ascii_board, auto attr, auto char_set)
     {
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -28,5 +29,29 @@ int main(int argc, char* argv[])
     std::cout << "file_board:" << std::endl << file_board << std::endl;
     std::cout << "diag_board:" << std::endl << diag_board << std::endl;
     std::cout << "anti_board:" << std::endl << anti_board << std::endl;
+    for (Square sq = kA1; sq < kSquareNB; ++sq)
+    {
+        Bitboard mask = MagicBishopMask(sq);
+        Bitboard  occ = kEmptyBB;
+        do
+        {
+            assert(RayBishopAttacks(occ, sq) == FancyMagicBishopAttacks(occ, sq));
+            assert(RayBishopAttacks(occ, sq) == BlackMagicBishopAttacks(occ, sq));
+        }
+        while((occ = (occ - mask) & mask));
+    }
+    for (Square sq = kA1; sq < kSquareNB; ++sq)
+    {
+        Bitboard mask = MagicRookMask(sq);
+        Bitboard  occ = kEmptyBB;
+        do
+        {
+            assert(RayRookAttacks(occ, sq) == FancyMagicRookAttacks(occ, sq));
+            assert(RayRookAttacks(occ, sq) == BlackMagicRookAttacks(occ, sq));
+        }
+        while((occ = (occ - mask) & mask));
+    }
+    std::cout << "FancyMagic: " << kFancyMagicBishopAttacksTable.size() + kFancyMagicRookAttacksTable.size() << std::endl;
+    std::cout << "BlackMagic: " << kBlackMagicAttacksTable.size() << std::endl;
     return 0;
 }

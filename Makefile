@@ -14,7 +14,7 @@ CXXINCL   = -Iinclude
 CXXSTDLIB = -stdlib=libstdc++
 CXXLIMITS = -fconstexpr-steps=2147483647
 
-CPPFLAGS  = -DNDEBUG
+CPPFLAGS  = #-DNDEBUG
 CFLAGS    = 
 CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) # -S -fverbose-asm
 
