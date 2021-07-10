@@ -118,22 +118,18 @@ namespace cohen::chess::io::algebraic_notation
 
     constexpr bool IsPieceChar(char token) noexcept
     {
-        return token == PieceChar(kPieceNone)   ||
-               token == PieceChar(kWhitePawn)   ||
+        return token == PieceChar(kWhitePawn)   ||
                token == PieceChar(kWhiteKnight) ||
                token == PieceChar(kWhiteBishop) ||
                token == PieceChar(kWhiteRook)   ||
                token == PieceChar(kWhiteQueen)  ||
                token == PieceChar(kWhiteKing)   ||
-               token == PieceChar(kWhiteAll)    ||
-               token == PieceChar(kOccupancy)   ||
                token == PieceChar(kBlackPawn)   ||
                token == PieceChar(kBlackKnight) ||
                token == PieceChar(kBlackBishop) ||
                token == PieceChar(kBlackRook)   ||
                token == PieceChar(kBlackQueen)  ||
-               token == PieceChar(kBlackKing)   ||
-               token == PieceChar(kBlackAll);
+               token == PieceChar(kBlackKing);
     }
 
     constexpr Piece CharToPiece(char token) noexcept

@@ -6,10 +6,10 @@
 #include <cstdint>
 
 #include <cohen/chess/type/bitboard.hpp>
-#include <cohen/chess/type/castling.hpp>
-#include <cohen/chess/type/piece.hpp>
 #include <cohen/chess/type/key.hpp>
 #include <cohen/chess/type/move.hpp>
+#include <cohen/chess/type/piece.hpp>
+#include <cohen/chess/type/square.hpp>
 #include <cohen/chess/zobrist.hpp>
 
 namespace cohen::chess::board
@@ -20,18 +20,16 @@ namespace cohen::chess::board
         Bitboard checks;
         uint16_t fullmove_clock;
         uint8_t  halfmove_clock;
-        File     ep_file;
+        Square   ep_file;
         Piece    captured;
         Castling castling;
         Color    side;
     };
 
-    struct Board
+    class Board
     {
+    public:
         constexpr Piece on(Square) const noexcept;
-        constexpr Piece capture(Square) noexcept;
-
-        constexpr bool empty(Square) const noexcept;
 
         constexpr void put(Piece, Square) noexcept;
         constexpr void remove(Piece, Square) noexcept;
@@ -44,6 +42,15 @@ namespace cohen::chess::board
         constexpr void make(Move) noexcept;
         constexpr void unmake(Move, const BoardState&) noexcept;
 
+    private:
+        constexpr Piece capture(Square) noexcept;
+
+        constexpr void push(Square, Square) noexcept;
+        constexpr void promote(PieceType, Square) noexcept;
+        constexpr void mask_castling(Castling) noexcept;
+        constexpr void update_castling(Square) noexcept;
+
+    public:
         std::array<Bitboard, kPieceNB> bitboards = {};
         std::array<Piece, kSquareNB> pieces = {};
         BoardState state = {};
@@ -55,47 +62,36 @@ namespace cohen::chess::board
         return pieces[sq];
     }
 
-    constexpr Piece Board::capture(Square sq) noexcept
+    constexpr void Board::put(Piece pc, Square sq) noexcept
     {
+        assert(kPieceNone <= pc && pc < kPieceNB);
         assert(kA1 <= sq && sq < kSquareNB);
-        assert(on(sq) != kPieceNone);
-        Piece piece = on(sq);
-        remove(piece, sq);
-        return piece;
-    }
-
-    constexpr bool Board::empty(Square sq) const noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        return on(sq) == kPieceNone;
-    }
-
-    constexpr void Board::put(Piece piece, Square sq) noexcept
-    {
-        assert(kPawn <= PieceTypeOf(piece) && PieceTypeOf(piece) <= kKing);
-        assert(kA1 <= sq && sq < kSquareNB);
-        assert(empty(sq));
-        bitboards[PieceAllColor(piece)] |= SquareBB(sq);
+        assert(on(sq) == kPieceNone);
+        bitboards[pc] |= SquareBB(sq);
+        bitboards[PieceAllColor(pc)] |= SquareBB(sq);
         bitboards[kOccupancy] |= SquareBB(sq);
-        bitboards[piece] |= SquareBB(sq);
-        pieces[sq] = piece;
-        if (PieceTypeOf(piece) == kPawn)
-            state.pawn_key ^= ZobristPieceSquareKey(piece, sq);
-        state.zobrist_key  ^= ZobristPieceSquareKey(piece, sq);
+        pieces[sq] = pc;
+        state.zobrist_key ^= ZobristPieceSquareKey(pc, sq);
+        if (PieceTypeOf(pc) == kPawn)
+        {
+            state.pawn_key ^= ZobristPieceSquareKey(pc, sq);
+        }
     }
 
-    constexpr void Board::remove(Piece piece, Square sq) noexcept
+    constexpr void Board::remove(Piece pc, Square sq) noexcept
     {
-        assert(kPawn <= PieceTypeOf(piece) && PieceTypeOf(piece) <= kKing);
+        assert(kPieceNone <= pc && pc < kPieceNB);
         assert(kA1 <= sq && sq < kSquareNB);
-        assert(on(sq));
-        bitboards[PieceAllColor(piece)] &= ~SquareBB(sq);
+        assert(on(sq) == pc);
+        bitboards[pc] &= ~SquareBB(sq);
+        bitboards[PieceAllColor(pc)] &= ~SquareBB(sq);
         bitboards[kOccupancy] &= ~SquareBB(sq);
-        bitboards[piece] &= ~SquareBB(sq);
         pieces[sq] = kPieceNone;
-        if (PieceTypeOf(piece) == kPawn)
-            state.pawn_key ^= ZobristPieceSquareKey(piece, sq);
-        state.zobrist_key  ^= ZobristPieceSquareKey(piece, sq);
+        state.zobrist_key ^= ZobristPieceSquareKey(pc, sq);
+        if (PieceTypeOf(pc) == kPawn)
+        {
+            state.pawn_key ^= ZobristPieceSquareKey(pc, sq);
+        }
     }
 
     constexpr void Board::clear() noexcept
@@ -109,15 +105,15 @@ namespace cohen::chess::board
         if (state.side != side)
         {
             state.zobrist_key ^= ZobristSideKey(side);
-            state.side = side;
+            state.side ^= kBlack;
         }
     }
 
     constexpr void Board::set_ep_file(File ep_file) noexcept
     {
         assert(kFileA <= ep_file && ep_file < kFileNB + 1);
-        state.zobrist_key ^= ZobristEnPassantKey(state.ep_file);
-        state.zobrist_key ^= ZobristEnPassantKey(ep_file);
+        state.zobrist_key ^= ZobristEnPassantKey(FileOf(state.ep_file));
+        state.zobrist_key ^= ZobristEnPassantKey(FileOf(ep_file));
         state.ep_file = ep_file;
     }
 
@@ -140,6 +136,47 @@ namespace cohen::chess::board
         assert(move != kMoveNone && move != kMoveNull);
         // TODO
     }
+
+    constexpr Piece Board::capture(Square sq) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        Piece  pc = on(sq);
+        remove(pc, sq);
+        return pc;
+    }
+
+    constexpr void Board::push(Square from, Square to) noexcept
+    {
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        put(capture(from), to);
+    }
+
+    constexpr void Board::promote(PieceType type, Square sq) noexcept
+    {
+        assert(kPieceTypeNone <= type && type < kPieceTypeNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        put((capture(sq) & kPieceTypeNone) | type, sq);
+    }
+
+    constexpr void Board::mask_castling(Castling mask) noexcept
+    {
+        set_castling(state.castling & mask);
+    }
+
+    constexpr void Board::update_castling(Square sq) noexcept
+    {
+        if (sq == kA1) mask_castling(~kWhiteOO);
+        if (sq == kH1) mask_castling(~kWhiteOOO);
+        if (sq == kA8) mask_castling(~kBlackOO);
+        if (sq == kH8) mask_castling(~kBlackOOO);
+    }
+}
+
+namespace cohen::chess
+{
+    using cohen::chess::board::BoardState;
+    using cohen::chess::board::Board;
 }
 
 #endif

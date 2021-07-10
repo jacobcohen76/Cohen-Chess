@@ -61,7 +61,7 @@ namespace cohen::chess::type::move
         return ((move >> 12) & 0b0011) + kKnight;
     }
 
-    constexpr MoveType PromotionMoveType(PieceType promoted_to) noexcept
+    constexpr MoveType PromoMoveType(PieceType promoted_to) noexcept
     {
         return ((promoted_to - kKnight) << 12) | kPromotion;
     }
@@ -86,7 +86,7 @@ namespace cohen::chess
     using cohen::chess::type::move::ToSquare;
     using cohen::chess::type::move::MoveTypeOf;
     using cohen::chess::type::move::PromotedTo;
-    using cohen::chess::type::move::PromotionMoveType;
+    using cohen::chess::type::move::PromoMoveType;
 }
 
 #endif

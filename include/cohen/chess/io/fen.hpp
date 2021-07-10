@@ -1,151 +1,209 @@
-// #ifndef COHEN_IO_FEN_HPP_INCLUDED
-// #define COHEN_IO_FEN_HPP_INCLUDED
+#ifndef COHEN_CHESS_IO_FEN_HPP_INCLUDED
+#define COHEN_CHESS_IO_FEN_HPP_INCLUDED
 
-// #include <engine/board.hpp>
-// #include <io/algebraic_notation.hpp>
+#include <iostream>
+#include <sstream>
 
-// #include <iostream>
-// #include <sstream>
-// #include <string_view>
-// #include <string>
+#include <cohen/chess/io/algebraic_notation.hpp>
+#include <cohen/chess/io/parse.hpp>
+#include <cohen/chess/type/file.hpp>
+#include <cohen/chess/type/rank.hpp>
+#include <cohen/chess/type/square.hpp>
+#include <cohen/chess/board.hpp>
 
-// namespace cohen
-// {
-//     const std::string kFenStartingPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+namespace cohen::chess::io::fen
+{
+    inline std::istream& SetFenPiecePlacement(std::istream& is, Board& board)
+    {
+        int token;
+        Rank rank = kRank8;
+        File file = kFileA;
+        while (token = is.get(), rank != kRank1 || file != kFileNB)
+        {
+            if (IsPieceChar(token))
+            {
+                board.put(CharToPiece(token), MakeSquare(rank, file++));
+            }
+            else if ('1' <= token && token <= '8')
+            {
+                file += token - '0';
+            }
+            else if (token == '/')
+            {
+                if (file < kFileNB)
+                    throw ParseError("illegal state reached");
+                --rank, file = kFileA;
+            }
+            else throw ParseError("unrecognized token");
+        }
+        return is;
+    }
 
-//     inline std::istream& SetFenPosition(std::istream& is, Board& board)
-//     {
-//         std::string token;
-//         is >> token;
-//         Square sq = kA8;
-//         for (const char ch : token)
-//         {
-//             if ('1' <= ch && ch <= '8')
-//             {
-//                 sq += ch - '0';
-//             }
-//             else if (IsPieceChar(ch))
-//             {
-//                 board.put(CharToPiece(ch), sq++);
-//             }
-//             else if (ch == '/')
-//             {
-//                 sq += kSouthSouth;
-//             }
-//         }
-//         is >> token;
-//         board.state.set_side(token == "b");
-//         is >> token;
-//         Castling cr = kCastlingNone;
-//         for (const char ch : token)
-//         {
-//             switch (ch)
-//             {
-//                 case 'K': cr |= kWhiteOOO; break;
-//                 case 'Q': cr |= kWhiteOO;  break;
-//                 case 'k': cr |= kBlackOOO; break;
-//                 case 'q': cr |= kBlackOO;  break;
-//             }
-//         }
-//         board.state.set_castling_rights(cr);
-//         is >> token;
-//         if (token != "-" && token.size())
-//         {
-//             board.state.set_ep_file(CharToFile(token[0]));
-//         }
-//         else
-//         {
-//             board.state.set_ep_file(kFileNB);
-//         }
-//         is >> board.state.halfmove_clock >> board.state.fullmove_count;
-//         return is;
-//     }
+    inline std::istream& SetFenSideToMove(std::istream& is, Board& board)
+    {
+        std::string token;
+        if (is >> token, token != "w" && token != "b")
+            throw ParseError("unrecognized token");
+        board.set_side(token == "b");
+        return is;
+    }
 
-//     inline void SetFenPosition(const std::string& fen_str, Board& board)
-//     {
-//         std::istringstream iss(fen_str);
-//         SetFenPosition(iss, board);
-//     }
+    constexpr Castling StandardFenCastlingBit(char token) noexcept
+    {
+        switch (token)
+        {
+            case 'K': return kWhiteOO;
+            case 'Q': return kWhiteOOO;
+            case 'k': return kBlackOO;
+            case 'q': return kBlackOOO;
+            default:  return kCastlingNone;
+        }
+    }
 
-//     inline void SetFenPosition(const char* fen_cstr, Board& board)
-//     {
-//         std::istringstream iss(fen_cstr);
-//         SetFenPosition(iss, board);
-//     }
+    inline std::istream& SetFenCastling(std::istream& is, Board& board)
+    {
+        int token;
+        Castling castling = kCastlingNone;
+        while (token = is.get(), !std::isspace(token) && token != '-')
+        {
+            Castling bit = StandardFenCastlingBit(token);
+            if (bit == kCastlingNone)
+                throw ParseError("unrecognized token");
+            if (castling & bit)
+                throw ParseError("duplicate castling bit");
+            castling |= bit;
+        }
+        if (token == '-' && castling)
+            throw ParseError("illegal state reached");
+        board.set_castling(castling);
+        return is;
+    }
 
-//     inline std::istream& operator>>(std::istream& is, Board& board)
-//     {
-//         return SetFenPosition(is, board);
-//     }
+    inline std::istream& SetFenEnPassantTarget(std::istream& is, Board& board)
+    {
+        std::string token;
+        if (is >> token, !IsCoordinateString(token))
+            throw ParseError("unexpected token");
+        board.set_ep_file(token == "-" ? kFileNB : CharToFile(token[0]));
+        return is;
+    }
 
-//     inline std::ostream& FormatFenPosition(std::ostream& os, const Board& board)
-//     {
-//         for (Square sq = kA8; sq >= kA1; sq += kSouthSouth)
-//         {
-//             int empty_count = 0;
-//             for (File file = kFileA; file < kFileNB; ++file, ++sq)
-//             {
-//                 if (board.on(sq))
-//                 {
-//                     if (empty_count)
-//                     {
-//                         os << empty_count;
-//                         empty_count = 0;
-//                     }
-//                     os << PieceChar(board.on(sq));
-//                 }
-//                 else
-//                 {
-//                     ++empty_count;
-//                 }
-//             }
-//             if (empty_count)
-//             {
-//                 os << empty_count;
-//             }
-//             os << ((sq > kA2) ? '/' : ' ');
-//         }
-//         os << (board.state.side ? 'b' : 'w') << ' ';
-//         if (board.state.castling_rights)
-//         {
-//             if (board.state.castling_rights & kWhiteOOO)
-//                 os << 'K';
-//             if (board.state.castling_rights & kWhiteOO)
-//                 os << 'Q';
-//             if (board.state.castling_rights & kBlackOOO)
-//                 os << 'k';
-//             if (board.state.castling_rights & kBlackOO)
-//                 os << 'q';
-//         }
-//         else
-//         {
-//             os << '-';
-//         }
-//         os << ' ';
-//         if (board.state.ep_file < kFileNB)
-//         {
-//             os << FileChar(board.state.ep_file);
-//             os << RankChar(RelativeRank(kRank3, board.state.side ^ kBlack));
-//         }
-//         else
-//         {
-//             os << '-';
-//         }
-//         os << ' ' << board.state.halfmove_clock << ' ' << board.state.fullmove_count;
-//         return os;
-//     }
+    inline std::istream& SetFenFullmoveClock(std::istream& is, Board& board)
+    {
+        uint16_t fullmove_clock;
+        if (is >> fullmove_clock, is.fail())
+            throw ParseError("unexpected token");
+        board.set_fullmove_clock(fullmove_clock);
+        return is;
+    }
 
-//     inline std::string FormatFenPosition(const Board& board)
-//     {
-//         std::ostringstream oss;
-//         FormatFenPosition(oss, board);
-//         return oss.str();
-//     }
+    inline std::istream& SetFenHalfmoveClock(std::istream& is, Board& board)
+    {
+        uint16_t halfmove_clock;
+        if (is >> halfmove_clock, is.fail())
+            throw ParseError("unexpected token");
+        board.set_halfmove_clock(halfmove_clock);
+        return is;
+    }
 
-//     inline std::ostream& operator<<(std::ostream& os, const Board& board)
-//     {
-//         return FormatFenPosition(os, board);
-//     }
-// }
+    inline std::istream& SetFenPosition(std::istream& is, Board& board)
+    {
+        board.clear();
+        SetFenPiecePlacement(is, board) >> std::ws;
+        SetFenSideToMove(is, board) >> std::ws;
+        SetFenCastling(is, board) >> std::ws;
+        SetFenEnPassantTarget(is, board) >> std::ws;
+        SetFenFullmoveClock(is, board) >> std::ws;
+        SetFenHalfmoveClock(is, board) >> std::ws;
+        return is;
+    }
 
-// #endif
+    inline void SetFenPosition(const std::string& str, Board& board)
+    {
+        std::istringstream iss{str};
+        SetFenPosition(iss, board);
+    }
+
+    inline void SetFenPosition(std::string&& str, Board& board)
+    {
+        std::istringstream iss{str};
+        SetFenPosition(iss, board);
+    }
+
+    inline std::ostream& FormatFenPiecePlacement(std::ostream& os, const Board& board)
+    {
+        for (Rank rank = kRank8; rank > -1; --rank)
+        {
+            int empty_count = 0;
+            for (File file = kFileA; file < kFileNB; ++file)
+            {
+                Square sq = MakeSquare(rank, file);
+                if (board.on(sq))
+                {
+                    if (empty_count)
+                    {
+                        os << empty_count;
+                        empty_count = 0;
+                    }
+                    os << PieceChar(board.on(sq));
+                }
+                else ++empty_count;
+            }
+            if (empty_count)
+                os << empty_count;
+            if (rank > kRank1)
+                os << '/';
+        }
+        return os;
+    }
+
+    inline std::ostream& FormatFenSideToMove(std::ostream& os, const Board& board)
+    {
+        return os << ColorChar(board.side());
+    }
+
+    inline std::ostream& FormatFenCastling(std::ostream& os, const Board& board)
+    {
+        if (board.castling())
+        {
+            if (board.castling() & kWhiteOOO) os << 'K';
+            if (board.castling() & kWhiteOO)  os << 'Q';
+            if (board.castling() & kBlackOOO) os << 'k';
+            if (board.castling() & kBlackOO)  os << 'q';
+        }
+        else
+        {
+            os << '-';
+        }
+        return os;
+    }
+
+    inline std::ostream& FormatFenEnPassantTarget(std::ostream& os, const Board& board)
+    {
+        return os << CoordinateString(board.ep_target());
+    }
+
+    inline std::ostream& FormatFenPosition(std::ostream& os, const Board& board)
+    {
+        FormatFenPiecePlacement(os, board) << ' ';
+        FormatFenSideToMove(os, board) << ' ';
+        FormatFenCastling(os, board) << ' ';
+        FormatFenEnPassantTarget(os, board) << ' ';
+        return os << board.fullmove_clock() << ' ' << int(board.halfmove_clock());
+    }
+
+    inline std::string FormatFenPosition(const Board& board)
+    {
+        std::ostringstream oss;
+        FormatFenPosition(oss, board);
+        return oss.str();
+    }
+}
+
+namespace cohen::chess
+{
+    using cohen::chess::io::fen::SetFenPosition;
+    using cohen::chess::io::fen::FormatFenPosition;
+}
+
+#endif

@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 
 #include <cohen/chess.hpp>
@@ -11,47 +12,15 @@ void Init()
 int main(int argc, char* argv[])
 {
     Init();
-    using namespace cohen::chess;
-    using namespace cohen::chess::magic;
-    auto lambda = [](auto& ascii_board, auto attr, auto char_set)
+    for (int i = 2; i < argc; ++i)
     {
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        cohen::chess::Board board = {};
+        int repeat = std::stoi(argv[1]);
+        for (int j = 0; j < repeat; ++j)
         {
-            ascii_board.set(sq, char_set[attr(sq)]);
+            cohen::chess::SetFenPosition(argv[i], board);
+            assert(argv[i] == cohen::chess::FormatFenPosition(board));
         }
-    };
-    AsciiBoard rank_board, file_board, diag_board, anti_board;
-    lambda(rank_board, RankOf, "12345678");
-    lambda(file_board, FileOf, "ABCDEFGH");
-    lambda(diag_board, DiagOf, "123456789ABCDEF");
-    lambda(anti_board, AntiOf, "123456789ABCDEF");
-    std::cout << "rank_board:" << std::endl << rank_board << std::endl;
-    std::cout << "file_board:" << std::endl << file_board << std::endl;
-    std::cout << "diag_board:" << std::endl << diag_board << std::endl;
-    std::cout << "anti_board:" << std::endl << anti_board << std::endl;
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        Bitboard mask = MagicBishopMask(sq);
-        Bitboard  occ = kEmptyBB;
-        do
-        {
-            assert(RayBishopAttacks(occ, sq) == FancyMagicBishopAttacks(occ, sq));
-            assert(RayBishopAttacks(occ, sq) == BlackMagicBishopAttacks(occ, sq));
-        }
-        while((occ = (occ - mask) & mask));
     }
-    for (Square sq = kA1; sq < kSquareNB; ++sq)
-    {
-        Bitboard mask = MagicRookMask(sq);
-        Bitboard  occ = kEmptyBB;
-        do
-        {
-            assert(RayRookAttacks(occ, sq) == FancyMagicRookAttacks(occ, sq));
-            assert(RayRookAttacks(occ, sq) == BlackMagicRookAttacks(occ, sq));
-        }
-        while((occ = (occ - mask) & mask));
-    }
-    std::cout << "FancyMagic: " << kFancyMagicBishopAttacksTable.size() + kFancyMagicRookAttacksTable.size() << std::endl;
-    std::cout << "BlackMagic: " << kBlackMagicAttacksTable.size() << std::endl;
     return 0;
 }

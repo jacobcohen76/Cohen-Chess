@@ -110,12 +110,19 @@ namespace cohen::chess::type::square
         return sq ^ (side * 0b000111);
     }
 
+    constexpr Square EnPassantTarget(File ep_file, Color side) noexcept
+    {
+        assert(kFileA <= ep_file && ep_file < kFileNB);
+        assert(side == kWhite || kBlack);
+        return MakeSquare(RelativeRank(kRank6, side), ep_file);
+    }
+
     constexpr int SquareRankDistance(Square sq1, Square sq2) noexcept
     {
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
         const auto diff = RankOf(sq1) - RankOf(sq2);
-        return (diff < 0) ? -diff : +diff;
+        return diff < 0 ? -diff : +diff;
     }
 
     constexpr int SquareFileDistance(Square sq1, Square sq2) noexcept
@@ -123,7 +130,7 @@ namespace cohen::chess::type::square
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
         const auto diff = FileOf(sq1) - FileOf(sq2);
-        return (diff < 0) ? -diff : +diff;
+        return diff < 0 ? -diff : +diff;
     }
 
     constexpr int SquareDistance(Square sq1, Square sq2) noexcept
@@ -251,6 +258,7 @@ namespace cohen::chess
     using cohen::chess::type::square::RelativeSquare;
     using cohen::chess::type::square::RelativeSquareRank;
     using cohen::chess::type::square::RelativeSquareFile;
+    using cohen::chess::type::square::EnPassantTarget;
     using cohen::chess::type::square::SquareRankDistance;
     using cohen::chess::type::square::SquareFileDistance;
     using cohen::chess::type::square::SquareDistance;

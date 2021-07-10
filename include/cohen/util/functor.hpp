@@ -6,12 +6,23 @@
 
 namespace cohen::util::functor
 {
-    template <typename T, typename Signature>
-    concept Functor = std::convertible_to<T, std::function<Signature>>;
+    template <typename T>
+    inline constexpr bool kIsTypeSignature = false;
+
+    template <typename ReturnType, typename... ArgTypes>
+    inline constexpr bool kIsTypeSignature<ReturnType(ArgTypes...)> = true;
+
+    template <typename T>
+    concept TypeSignature = kIsTypeSignature<T>;
+
+    template <typename T, typename TypeSignature>
+    concept Functor = kIsTypeSignature<TypeSignature> &&
+                      std::convertible_to<T, std::function<TypeSignature>>;
 }
 
 namespace cohen
 {
+    using cohen::util::functor::TypeSignature;
     using cohen::util::functor::Functor;
 }
 

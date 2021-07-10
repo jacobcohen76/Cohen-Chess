@@ -13,18 +13,18 @@ namespace cohen::util::bits
     template <std::unsigned_integral T> constexpr int BitScanForward(T) noexcept;
 
     template <typename T>
-    constexpr std::size_t kNumBits = sizeof(T) * 8;
+    inline constexpr std::size_t kNumBits = sizeof(T) * 8;
 
     template <std::unsigned_integral T>
     constexpr T RotateLeft(T x, int s) noexcept
     {
-        return std::rotl(reinterpret_cast<std::make_unsigned_t<T>>(x), s);
+        return std::rotl(x, s);
     }
 
     template <std::unsigned_integral T>
     constexpr T RotateRight(T x, int s) noexcept
     {
-        return std::rotr(reinterpret_cast<std::make_unsigned_t<T>>(x), s);
+        return std::rotr(x, s);
     }
 
     template <std::unsigned_integral T>
@@ -36,6 +36,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int PopLSB(T& x) noexcept
     {
+        assert(x != 0);
         int lsb = BitScanForward(x);
         x = FlipLSB(x);
         return lsb;
@@ -44,19 +45,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int BuiltinPopCount(T x) noexcept
     {
-        static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
-        if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
-        {
-            return __builtin_popcount(x);
-        }
-        else if constexpr (kNumBits<T> <= kNumBits<unsigned long>)
-        {
-            return __builtin_popcountl(x);
-        }
-        else
-        {
-            return __builtin_popcountll(x);
-        }
+        return std::popcount(x);
     }
 
     template <std::unsigned_integral T>
@@ -71,6 +60,39 @@ namespace cohen::util::bits
         return count;
     }
 
+    inline constexpr std::array<uint8_t, 65536> kPopCountTable = []()
+    {
+        std::array<uint8_t, 65536> lookup_table = {};
+        std::generate(std::begin(lookup_table), std::end(lookup_table),
+        [curr_bits = uint64_t(0)]() mutable -> uint8_t
+        {
+            return PopCountLSB(curr_bits++);
+        });
+        return lookup_table;
+    }();
+
+    template <std::unsigned_integral T>
+    constexpr int PopCountLookup(T x) noexcept
+    {
+        static_assert(kNumBits<T> <= kNumBits<uint64_t>);
+        if constexpr (kNumBits<T> <= kNumBits<uint16_t>)
+        {
+            return kPopCountTable[(x >>  0) & 0xFFFF];
+        }
+        else if constexpr (kNumBits<T> <= kNumBits<uint32_t>)
+        {
+            return kPopCountTable[(x >>  0) & 0xFFFF] +
+                   kPopCountTable[(x >> 16) & 0xFFFF];
+        }
+        else
+        {
+            return kPopCountTable[(x >>  0) & 0xFFFF] +
+                   kPopCountTable[(x >> 16) & 0xFFFF] +
+                   kPopCountTable[(x >> 32) & 0xFFFF] +
+                   kPopCountTable[(x >> 48) & 0xFFFF];
+        }
+    }
+
     template <std::unsigned_integral T>
     constexpr int PopCountBitScanForward(T x) noexcept
     {
@@ -81,6 +103,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int BuiltinCountTrailingZeroes(T x) noexcept
     {
+        assert(x != 0);
         static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
         if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
         {
@@ -99,6 +122,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int BuiltinCountTrailingOnes(T x) noexcept
     {
+        assert(x != 0);
         return BuiltinCountTrailingZeroes(~x);
     }
 
@@ -112,6 +136,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int BuiltinCountLeadingZeroes(T x) noexcept
     {
+        assert(x != 0);
         static_assert(kNumBits<T> <= kNumBits<unsigned long long>);
         if constexpr (kNumBits<T> <= kNumBits<unsigned int>)
         {
@@ -133,6 +158,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int BuiltinCountLeadingOnes(T x) noexcept
     {
+        assert(x != 0);
         return BuiltinCountLeadingZeroes(~x);
     }
 
@@ -143,8 +169,8 @@ namespace cohen::util::bits
         return BuiltinCountLeadingZeroes(x) ^ (kNumBits<T> - 1);
     }
 
-    constexpr uint64_t kDebruijn64 = 0x03F79D71B4CB0A89;
-    constexpr std::array<int, 64> kDeBruijnIndex64 =
+    inline constexpr uint64_t kDebruijn64 = 0x03F79D71B4CB0A89;
+    inline constexpr std::array<int, 64> kDeBruijnIndex64 =
     {
          0, 47,  1, 56, 48, 27,  2, 60,
         57, 49, 41, 37, 28, 16,  3, 61,
@@ -175,12 +201,14 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int DeBruijnCountTrailingZeroes(T x) noexcept
     {
-        return x ? DeBruijnBitScanForward(x) : kNumBits<T>;
+        assert(x != 0);
+        return DeBruijnBitScanForward(x);
     }
 
     template <std::unsigned_integral T>
     constexpr int DeBruijnCountTrailingOnes(T x) noexcept
     {
+        assert(x != ~T{0});
         return DeBruijnCountTrailingZeroes(~x);
     }
 
@@ -211,19 +239,21 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int DeBruijnCountLeadingZeroes(T x) noexcept
     {
-        return x ? DeBruijnBitScanReverse(x) ^ (kNumBits<T> - 1) : kNumBits<T>;
+        assert(x != 0);
+        return DeBruijnBitScanReverse(x) ^ (kNumBits<T> - 1);
+    }
+
+    template <std::unsigned_integral T>
+    constexpr int DeBruijnCountLeadingOnes(T x) noexcept
+    {
+        assert(x != ~T{0});
+        return DeBruijnCountLeadingZeroes(~x);
     }
 
     template <std::unsigned_integral T>
     constexpr int PopCount(T x) noexcept
     {
         return BuiltinPopCount(x);
-    }
-
-    template <std::unsigned_integral T>
-    constexpr int DeBruijnCountLeadingOnes(T x) noexcept
-    {
-        return DeBruijnCountLeadingZeroes(~x);
     }
 
     template <std::unsigned_integral T>
