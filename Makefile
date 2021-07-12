@@ -1,32 +1,37 @@
-SHELL     = /bin/sh
+SHELL       = /bin/sh
 
-SRC       = src
-BIN       = bin
+SRC         = src
+BIN         = bin
+INCLUDE     = include
 
-CC        = clang
-CXX       = clang++-11
+CC          = clang-11
+CXX         = clang++-11
 
-CXXVER    = -std=c++20
-CXXVRB    = -Wall
-CXXOPT    = -Ofast
-CXXINCL   = -Iinclude
+CPPFLAGS    =
+CFLAGS      =
 
-CXXSTDLIB = -stdlib=libstdc++
-CXXLIMITS = -fconstexpr-steps=2147483647
+CXXFLAGS    = -I$(INCLUDE)
+CXXFLAGS   += -stdlib=libstdc++
+CXXFLAGS   += -std=c++20
+CXXFLAGS   += -Wall
+CXXFLAGS   += -O3
+CXXFLAGS   += -stdlib=libstdc++
+CXXFLAGS   += -fconstexpr-steps=2147483647
 
-CPPFLAGS  = #-DNDEBUG
-CFLAGS    = 
-CXXFLAGS  = $(CXXVER) $(CXXVRB) $(CXXOPT) $(CXXINCL) # -S -fverbose-asm
+all: debug
 
-ifeq ($(CXX),clang++-11)
-	CXXFLAGS += $(CXXSTDLIB)
-	CXXFLAGS += $(CXXLIMITS)
-endif
+debug: CPPFLAGS += -DDEBUG
+debug: CXXFLAGS += -g
+debug: main dump
 
-all: main
-
+release: CPPFLAGS += -DNDEBUG
+release: main dump
+ 
 main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
+
+dump:
+	objdump -SDge $(BIN)/main.out > $(BIN)/main.asm
 
 clean:
 	rm -rf $(BIN) *.o
