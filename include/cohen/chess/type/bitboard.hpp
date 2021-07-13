@@ -39,7 +39,7 @@ namespace cohen::chess::type::bitboard
         return kBitboardA1 << sq;
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
+    inline constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
         std::generate(std::begin(square_table), std::end(square_table),
@@ -69,7 +69,7 @@ namespace cohen::chess::type::bitboard
         return kBitboardRank1 << (rank << 3);
     }
 
-    constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
+    inline constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
         std::generate(std::begin(rank_table), std::end(rank_table),
@@ -99,7 +99,7 @@ namespace cohen::chess::type::bitboard
         return kBitboardFileA << file;
     }
 
-    constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
+    inline constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
         std::generate(std::begin(file_table), std::end(file_table),
@@ -122,7 +122,7 @@ namespace cohen::chess::type::bitboard
         return LookupFileBB(file);
     }
 
-    constexpr std::array<Bitboard, kDiagNB> kDiagBitboardTable =
+    inline constexpr std::array<Bitboard, kDiagNB> kDiagBitboardTable =
     {
         0x0000000000000080,
         0x0000000000008040,
@@ -153,7 +153,7 @@ namespace cohen::chess::type::bitboard
         return LookupDiagBB(diag);
     }
 
-    constexpr std::array<Bitboard, kAntiNB> kAntiBitboardTable = 
+    inline constexpr std::array<Bitboard, kAntiNB> kAntiBitboardTable = 
     {
         0x0000000000000001,
         0x0000000000000102,
@@ -185,7 +185,7 @@ namespace cohen::chess::type::bitboard
     }
 
     template <Direction dir>
-    constexpr std::array<Bitboard, kSquareNB> kRayBitboardTable = []()
+    inline constexpr std::array<Bitboard, kSquareNB> kRayBitboardTable = []()
     {
         static_assert(dir != kDirectionNone);
         std::array<Bitboard, kSquareNB> ray_table = {};
@@ -280,7 +280,7 @@ namespace cohen::chess::type::bitboard
                RayBB(sq2, RayBetween(sq2, sq1));
     }
 
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenBitboardTable = []()
+    inline constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenBitboardTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
         std::generate(std::begin(between_table), std::end(between_table),
@@ -312,27 +312,27 @@ namespace cohen::chess::type::bitboard
     }
 
     template <Direction dir>
-    constexpr Bitboard kShiftMask = kUniverseBB;
+    inline constexpr Bitboard kShiftMask = kUniverseBB;
 
-    template <> constexpr Bitboard kShiftMask<kEast>           = ~FileBB(kFileH);
-    template <> constexpr Bitboard kShiftMask<kNorthEast>      =  kShiftMask<kEast>;
-    template <> constexpr Bitboard kShiftMask<kSouthEast>      =  kShiftMask<kEast>;
-    template <> constexpr Bitboard kShiftMask<kNorthNorthEast> =  kShiftMask<kEast>;
-    template <> constexpr Bitboard kShiftMask<kSouthSouthEast> =  kShiftMask<kEast>;
+    template <> inline constexpr Bitboard kShiftMask<kEast>           = ~FileBB(kFileH);
+    template <> inline constexpr Bitboard kShiftMask<kNorthEast>      =  kShiftMask<kEast>;
+    template <> inline constexpr Bitboard kShiftMask<kSouthEast>      =  kShiftMask<kEast>;
+    template <> inline constexpr Bitboard kShiftMask<kNorthNorthEast> =  kShiftMask<kEast>;
+    template <> inline constexpr Bitboard kShiftMask<kSouthSouthEast> =  kShiftMask<kEast>;
 
-    template <> constexpr Bitboard kShiftMask<kEastEast>       = ~FileBB(kFileH) & ~FileBB(kFileG);
-    template <> constexpr Bitboard kShiftMask<kEastEastNorth>  =  kShiftMask<kEastEast>;
-    template <> constexpr Bitboard kShiftMask<kEastEastSouth>  =  kShiftMask<kEastEast>;
+    template <> inline constexpr Bitboard kShiftMask<kEastEast>       = ~FileBB(kFileH) & ~FileBB(kFileG);
+    template <> inline constexpr Bitboard kShiftMask<kEastEastNorth>  =  kShiftMask<kEastEast>;
+    template <> inline constexpr Bitboard kShiftMask<kEastEastSouth>  =  kShiftMask<kEastEast>;
 
-    template <> constexpr Bitboard kShiftMask<kWest>           = ~FileBB(kFileA);
-    template <> constexpr Bitboard kShiftMask<kNorthWest>      =  kShiftMask<kWest>;
-    template <> constexpr Bitboard kShiftMask<kSouthWest>      =  kShiftMask<kWest>;
-    template <> constexpr Bitboard kShiftMask<kNorthNorthWest> =  kShiftMask<kWest>;
-    template <> constexpr Bitboard kShiftMask<kSouthSouthWest> =  kShiftMask<kWest>;
+    template <> inline constexpr Bitboard kShiftMask<kWest>           = ~FileBB(kFileA);
+    template <> inline constexpr Bitboard kShiftMask<kNorthWest>      =  kShiftMask<kWest>;
+    template <> inline constexpr Bitboard kShiftMask<kSouthWest>      =  kShiftMask<kWest>;
+    template <> inline constexpr Bitboard kShiftMask<kNorthNorthWest> =  kShiftMask<kWest>;
+    template <> inline constexpr Bitboard kShiftMask<kSouthSouthWest> =  kShiftMask<kWest>;
 
-    template <> constexpr Bitboard kShiftMask<kWestWest>       = ~FileBB(kFileA) & ~FileBB(kFileB);
-    template <> constexpr Bitboard kShiftMask<kWestWestNorth>  =  kShiftMask<kWestWest>;
-    template <> constexpr Bitboard kShiftMask<kWestWestSouth>  =  kShiftMask<kWestWest>;
+    template <> inline constexpr Bitboard kShiftMask<kWestWest>       = ~FileBB(kFileA) & ~FileBB(kFileB);
+    template <> inline constexpr Bitboard kShiftMask<kWestWestNorth>  =  kShiftMask<kWestWest>;
+    template <> inline constexpr Bitboard kShiftMask<kWestWestSouth>  =  kShiftMask<kWestWest>;
 
     template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb) noexcept

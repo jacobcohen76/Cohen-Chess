@@ -18,20 +18,18 @@ CXXFLAGS   += -O3
 CXXFLAGS   += -stdlib=libstdc++
 CXXFLAGS   += -fconstexpr-steps=2147483647
 
-all: debug
+all: release
 
 debug: CPPFLAGS += -DDEBUG
 debug: CXXFLAGS += -g
-debug: main dump
+debug: main
 
 release: CPPFLAGS += -DNDEBUG
-release: main dump
+release: main
  
 main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
-
-dump:
-	objdump -SDge $(BIN)/main.out > $(BIN)/main.asm
+	objdump -SDge $(BIN)/$@.out > $(BIN)/$@.asm
 
 clean:
 	rm -rf $(BIN) *.o

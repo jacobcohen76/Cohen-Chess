@@ -4,14 +4,16 @@
 namespace cohen::chess::move_gen
 {
     template <MoveType type>
-    constexpr void GenMoves(Square from, Bitboard to_set) noexcept
+    constexpr void GenMoves(Move*& move_list, Bitboard to_set, Square from) noexcept
     {
         while (to_set)
         {
             Square to = PopLSB(to_set);
-            *move_list++ = MakeMove(type, from, to);
+            *move_list++ = MakeMove(from, to, type);
         }
     }
+
+    
 }
 
 namespace cohen::chess
