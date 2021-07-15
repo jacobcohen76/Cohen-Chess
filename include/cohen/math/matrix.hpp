@@ -1,6 +1,7 @@
 #ifndef COHEN_MATH_MATRIX_HPP_INCLUDED
 #define COHEN_MATH_MATRIX_HPP_INCLUDED
 
+#include <array>
 #include <cassert>
 #include <type_traits>
 
@@ -89,6 +90,30 @@ namespace cohen::math::matrix
         for (size_t k = 0; k < n; ++k)
         {
             acc(i, j) += op1(i, k) * op2(k, j);
+        }
+    }
+
+    template <typename T1, typename T2, typename T3, size_t m, size_t n>
+    constexpr void MatrixMult<T1, T2, T3, m, n, 1>(const Matrix<T1, m, n>& op1,
+                                                   const Matrix<T2, n, 1>& op2,
+                                                         Matrix<T3, m, 1>& acc) noexcept
+    {
+        for (size_t i = 0; i < m; ++i)
+        for (size_t k = 0; k < n; ++k)
+        {
+            acc(i, 0) += op1(i, k) * op2(k, 0);
+        }
+    }
+
+    template <typename T1, typename T2, typename T3, size_t n, size_t p>
+    constexpr void MatrixMult<T1, T2, T3, 1, n, p>(const Matrix<T1, 1, n>& op1,
+                                                   const Matrix<T2, n, p>& op2,
+                                                         Matrix<T3, 1, p>& acc) noexcept
+    {
+        for (size_t j = 0; j < p; ++i)
+        for (size_t k = 0; k < n; ++k)
+        {
+            acc(0, j) += op1(0, k) * op2(k, j);
         }
     }
 
