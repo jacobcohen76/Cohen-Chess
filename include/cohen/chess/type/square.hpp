@@ -117,7 +117,7 @@ namespace cohen::chess::type::square
         return MakeSquare(RelativeRank(kRank6, side), ep_file);
     }
 
-    constexpr int SquareRankDistance(Square sq1, Square sq2) noexcept
+    constexpr int RuntimeSquareRankDistance(Square sq1, Square sq2) noexcept
     {
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
@@ -125,7 +125,38 @@ namespace cohen::chess::type::square
         return diff < 0 ? -diff : +diff;
     }
 
-    constexpr int SquareFileDistance(Square sq1, Square sq2) noexcept
+    inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareRankDistanceTable = []()
+    {
+        std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
+        std::generate(std::begin(dist_table), std::end(dist_table),
+        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        {
+            std::array<int8_t, kSquareNB> sub_table = {};
+            std::generate(std::begin(sub_table), std::end(sub_table),
+            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
+            {
+                return RuntimeSquareRankDistance(sq1, sq2++);
+            });
+            return ++sq1, sub_table;
+        });
+        return dist_table;
+    }();
+
+    constexpr int LookupSquareRankDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return kSquareRankDistanceTable[sq1][sq2];
+    }
+
+    constexpr int SquareRankDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return LookupSquareRankDistance(sq1, sq2);
+    }
+
+    constexpr int RuntimeSquareFileDistance(Square sq1, Square sq2) noexcept
     {
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
@@ -133,11 +164,73 @@ namespace cohen::chess::type::square
         return diff < 0 ? -diff : +diff;
     }
 
-    constexpr int SquareDistance(Square sq1, Square sq2) noexcept
+    inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareFileDistanceTable = []()
+    {
+        std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
+        std::generate(std::begin(dist_table), std::end(dist_table),
+        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        {
+            std::array<int8_t, kSquareNB> sub_table = {};
+            std::generate(std::begin(sub_table), std::end(sub_table),
+            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
+            {
+                return RuntimeSquareFileDistance(sq1, sq2++);
+            });
+            return ++sq1, sub_table;
+        });
+        return dist_table;
+    }();
+
+    constexpr int LookupSquareFileDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return kSquareFileDistanceTable[sq1][sq2];
+    }
+
+    constexpr int SquareFileDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return LookupSquareFileDistance(sq1, sq2);
+    }
+
+    constexpr int RuntimeSquareDistance(Square sq1, Square sq2) noexcept
     {
         assert(kA1 <= sq1 && sq1 < kSquareNB);
         assert(kA1 <= sq2 && sq2 < kSquareNB);
         return SquareRankDistance(sq1, sq2) + SquareFileDistance(sq1, sq2);
+    }
+
+    inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareDistanceTable = []()
+    {
+        std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
+        std::generate(std::begin(dist_table), std::end(dist_table),
+        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        {
+            std::array<int8_t, kSquareNB> sub_table = {};
+            std::generate(std::begin(sub_table), std::end(sub_table),
+            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
+            {
+                return RuntimeSquareDistance(sq1, sq2++);
+            });
+            return ++sq1, sub_table;
+        });
+        return dist_table;
+    }();
+
+    constexpr int LookupSquareDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return kSquareDistanceTable[sq1][sq2];
+    }
+
+    constexpr int SquareDistance(Square sq1, Square sq2) noexcept
+    {
+        assert(kA1 <= sq1 && sq1 < kSquareNB);
+        assert(kA1 <= sq2 && sq2 < kSquareNB);
+        return LookupSquareDistance(sq1, sq2);
     }
 
     constexpr bool IsNormalSquare(Square sq) noexcept
