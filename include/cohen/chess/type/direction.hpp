@@ -9,7 +9,7 @@
 
 namespace cohen::chess::type::direction
 {
-    using Direction = int8_t;
+    using Direction = int;
 
     enum DirectionConstant : Direction
     {
@@ -24,18 +24,18 @@ namespace cohen::chess::type::direction
         kNorthWest      = kNorth + kWest,
 
         kNorthNorth     = kNorth + kNorth,
-        kEastEast       = kEast + kEast,
+        kEastEast       = kEast  + kEast,
         kSouthSouth     = kSouth + kSouth,
-        kWestWest       = kWest + kWest,
+        kWestWest       = kWest  + kWest,
 
         kNorthNorthEast = kNorthNorth + kEast,
         kNorthNorthWest = kNorthNorth + kWest,
-        kEastEastNorth  = kEastEast + kNorth,
-        kEastEastSouth  = kEastEast + kSouth,
+        kEastEastNorth  = kEastEast   + kNorth,
+        kEastEastSouth  = kEastEast   + kSouth,
         kSouthSouthEast = kSouthSouth + kEast,
         kSouthSouthWest = kSouthSouth + kWest,
-        kWestWestNorth  = kWestWest + kNorth,
-        kWestWestSouth  = kWestWest + kSouth,
+        kWestWestNorth  = kWestWest   + kNorth,
+        kWestWestSouth  = kWestWest   + kSouth,
 
         kDirectionNone  = 0,
     };

@@ -78,6 +78,7 @@ namespace cohen::chess::board
 
     constexpr bool Board::empty(Square sq) const noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         return on(sq) == kPieceNone;
     }
 
@@ -116,7 +117,7 @@ namespace cohen::chess::board
         return state.captured;
     }
 
-    constexpr Piece Board::castling() const noexcept
+    constexpr Castling Board::castling() const noexcept
     {
         return state.castling;
     }
@@ -134,6 +135,7 @@ namespace cohen::chess::board
 
     constexpr void Board::put(Piece piece, Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         assert(empty(sq));
         bitboards[PieceAllColor(piece)] |= SquareBB(sq);
         bitboards[kOccupancy] |= SquareBB(sq);
@@ -146,6 +148,7 @@ namespace cohen::chess::board
 
     constexpr void Board::remove(Piece piece, Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         assert(piece == on(sq));
         bitboards[PieceAllColor(piece)] &= ~SquareBB(sq);
         bitboards[kOccupancy] &= ~SquareBB(sq);
@@ -163,6 +166,7 @@ namespace cohen::chess::board
 
     constexpr Piece Board::capture(Square sq) noexcept
     {
+        assert(kA1 <= sq && sq < kSquareNB);
         assert(on(sq));
         Piece piece = on(sq);
         remove(piece, sq);
@@ -171,22 +175,23 @@ namespace cohen::chess::board
 
     constexpr void Board::push(Square from, Square to) noexcept
     {
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
         assert(on(from) && empty(to));
-        
+        put(capture(from), to);
     }
 
     constexpr void Board::make(Move move) noexcept
     {
         assert(move != kMoveNone && move != kMoveNull);
-        Square from = FromSquare(move), to = ToSquare(move);
+        // Square from = FromSquare(move), to = ToSquare(move);
         // TODO
     }
 
     constexpr void Board::unmake(Move move, const BoardState& prev_state) noexcept
     {
         assert(move != kMoveNone && move != kMoveNull);
-        Square from = FromSquare(move), to = ToSquare(move);
-
+        // Square from = FromSquare(move), to = ToSquare(move);
         // TODO
         state = prev_state;
     }

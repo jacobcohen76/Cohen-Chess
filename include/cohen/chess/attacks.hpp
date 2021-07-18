@@ -39,14 +39,14 @@ namespace cohen::chess::attacks
         return SetwisePawnAttacks(SquareBB(sq), side);
     }
 
-    constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
+    inline constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kColorNB> pawn_table = {};
-        std::generate(std::begin(pawn_table), std::end(pawn_table),
+        std::generate(begin(pawn_table), end(pawn_table),
         [color = Color(kWhite)]() mutable -> std::array<Bitboard, kSquareNB>
         {
             std::array<Bitboard, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
+            std::generate(begin(sub_table), end(sub_table),
             [color, sq = Square(kA1)]() mutable -> Bitboard
             {
                 return RuntimePawnAttacks(sq++, color);
@@ -84,10 +84,10 @@ namespace cohen::chess::attacks
         return SetwiseKnightAttacks(SquareBB(sq));
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
+    inline constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> knight_table = {};
-        std::generate(std::begin(knight_table), std::end(knight_table),
+        std::generate(begin(knight_table), end(knight_table),
         [sq = Square(kA1)]() mutable -> Bitboard
         {
             return RuntimeKnightAttacks(sq++);
@@ -120,10 +120,10 @@ namespace cohen::chess::attacks
         return SetwiseKingAttacks(SquareBB(sq));
     }
 
-    constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
+    inline constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> king_table = {};
-        std::generate(std::begin(king_table), std::end(king_table),
+        std::generate(begin(king_table), end(king_table),
         [sq = Square(kA1)]() mutable -> Bitboard
         {
             return RuntimeKingAttacks(sq++);

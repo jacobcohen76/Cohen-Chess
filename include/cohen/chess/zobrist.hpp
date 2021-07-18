@@ -15,7 +15,7 @@
 
 namespace cohen::chess::zobrist
 {
-    constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<std::array<Key, kSquareNB>, kPieceNB> pc_sq_table = {};
         for (Color color = kWhite; color < kColorNB; ++color)
@@ -36,7 +36,7 @@ namespace cohen::chess::zobrist
         return kZobristPieceSquareKeyTable[pc][sq];
     }
 
-    constexpr auto kZobristCastlingKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristCastlingKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<Key, kCastlingNB> castling_table = {};
         castling_table[kWhiteOO]  = rand_fn();
@@ -66,7 +66,7 @@ namespace cohen::chess::zobrist
         return kZobristCastlingKeyTable[castling];
     }
 
-    constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto rand_fn)
     {
         std::array<Key, kFileNB + 1> ep_file_table = {};
         std::generate(ep_file_table.begin(), ep_file_table.end() - 1, rand_fn);
@@ -79,7 +79,7 @@ namespace cohen::chess::zobrist
         return kZobristEnPassantFileKeyTable[file];
     }
 
-    constexpr Key kZobristSideKey = 0x9634520BD3C345BA;
+    inline constexpr Key kZobristSideKey = 0x9634520BD3C345BA;
 
     constexpr Key ZobristSideKey(Color side) noexcept
     {

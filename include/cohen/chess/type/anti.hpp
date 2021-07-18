@@ -8,7 +8,7 @@
 
 namespace cohen::chess::type::anti
 {
-    using Anti = int8_t;
+    using Anti = int;
 
     enum AntiConstant : Anti
     {

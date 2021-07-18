@@ -44,8 +44,7 @@ int main(int argc, char* argv[])
     Init();
     auto assert_magic = [](Functor<Bitboard(Bitboard, Square)> auto control,
                            Functor<Bitboard(Bitboard, Square)> auto testing,
-                           Bitboard mask, Square sq)
-        -> void
+                           Bitboard mask, Square sq) -> void
     {
         Bitboard occ = kEmptyBB;
         do
@@ -61,5 +60,8 @@ int main(int argc, char* argv[])
         assert_magic(RayRookAttacks,   FancyMagicRookAttacks,   MagicRookMask(sq),   sq);
         assert_magic(RayRookAttacks,   BlackMagicRookAttacks,   MagicRookMask(sq),   sq);
     }
+    using namespace cohen::chess::magic;
+    std::cout << "kFancyMagicAttackTable.size() = " << kFancyMagicAttackTable.size() << std::endl;
+    std::cout << "kBlackMagicAttackTable.size() = " << kBlackMagicAttackTable.size() << std::endl;
     return 0;
 }

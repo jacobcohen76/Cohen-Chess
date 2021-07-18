@@ -8,7 +8,7 @@
 
 namespace cohen::chess::type::file
 {
-    using File = int8_t;
+    using File = int;
 
     enum FileConstant : File
     {

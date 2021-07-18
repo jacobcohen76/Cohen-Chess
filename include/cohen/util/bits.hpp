@@ -63,7 +63,7 @@ namespace cohen::util::bits
     inline constexpr std::array<uint8_t, 65536> kPopCountTable = []()
     {
         std::array<uint8_t, 65536> lookup_table = {};
-        std::generate(std::begin(lookup_table), std::end(lookup_table),
+        std::generate(begin(lookup_table), end(lookup_table),
         [curr_bits = uint64_t(0)]() mutable -> uint8_t
         {
             return PopCountLSB(curr_bits++);

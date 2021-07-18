@@ -3,7 +3,7 @@
 
 namespace cohen::chess::move_gen
 {
-    template <MoveType type>
+    template <MoveType type = kQuietMove>
     constexpr Move* GenMoves(Move* move_list, Bitboard to_set, Square from) noexcept
     {
         while (to_set)

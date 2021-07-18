@@ -8,7 +8,7 @@
 
 namespace cohen::chess::type::rank
 {
-    using Rank = int8_t;
+    using Rank = int;
 
     enum RankConstant : Rank
     {

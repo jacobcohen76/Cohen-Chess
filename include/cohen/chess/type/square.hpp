@@ -12,7 +12,7 @@
 
 namespace cohen::chess::type::square
 {
-    using Square = int8_t;
+    using Square = int;
 
     enum SquareConstant : Square
     {
@@ -128,11 +128,11 @@ namespace cohen::chess::type::square
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareRankDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
+        std::generate(begin(dist_table), end(dist_table),
         [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
         {
             std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
+            std::generate(begin(sub_table), end(sub_table),
             [sq1, sq2 = Square{kA1}]() mutable -> int8_t
             {
                 return RuntimeSquareRankDistance(sq1, sq2++);
@@ -167,11 +167,11 @@ namespace cohen::chess::type::square
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareFileDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
+        std::generate(begin(dist_table), end(dist_table),
         [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
         {
             std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
+            std::generate(begin(sub_table), end(sub_table),
             [sq1, sq2 = Square{kA1}]() mutable -> int8_t
             {
                 return RuntimeSquareFileDistance(sq1, sq2++);
@@ -205,11 +205,11 @@ namespace cohen::chess::type::square
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
+        std::generate(begin(dist_table), end(dist_table),
         [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
         {
             std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
+            std::generate(begin(sub_table), end(sub_table),
             [sq1, sq2 = Square{kA1}]() mutable -> int8_t
             {
                 return RuntimeSquareDistance(sq1, sq2++);

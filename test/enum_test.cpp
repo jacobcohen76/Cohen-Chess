@@ -27,6 +27,6 @@ namespace cohen::chess
 
 int main(int argc, char* argv[])
 {
-    std::cout << cohen::chess::kSquareNB << std::endl;
+    std::cout << cohen::chess::kSquareNB << endl;
     return 0;
 }

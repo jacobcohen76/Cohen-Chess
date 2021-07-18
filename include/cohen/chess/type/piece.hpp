@@ -8,7 +8,7 @@
 
 namespace cohen::chess::type::piece
 {
-    using PieceType = uint8_t;
+    using PieceType = int;
 
     enum PieceTypeConstant : PieceType
     {
@@ -23,7 +23,7 @@ namespace cohen::chess::type::piece
         kPieceTypeNB   = 8,
     };
 
-    using Piece = uint8_t;
+    using Piece = int;
 
     enum PieceConstant : Piece
     {
