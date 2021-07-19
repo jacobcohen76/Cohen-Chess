@@ -78,37 +78,11 @@ namespace cohen::math::matrix
     {
         return row * cols() + col;
     }
-
-    template <typename T1, typename T2, typename T3,
-              size_t    m, size_t    n, size_t    p>
-    constexpr void NaiveMatrixMult(const Matrix<T1, m, n>& op1,
-                                   const Matrix<T2, n, p>& op2,
-                                         Matrix<T3, m, p>& acc) noexcept
-    {
-        for (size_t i = 0; i < m; ++i)
-        for (size_t j = 0; j < p; ++j)
-        for (size_t k = 0; k < n; ++k)
-        {
-            acc(i, j) += op1(i, k) * op2(k, j);
-        }
-    }
-
-    template <typename T1, size_t num_rows_1, size_t num_cols_1,
-              typename T2, size_t num_rows_2, size_t num_cols_2>
-    constexpr auto MatrixMult(const Matrix<T1, num_rows_1, num_cols_1>& op1,
-                              const Matrix<T2, num_rows_2, num_cols_2>& op2) noexcept
-        -> Matrix<std::common_type_t<T1, T2>, num_rows_1, num_cols_2>
-    {
-        static_assert(num_cols_1 == num_rows_2);
-        Matrix<std::common_type_t<T1, T2>, num_rows_1, num_cols_2> acc;
-        NaiveMatrixMult(op1, op2, acc);
-        return acc;
-    }
 }
 
 namespace cohen::math
 {
-    
+    using cohen::math::matrix::Matrix;
 }
 
 #endif

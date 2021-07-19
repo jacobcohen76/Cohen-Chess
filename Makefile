@@ -14,7 +14,7 @@ CXXFLAGS    = -I$(INCLUDE)
 CXXFLAGS   += -stdlib=libstdc++
 CXXFLAGS   += -std=c++20
 CXXFLAGS   += -Wall
-CXXFLAGS   += -O3
+CXXFLAGS   += -O3 -march=native
 CXXFLAGS   += -stdlib=libstdc++
 CXXFLAGS   += -fconstexpr-steps=2147483647
 
@@ -26,7 +26,7 @@ debug: main
 
 release: CPPFLAGS += -DNDEBUG
 release: main
- 
+
 main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
 	objdump -SDge $(BIN)/$@.out > $(BIN)/$@.asm

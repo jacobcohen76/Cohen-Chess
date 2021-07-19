@@ -23,7 +23,7 @@
 
 #include <cohen/chess/attacks.hpp>
 #include <cohen/chess/board.hpp>
-#include <cohen/chess/magic.hpp>
+#include <cohen/chess/magics.hpp>
 #include <cohen/chess/move_gen.hpp>
 #include <cohen/chess/zobrist.hpp>
 

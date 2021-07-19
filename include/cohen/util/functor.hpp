@@ -16,8 +16,7 @@ namespace cohen::util::functor
     concept TypeSignature = kIsTypeSignature<T>;
 
     template <typename T, typename TypeSignature>
-    concept Functor = kIsTypeSignature<TypeSignature> &&
-                      std::convertible_to<T, std::function<TypeSignature>>;
+    concept Functor = std::convertible_to<T, std::function<TypeSignature>>;
 }
 
 namespace cohen

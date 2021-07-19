@@ -1,5 +1,5 @@
-#ifndef COHEN_CHESS_MAGIC_HPP_INCLUDED
-#define COHEN_CHESS_MAGIC_HPP_INCLUDED
+#ifndef COHEN_CHESS_MAGICS_HPP_INCLUDED
+#define COHEN_CHESS_MAGICS_HPP_INCLUDED
 
 #include <algorithm>
 #include <cassert>
@@ -12,7 +12,7 @@
 #include <cohen/util/bits.hpp>
 #include <cohen/util/functor.hpp>
 
-namespace cohen::chess::magic
+namespace cohen::chess::magics
 {
     template <typename T>
     concept Magic = requires(T magic, Bitboard occ)
@@ -442,21 +442,21 @@ namespace cohen::chess::magic
 
 namespace cohen::chess
 {
-    using cohen::chess::magic::MagicMinKey;
-    using cohen::chess::magic::MagicMaxKey;
-    using cohen::chess::magic::MagicKeyRange;
-    using cohen::chess::magic::MagicWidth;
+    using cohen::chess::magics::MagicMinKey;
+    using cohen::chess::magics::MagicMaxKey;
+    using cohen::chess::magics::MagicKeyRange;
+    using cohen::chess::magics::MagicWidth;
 
-    using cohen::chess::magic::MagicBishopMask;
-    using cohen::chess::magic::MagicRookMask;
+    using cohen::chess::magics::MagicBishopMask;
+    using cohen::chess::magics::MagicRookMask;
 
-    using cohen::chess::magic::FancyMagicBishopAttacks;
-    using cohen::chess::magic::FancyMagicRookAttacks;
-    using cohen::chess::magic::FancyMagicQueenAttacks;
+    using cohen::chess::magics::FancyMagicBishopAttacks;
+    using cohen::chess::magics::FancyMagicRookAttacks;
+    using cohen::chess::magics::FancyMagicQueenAttacks;
 
-    using cohen::chess::magic::BlackMagicBishopAttacks;
-    using cohen::chess::magic::BlackMagicRookAttacks;
-    using cohen::chess::magic::BlackMagicQueenAttacks;
+    using cohen::chess::magics::BlackMagicBishopAttacks;
+    using cohen::chess::magics::BlackMagicRookAttacks;
+    using cohen::chess::magics::BlackMagicQueenAttacks;
 }
 
 #endif
