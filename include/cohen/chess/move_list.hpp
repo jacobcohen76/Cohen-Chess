@@ -9,6 +9,6 @@ namespace cohen::chess::move_list
     {
         Move moves[256];
     };
-};
+}
 
 #endif
