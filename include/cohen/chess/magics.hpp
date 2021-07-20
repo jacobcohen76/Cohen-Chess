@@ -2,7 +2,9 @@
 #define COHEN_CHESS_MAGICS_HPP_INCLUDED
 
 #include <algorithm>
+#include <array>
 #include <cassert>
+#include <span>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/key.hpp>
@@ -22,10 +24,10 @@ namespace cohen::chess::magics
 
     template <Magic T, size_t table_size>
     constexpr void GenerateMagicAttacksTable(
-        std::array<Bitboard, table_size>&        attacks_table,
-        const std::array<T, kSquareNB>&          magic_table,
-        Functor<Bitboard(Square)> auto           mask_fn,
-        Functor<Bitboard(Bitboard, Square)> auto attacks_fn) noexcept
+        std::array<Bitboard, table_size>&               attacks_table,
+        const std::array<T, kSquareNB>&                 magic_table,
+        const Functor<Bitboard(Square)> auto&           mask_fn,
+        const Functor<Bitboard(Bitboard, Square)> auto& attacks_fn) noexcept
     {
         for (Square sq = kA1; const T& magic : magic_table)
         {
@@ -52,8 +54,8 @@ namespace cohen::chess::magics
     }
 
     template <Magic T>
-    constexpr Key MagicMinKey(const std::array<T, kSquareNB>& magic_table,
-                              Functor<Bitboard(Square)> auto  mask_fn) noexcept
+    constexpr Key MagicMinKey(const std::array<T, kSquareNB>&       magic_table,
+                              const Functor<Bitboard(Square)> auto& mask_fn) noexcept
     {
         Key min_key = kKeyNone;
         for (Square sq = kA1; const T& magic : magic_table)
@@ -76,8 +78,8 @@ namespace cohen::chess::magics
     }
 
     template <Magic T>
-    constexpr Key MagicMaxKey(const std::array<T, kSquareNB>& magic_table,
-                              Functor<Bitboard(Square)> auto  mask_fn) noexcept
+    constexpr Key MagicMaxKey(const std::array<T, kSquareNB>&       magic_table,
+                              const Functor<Bitboard(Square)> auto& mask_fn) noexcept
     {
         Key max_key = kKeyNone;
         for (Square sq = kA1; const T& magic : magic_table)
@@ -102,8 +104,8 @@ namespace cohen::chess::magics
     }
 
     template <Magic T>
-    constexpr std::pair<Key, Key> MagicKeyRange(const std::array<T, kSquareNB>& magic_table,
-                                                Functor<Bitboard(Square)> auto  mask_fn) noexcept
+    constexpr std::pair<Key, Key> MagicKeyRange(const std::array<T, kSquareNB>&       magic_table,
+                                                const Functor<Bitboard(Square)> auto& mask_fn) noexcept
     {
         Key min_key = kKeyAll, max_key = kKeyNone;
         for (Square sq = kA1; const T& magic : magic_table)
@@ -122,8 +124,8 @@ namespace cohen::chess::magics
     }
 
     template <Magic T>
-    constexpr Key MagicWidth(const std::array<T, kSquareNB>& magic_table,
-                             Functor<Bitboard(Square)> auto  mask_fn) noexcept
+    constexpr Key MagicWidth(const std::array<T, kSquareNB>&       magic_table,
+                             const Functor<Bitboard(Square)> auto& mask_fn) noexcept
     {
         auto [min_key, max_key] = MagicKeyRange(magic_table, mask_fn);
         return max_key - min_key + 1;
