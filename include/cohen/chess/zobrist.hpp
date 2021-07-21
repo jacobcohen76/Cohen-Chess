@@ -3,8 +3,11 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
+#include <ranges>
 
 #include <cohen/chess/type/castling.hpp>
+#include <cohen/chess/type/color.hpp>
 #include <cohen/chess/type/key.hpp>
 #include <cohen/chess/type/piece.hpp>
 #include <cohen/chess/type/square.hpp>
@@ -17,16 +20,20 @@ namespace cohen::chess::zobrist
 {
     inline constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto rand_fn)
     {
-        std::array<std::array<Key, kSquareNB>, kPieceNB> pc_sq_table = {};
-        for (Color color = kWhite; color < kColorNB; ++color)
-        {
-            for (Piece piece = kPawn; piece <= kKing; ++piece)
-            {
-                auto& sq_table = pc_sq_table[MakePiece(color, piece)];
-                std::generate(sq_table.begin(), sq_table.end(), rand_fn);
-            }
-        }
-        return pc_sq_table;
+        std::array<std::array<Key, kSquareNB>, kPieceNB> pcsq_table = {};
+        std::ranges::generate(pcsq_table[kWhitePawn],   rand_fn);
+        std::ranges::generate(pcsq_table[kWhiteKnight], rand_fn);
+        std::ranges::generate(pcsq_table[kWhiteBishop], rand_fn);
+        std::ranges::generate(pcsq_table[kWhiteRook],   rand_fn);
+        std::ranges::generate(pcsq_table[kWhiteQueen],  rand_fn);
+        std::ranges::generate(pcsq_table[kWhiteKing],   rand_fn);
+        std::ranges::generate(pcsq_table[kBlackPawn],   rand_fn);
+        std::ranges::generate(pcsq_table[kBlackKnight], rand_fn);
+        std::ranges::generate(pcsq_table[kBlackBishop], rand_fn);
+        std::ranges::generate(pcsq_table[kBlackRook],   rand_fn);
+        std::ranges::generate(pcsq_table[kBlackQueen],  rand_fn);
+        std::ranges::generate(pcsq_table[kBlackKing],   rand_fn);
+        return pcsq_table;
     }(LinearCongruentialGenerator(0xF5586876FC706684));
 
     constexpr Key ZobristPieceSquareKey(Piece pc, Square sq) noexcept
@@ -47,14 +54,10 @@ namespace cohen::chess::zobrist
         {
             if (FlipLSB(cr))
             {
-                if (kWhiteOO & cr)
-                    castling_table[cr] ^= castling_table[kWhiteOO];
-                if (kWhiteOOO & cr)
-                    castling_table[cr] ^= castling_table[kWhiteOOO];
-                if (kBlackOO & cr)
-                    castling_table[cr] ^= castling_table[kBlackOO];
-                if (kBlackOOO & cr)
-                    castling_table[cr] ^= castling_table[kBlackOOO];
+                if (kWhiteOO  & cr) castling_table[cr] ^= castling_table[kWhiteOO];
+                if (kWhiteOOO & cr) castling_table[cr] ^= castling_table[kWhiteOOO];
+                if (kBlackOO  & cr) castling_table[cr] ^= castling_table[kBlackOO];
+                if (kBlackOOO & cr) castling_table[cr] ^= castling_table[kBlackOOO];
             }
         }
         return castling_table;
@@ -68,9 +71,9 @@ namespace cohen::chess::zobrist
 
     inline constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto rand_fn)
     {
-        std::array<Key, kFileNB + 1> ep_file_table = {};
-        std::generate(ep_file_table.begin(), ep_file_table.end() - 1, rand_fn);
-        return ep_file_table;
+        std::array<Key, kFileNB + 1> ep_table = {};
+        std::ranges::generate(ep_table, rand_fn);
+        return ep_table;
     }(LinearCongruentialGenerator(0x9F0471D8CD082F7B));
 
     constexpr Key ZobristEnPassantKey(File file) noexcept
@@ -83,6 +86,7 @@ namespace cohen::chess::zobrist
 
     constexpr Key ZobristSideKey(Color side) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         return kZobristSideKey;
     }
 }

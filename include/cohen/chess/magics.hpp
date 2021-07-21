@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <ranges>
 #include <span>
 
 #include <cohen/chess/type/bitboard.hpp>
@@ -144,11 +145,9 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicBishopMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        std::generate(begin(mask_table), end(mask_table),
-        [sq = Square{kA1}]() mutable -> Bitboard
-        {
-            return RuntimeMagicBishopMask(sq++);
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(RuntimeMagicBishopMask);
+        std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
 
@@ -177,11 +176,9 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        std::generate(std::begin(mask_table), std::end(mask_table),
-        [sq = Square{kA1}]() mutable -> Bitboard
-        {
-            return RuntimeMagicRookMask(sq++);
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(RuntimeMagicRookMask);
+        std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
 

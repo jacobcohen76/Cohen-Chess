@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <ranges>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/color.hpp>
@@ -16,13 +17,9 @@ namespace cohen::chess::attacks
     {
         static_assert(side == kWhite || side == kBlack);
         if constexpr (side == kWhite)
-        {
             return ShiftBB<kNorthEast>(pawns) | ShiftBB<kNorthWest>(pawns);
-        }
         else
-        {
             return ShiftBB<kSouthEast>(pawns) | ShiftBB<kSouthWest>(pawns);
-        }
     }
 
     constexpr Bitboard SetwisePawnAttacks(Bitboard pawns, Color side) noexcept
@@ -42,17 +39,12 @@ namespace cohen::chess::attacks
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kColorNB> pawn_table = {};
-        std::generate(std::begin(pawn_table), std::end(pawn_table),
-        [color = Color(kWhite)]() mutable -> std::array<Bitboard, kSquareNB>
-        {
-            std::array<Bitboard, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
-            [color, sq = Square(kA1)]() mutable -> Bitboard
-            {
-                return RuntimePawnAttacks(sq++, color);
-            });
-            return sub_table;
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(SquareBB);
+        auto white_range = range | std::views::transform(SetwisePawnAttacks<kWhite>);
+        auto black_range = range | std::views::transform(SetwisePawnAttacks<kBlack>);
+        std::ranges::copy(white_range, std::begin(pawn_table[kWhite]));
+        std::ranges::copy(black_range, std::begin(pawn_table[kBlack]));
         return pawn_table;
     }();
 
@@ -87,11 +79,9 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> knight_table = {};
-        std::generate(std::begin(knight_table), std::end(knight_table),
-        [sq = Square(kA1)]() mutable -> Bitboard
-        {
-            return RuntimeKnightAttacks(sq++);
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(RuntimeKnightAttacks);
+        std::ranges::copy(range, std::begin(knight_table));
         return knight_table;
     }();
 
@@ -123,11 +113,9 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> king_table = {};
-        std::generate(std::begin(king_table), std::end(king_table),
-        [sq = Square(kA1)]() mutable -> Bitboard
-        {
-            return RuntimeKingAttacks(sq++);
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(RuntimeKingAttacks);
+        std::ranges::copy(range, std::begin(king_table));
         return king_table;
     }();
 
@@ -171,7 +159,7 @@ namespace cohen::chess
     using cohen::chess::attacks::SetwiseKnightAttacks;
     using cohen::chess::attacks::KnightAttacks;
     using cohen::chess::attacks::SetwiseKingAttacks;
-    using cohen::chess::attacks::KnightAttacks;
+    using cohen::chess::attacks::KingAttacks;
     using cohen::chess::attacks::RayBishopAttacks;
     using cohen::chess::attacks::RayRookAttacks;
     using cohen::chess::attacks::RayQueenAttacks;

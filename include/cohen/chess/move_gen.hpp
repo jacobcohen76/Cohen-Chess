@@ -9,17 +9,16 @@
 
 namespace cohen::chess::move_gen
 {
-    constexpr Move* FillMoves(Move*    moves,
-                              Bitboard to_set,
-                              Square   from,
-                              MoveType type) noexcept
+    constexpr void FillMoveList(MoveList& move_list,
+                                Bitboard  to_set,
+                                Square    from,
+                                MoveType  type) noexcept
     {
         while (to_set)
         {
             Square to = PopLSB(to_set);
-            *moves++  = MakeMove(from, to, type);
+            move_list.push(MakeMove(from, to, type));
         }
-        return moves;
     }
 
     constexpr void GenMoves(const Board& board, MoveList& move_list) noexcept

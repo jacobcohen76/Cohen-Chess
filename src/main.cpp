@@ -47,10 +47,32 @@ void TestAsciiBoard()
     std::cout << ascii_board << std::endl, ascii_board.flip();
 }
 
+void TestPawnAttacks(Square sq)
+{
+    AsciiBoard ascii_board = {};
+    ascii_board.fill(PawnAttacks(sq, kWhite), 'w');
+    ascii_board.fill(PawnAttacks(sq, kBlack), 'b');
+    ascii_board[sq] = 'x';
+    std::cout << ascii_board << std::endl;
+}
+
+void TestKingAttacks(Square sq)
+{
+    AsciiBoard ascii_board = {};
+    ascii_board.fill(KingAttacks(sq));
+    ascii_board[sq] = 'x';
+    std::cout << ascii_board << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     Init();
     TestMagics();
     TestAsciiBoard();
+    for (Square sq = kA1; sq < kSquareNB; ++sq)
+    {
+        TestPawnAttacks(sq);
+        TestKingAttacks(sq);
+    }
     return 0;
 }

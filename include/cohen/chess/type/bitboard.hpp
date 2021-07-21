@@ -5,6 +5,7 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <ranges>
 
 #include <cohen/chess/type/anti.hpp>
 #include <cohen/chess/type/diag.hpp>
@@ -42,11 +43,9 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
-        std::generate(std::begin(square_table), std::end(square_table),
-        [sq = Square(kA1)]() mutable -> Bitboard
-        {
-            return RuntimeSquareBB(sq++);
-        });
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
+                     std::views::transform(RuntimeSquareBB);
+        std::ranges::copy(range, std::begin(square_table));
         return square_table;
     }();
 
@@ -72,11 +71,9 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
-        std::generate(std::begin(rank_table), std::end(rank_table),
-        [rank = Rank(kRank1)]() mutable -> Bitboard
-        {
-            return RuntimeRankBB(rank++);
-        });
+        auto range = std::views::iota(Rank{kRank1}, Rank{kRankNB}) |
+                     std::views::transform(RuntimeRankBB);
+        std::ranges::copy(range, std::begin(rank_table));
         return rank_table;
     }();
 
@@ -102,11 +99,9 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
-        std::generate(std::begin(file_table), std::end(file_table),
-        [file = File(kFileA)]() mutable -> Bitboard
-        {
-            return RuntimeFileBB(file++);
-        });
+        auto range = std::views::iota(File{kFileA}, File{kFileNB}) |
+                     std::views::transform(RuntimeFileBB);
+        std::ranges::copy(range, std::begin(file_table));
         return file_table;
     }();
 

@@ -40,6 +40,8 @@ namespace cohen::chess::move_list
         constexpr size_t max_size() const noexcept;
 
         constexpr void clear() noexcept;
+        constexpr void push(Move) noexcept;
+        constexpr Move pop() noexcept;
 
         Move  lower[kMaxSize] = {};
         Move* upper = lower;
@@ -145,6 +147,17 @@ namespace cohen::chess::move_list
     constexpr void MoveList::clear() noexcept
     {
         upper = lower;
+    }
+
+    constexpr void MoveList::push(Move move) noexcept
+    {
+        assert(upper - lower < kMaxSize);
+        *upper++ = move;
+    }
+
+    constexpr Move MoveList::pop() noexcept
+    {
+        return *--upper;
     }
 }
 

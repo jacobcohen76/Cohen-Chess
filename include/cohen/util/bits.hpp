@@ -6,6 +6,7 @@
 #include <cassert>
 #include <concepts>
 #include <cstdint>
+#include <ranges>
 
 namespace cohen::util::bits
 {
@@ -63,11 +64,9 @@ namespace cohen::util::bits
     inline constexpr std::array<uint8_t, 65536> kPopCountTable = []()
     {
         std::array<uint8_t, 65536> lookup_table = {};
-        std::generate(std::begin(lookup_table), std::end(lookup_table),
-        [curr_bits = uint64_t(0)]() mutable -> uint8_t
-        {
-            return PopCountLSB(curr_bits++);
-        });
+        auto range = std::views::iota(0, 65536) |
+                     std::views::transform(PopCountLSB<uint32_t>);
+        std::ranges::copy(range, std::begin(lookup_table));
         return lookup_table;
     }();
 
