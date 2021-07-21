@@ -4,6 +4,8 @@
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/move.hpp>
 #include <cohen/chess/type/square.hpp>
+#include <cohen/chess/board.hpp>
+#include <cohen/chess/move_list.hpp>
 
 namespace cohen::chess::move_gen
 {
@@ -20,7 +22,10 @@ namespace cohen::chess::move_gen
         return moves;
     }
 
-    
+    constexpr void GenMoves(const Board& board, MoveList& move_list) noexcept
+    {
+        
+    }
 }
 
 namespace cohen::chess

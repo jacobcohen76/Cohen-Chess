@@ -23,7 +23,7 @@ namespace cohen::chess::magics
     };
 
     template <Magic T, size_t table_size>
-    constexpr void GenerateMagicAttacksTable(
+    constexpr void FillMagicAttackTable(
         std::array<Bitboard, table_size>&               attacks_table,
         const std::array<T, kSquareNB>&                 magic_table,
         const Functor<Bitboard(Square)> auto&           mask_fn,
@@ -177,7 +177,7 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        std::generate(begin(mask_table), end(mask_table),
+        std::generate(std::begin(mask_table), std::end(mask_table),
         [sq = Square{kA1}]() mutable -> Bitboard
         {
             return RuntimeMagicRookMask(sq++);
@@ -296,8 +296,8 @@ namespace cohen::chess::magics
         constexpr Key kBishopMaxKey = MagicMaxKey(kFancyMagicBishopTable, MagicBishopMask);
         constexpr Key kRookMaxKey   = MagicMaxKey(kFancyMagicRookTable,   MagicRookMask);
         std::array<Bitboard, std::max(kBishopMaxKey, kRookMaxKey) + 1> attack_table = {};
-        GenerateMagicAttacksTable(attack_table, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
-        GenerateMagicAttacksTable(attack_table, kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        FillMagicAttackTable(attack_table, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicAttackTable(attack_table, kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
         return attack_table;
     }();
 
@@ -418,8 +418,8 @@ namespace cohen::chess::magics
         constexpr Key kBishopMaxKey = MagicMaxKey(kBlackMagicBishopTable, MagicBishopMask);
         constexpr Key kRookMaxKey   = MagicMaxKey(kBlackMagicRookTable,   MagicRookMask);
         std::array<Bitboard, std::max(kBishopMaxKey, kRookMaxKey) + 1> attack_table = {};
-        GenerateMagicAttacksTable(attack_table, kBlackMagicBishopTable, MagicBishopMask, RayBishopAttacks);
-        GenerateMagicAttacksTable(attack_table, kBlackMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        FillMagicAttackTable(attack_table, kBlackMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicAttackTable(attack_table, kBlackMagicRookTable,   MagicRookMask,   RayRookAttacks);
         return attack_table;
     }();
 

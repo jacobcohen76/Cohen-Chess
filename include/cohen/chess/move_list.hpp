@@ -1,13 +1,21 @@
 #ifndef COHEN_CHESS_MOVE_LIST_HPP_INCLUDED
 #define COHEN_CHESS_MOVE_LIST_HPP_INCLUDED
 
+#include <cassert>
+
 #include <cohen/chess/type/move.hpp>
 
 namespace cohen::chess::move_list
 {
     struct MoveList
     {
-    public:
+        static constexpr size_t kMaxSize = 256;
+
+        constexpr MoveList() noexcept = default;
+
+        constexpr Move& operator[](size_t) noexcept;
+        constexpr const Move& operator[](size_t) const noexcept;
+
         constexpr Move* data() noexcept;
         constexpr const Move* data() const noexcept;
 
@@ -31,12 +39,23 @@ namespace cohen::chess::move_list
         constexpr size_t size() const noexcept;
         constexpr size_t max_size() const noexcept;
 
-    private:
-        static constexpr size_t kMaxSize = 256;
+        constexpr void clear() noexcept;
 
         Move  lower[kMaxSize] = {};
         Move* upper = lower;
     };
+
+    constexpr Move& MoveList::operator[](size_t index) noexcept
+    {
+        assert(0 <= index && index < size());
+        return lower[index];
+    }
+
+    constexpr const Move& MoveList::operator[](size_t index) const noexcept
+    {
+        assert(0 <= index && index < size());
+        return lower[index];
+    }
 
     constexpr Move* MoveList::data() noexcept
     {
@@ -122,6 +141,16 @@ namespace cohen::chess::move_list
     {
         return kMaxSize;
     }
+
+    constexpr void MoveList::clear() noexcept
+    {
+        upper = lower;
+    }
+}
+
+namespace cohen::chess
+{
+    using cohen::chess::move_list::MoveList;
 }
 
 #endif

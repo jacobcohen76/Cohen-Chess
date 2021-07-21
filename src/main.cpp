@@ -12,9 +12,8 @@ void Init()
     std::cin.tie(nullptr); std::cout.tie(nullptr);
 }
 
-int main(int argc, char* argv[])
+void TestMagics()
 {
-    Init();
     auto assert_magic = [](Functor<Bitboard(Bitboard, Square)> auto control,
                            Functor<Bitboard(Bitboard, Square)> auto testing,
                            Bitboard mask, Square sq) -> void
@@ -36,5 +35,22 @@ int main(int argc, char* argv[])
     using namespace cohen::chess::magics;
     std::cout << "kFancyMagicAttackTable.size() = " << kFancyMagicAttackTable.size() << std::endl;
     std::cout << "kBlackMagicAttackTable.size() = " << kBlackMagicAttackTable.size() << std::endl;
+}
+
+void TestAsciiBoard()
+{
+    AsciiBoard ascii_board = {};
+    ascii_board.fill(RayBB<kNorth>(kE4));
+    ascii_board.fill(RayBB<kEast> (kE4));
+    ascii_board[kE4] = 'x';
+    std::cout << ascii_board << std::endl, ascii_board.flip();
+    std::cout << ascii_board << std::endl, ascii_board.flip();
+}
+
+int main(int argc, char* argv[])
+{
+    Init();
+    TestMagics();
+    TestAsciiBoard();
     return 0;
 }

@@ -7,12 +7,11 @@ INCLUDE     = include
 CC          = clang-11
 CXX         = clang++-11
 
-CPPFLAGS    =
+CPPFLAGS    = -I$(INCLUDE)
+
 CFLAGS      =
 
-CXXFLAGS    = -I$(INCLUDE)
-CXXFLAGS   += -stdlib=libstdc++
-CXXFLAGS   += -std=c++20
+CXXFLAGS    = -std=c++20
 CXXFLAGS   += -Wall
 CXXFLAGS   += -O3 -march=native
 CXXFLAGS   += -stdlib=libstdc++
@@ -29,7 +28,6 @@ release: main
 
 main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
-	objdump -SDge $(BIN)/$@.out > $(BIN)/$@.asm
 
 clean:
 	rm -rf $(BIN) *.o
