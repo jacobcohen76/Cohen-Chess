@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -29,13 +30,31 @@ namespace cohen::chess::io::ascii_board
         constexpr AsciiBoard& clear() noexcept;
         constexpr AsciiBoard& flip() noexcept;
 
+        constexpr char& operator[](Square) noexcept;
+        constexpr const char& operator[](Square) const noexcept;
+
         constexpr char* begin() noexcept;
-        constexpr char* end() noexcept;
-
         constexpr const char* begin() const noexcept;
-        constexpr const char* end() const noexcept;
+        constexpr const char* cbegin() const noexcept;
 
+        constexpr char* end() noexcept;
+        constexpr const char* end() const noexcept;
+        constexpr const char* cend() const noexcept;
+
+        constexpr std::reverse_iterator<char*> rbegin() noexcept;
+        constexpr std::reverse_iterator<const char*> rbegin() const noexcept;
+        constexpr std::reverse_iterator<const char*> crbegin() const noexcept;
+
+        constexpr std::reverse_iterator<char*> rend() noexcept;
+        constexpr std::reverse_iterator<const char*> rend() const noexcept;
+        constexpr std::reverse_iterator<const char*> crend() const noexcept;
+
+        constexpr bool empty() const noexcept;
         constexpr size_t size() const noexcept;
+        constexpr size_t max_size() const noexcept;
+
+        constexpr void fill(Bitboard, char) noexcept;
+        constexpr void swap(AsciiBoard&) noexcept;
 
     private:
         static constexpr std::array<char, 128> kInitialData =
@@ -57,8 +76,8 @@ namespace cohen::chess::io::ascii_board
             return 16 * rank + 2 * file;
         }
 
-        Color side = kWhite;
         std::array<char, 128> data = kInitialData;
+        Color side = kWhite;
     };
 
     constexpr AsciiBoard::AsciiBoard(Bitboard bb, char ch = '1', Color side = kWhite) noexcept :
@@ -114,29 +133,86 @@ namespace cohen::chess::io::ascii_board
         {
             flipped[index(sq, side ^ kBlack)] = data[index(sq, side)];
         }
+        data  = flipped;
         side ^= kBlack;
-        data = flipped;
         return *this;
+    }
+
+    constexpr char& AsciiBoard::operator[](Square sq) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return data[index(sq, side)];
+    }
+
+    constexpr const char& AsciiBoard::operator[](Square sq) const noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return data[index(sq, side)];
     }
 
     constexpr char* AsciiBoard::begin() noexcept
     {
-        return std::begin(data);
-    }
-
-    constexpr char* AsciiBoard::end() noexcept
-    {
-        return std::end(data);
+        return data.begin();
     }
 
     constexpr const char* AsciiBoard::begin() const noexcept
     {
-        return std::begin(data);
+        return data.begin();
+    }
+
+    constexpr const char* AsciiBoard::cbegin() const noexcept
+    {
+        return data.cbegin();
+    }
+
+    constexpr char* AsciiBoard::end() noexcept
+    {
+        return data.end();
     }
 
     constexpr const char* AsciiBoard::end() const noexcept
     {
-        return std::end(data);
+        return data.end();
+    }
+
+    constexpr const char* AsciiBoard::cend() const noexcept
+    {
+        return data.cend();
+    }
+
+    constexpr std::reverse_iterator<char*> AsciiBoard::rbegin() noexcept
+    {
+        return data.rbegin();
+    }
+
+    constexpr std::reverse_iterator<const char*> AsciiBoard::rbegin() const noexcept
+    {
+        return data.rbegin();
+    }
+
+    constexpr std::reverse_iterator<const char*> AsciiBoard::crbegin() const noexcept
+    {
+        return data.crbegin();
+    }
+
+    constexpr std::reverse_iterator<char*> AsciiBoard::rend() noexcept
+    {
+        return data.rend();
+    }
+
+    constexpr std::reverse_iterator<const char*> AsciiBoard::rend() const noexcept
+    {
+        return data.rend();
+    }
+
+    constexpr std::reverse_iterator<const char*> AsciiBoard::crend() const noexcept
+    {
+        return data.crend();
+    }
+
+    constexpr bool AsciiBoard::empty() const noexcept
+    {
+        return data.empty();
     }
 
     constexpr size_t AsciiBoard::size() const noexcept
@@ -144,9 +220,28 @@ namespace cohen::chess::io::ascii_board
         return data.size();
     }
 
+    constexpr size_t AsciiBoard::max_size() const noexcept
+    {
+        return data.max_size();
+    }
+
+    constexpr void AsciiBoard::fill(Bitboard bitset, char value = '1') noexcept
+    {
+        while (bitset)
+        {
+            data[index(PopLSB(bitset), side)] = value;
+        }
+    }
+
+    constexpr void AsciiBoard::swap(AsciiBoard& other) noexcept
+    {
+        std::swap(data, other.data);
+        std::swap(side, other.side);
+    }
+
     inline std::ostream& operator<<(std::ostream& os, const AsciiBoard& ascii_board)
     {
-        return os.write(ascii_board.begin(), ascii_board.size());
+        return os.write(std::begin(ascii_board), std::size(ascii_board));
     }
 }
 

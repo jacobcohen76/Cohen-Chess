@@ -13,7 +13,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T> constexpr int BitScanForward(T) noexcept;
 
     template <typename T>
-    inline constexpr std::size_t kNumBits = sizeof(T) * 8;
+    inline constexpr size_t kNumBits = sizeof(T) * 8;
 
     template <std::unsigned_integral T>
     constexpr T RotateLeft(T x, int s) noexcept
