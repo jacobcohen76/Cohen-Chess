@@ -14,10 +14,14 @@ CFLAGS      =
 CXXFLAGS    = -std=c++20
 CXXFLAGS   += -Wall
 CXXFLAGS   += -O3 -march=native
-# CXXFLAGS   += -stdlib=libstdc++
-# CXXFLAGS   += -fconstexpr-steps=2147483647
 
 all: release
+
+clang: CC        = clang-11
+clang: CXX       = clang++-11
+clang: CXXFLAGS += -stdlib=libstdc++
+clang: CXXFLAGS += -fconstexpr-steps=2147483647
+clang: all
 
 debug: CPPFLAGS += -DDEBUG
 debug: CXXFLAGS += -g
