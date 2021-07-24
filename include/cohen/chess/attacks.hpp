@@ -17,9 +17,9 @@ namespace cohen::chess::attacks
     {
         static_assert(side == kWhite || side == kBlack);
         if constexpr (side == kWhite)
-            return ShiftBB<kNorthEast>(pawns) | ShiftBB<kNorthWest>(pawns);
+            return ShiftBB<kNorthWest>(pawns) | ShiftBB<kNorthEast>(pawns);
         else
-            return ShiftBB<kSouthEast>(pawns) | ShiftBB<kSouthWest>(pawns);
+            return ShiftBB<kSouthWest>(pawns) | ShiftBB<kSouthEast>(pawns);
     }
 
     constexpr Bitboard SetwisePawnAttacks(Bitboard pawns, Color side) noexcept
@@ -64,10 +64,10 @@ namespace cohen::chess::attacks
 
     constexpr Bitboard SetwiseKnightAttacks(Bitboard knights) noexcept
     {
-        const Bitboard inner = ShiftBB<kEast>    (knights) | ShiftBB<kWest>    (knights);
-        const Bitboard outer = ShiftBB<kEastEast>(knights) | ShiftBB<kWestWest>(knights);
-        return ShiftBB<kNorth>(outer) | ShiftBB<kNorthNorth>(inner) |
-               ShiftBB<kSouth>(outer) | ShiftBB<kSouthSouth>(inner);
+        const Bitboard inner = ShiftBB<kWest>    (knights) | ShiftBB<kEast>    (knights);
+        const Bitboard outer = ShiftBB<kWestWest>(knights) | ShiftBB<kEastEast>(knights);
+        return ShiftBB<kNorth>(outer) | ShiftBB<kNorthNorth>(inner)
+             | ShiftBB<kSouth>(outer) | ShiftBB<kSouthSouth>(inner);
     }
 
     constexpr Bitboard RuntimeKnightAttacks(Square sq) noexcept
@@ -99,9 +99,10 @@ namespace cohen::chess::attacks
 
     constexpr Bitboard SetwiseKingAttacks(Bitboard kings) noexcept
     {
-        Bitboard attacks = ShiftBB<kEast>(kings) | ShiftBB<kWest>(kings);
-        kings |= attacks;
-        return attacks | ShiftBB<kNorth>(kings) | ShiftBB<kSouth>(kings);
+        Bitboard attacks = ShiftBB<kWest>(kings) | ShiftBB<kEast>(kings);
+        return ShiftBB<kNorth>(kings | attacks)
+             | ShiftBB<kSouth>(kings | attacks)
+             | attacks;
     }
 
     constexpr Bitboard RuntimeKingAttacks(Square sq) noexcept
@@ -134,15 +135,15 @@ namespace cohen::chess::attacks
     constexpr Bitboard RayBishopAttacks(Bitboard occ, Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return RayBB<kNorthEast>(occ, sq) | RayBB<kNorthWest>(occ, sq) |
-               RayBB<kSouthEast>(occ, sq) | RayBB<kSouthWest>(occ, sq);
+        return RayBB<kNorthWest>(occ, sq) | RayBB<kNorthEast>(occ, sq)
+             | RayBB<kSouthWest>(occ, sq) | RayBB<kSouthEast>(occ, sq);
     }
 
     constexpr Bitboard RayRookAttacks(Bitboard occ, Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return RayBB<kNorth>(occ, sq) | RayBB<kEast>(occ, sq) |
-               RayBB<kSouth>(occ, sq) | RayBB<kWest>(occ, sq);
+        return RayBB<kNorth>(occ, sq) | RayBB<kEast>(occ, sq)
+             | RayBB<kSouth>(occ, sq) | RayBB<kWest>(occ, sq);
     }
 
     constexpr Bitboard RayQueenAttacks(Bitboard occ, Square sq) noexcept

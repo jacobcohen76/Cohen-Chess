@@ -40,6 +40,45 @@ namespace cohen::chess::type::direction
         kDirectionNone  = 0,
     };
 
+    constexpr int Magnitude(Direction dir) noexcept
+    {
+        switch (dir)
+        {
+            case kNorth:          return 1;
+            case kEast:           return 1;
+            case kSouth:          return 1;
+            case kWest:           return 1;
+
+            case kNorthEast:      return 2;
+            case kSouthEast:      return 2;
+            case kSouthWest:      return 2;
+            case kNorthWest:      return 2;
+
+            case kNorthNorth:     return 2;
+            case kEastEast:       return 2;
+            case kSouthSouth:     return 2;
+            case kWestWest:       return 2;
+
+            case kNorthNorthEast: return 3;
+            case kNorthNorthWest: return 3;
+            case kEastEastNorth:  return 3;
+            case kEastEastSouth:  return 3;
+            case kSouthSouthEast: return 3;
+            case kSouthSouthWest: return 3;
+            case kWestWestNorth:  return 3;
+            case kWestWestSouth:  return 3;
+
+            default:              return 0;
+        }
+    }
+
+    constexpr bool CanStep(Square sq, Direction step) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return IsNormalSquare(sq + step)
+            && SquareDistance(sq, sq + step) == Magnitude(step);
+    }
+
     constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kRayBetweenTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> ray_between_table = {};
@@ -57,23 +96,11 @@ namespace cohen::chess::type::direction
         return ray_between_table;
     }();
 
-    constexpr Direction RayBetween(Square sq1, Square sq2) noexcept
+    constexpr Direction RayBetween(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kRayBetweenTable[sq1][sq2];
-    }
-
-    constexpr int Magnitude(Direction dir) noexcept
-    {
-        return SquareDistance(kE4, kE4 + dir);
-    }
-
-    constexpr bool CanStep(Square sq, Direction step) noexcept
-    {
-        return IsNormalSquare(sq)        &&
-               IsNormalSquare(sq + step) &&
-               SquareDistance(sq, sq + step) == Magnitude(step);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return kRayBetweenTable[from][to];
     }
 }
 

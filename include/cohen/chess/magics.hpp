@@ -145,8 +145,8 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicBishopMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
-                     std::views::transform(RuntimeMagicBishopMask);
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                   | std::views::transform(RuntimeMagicBishopMask);
         std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
@@ -176,8 +176,8 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB}) |
-                     std::views::transform(RuntimeMagicRookMask);
+        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                   | std::views::transform(RuntimeMagicRookMask);
         std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
