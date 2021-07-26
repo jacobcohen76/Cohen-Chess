@@ -41,7 +41,7 @@ void TestAsciiBoard()
 {
     AsciiBoard ascii_board = {};
     ascii_board.fill(RayBB<kNorth>(kE4));
-    ascii_board.fill(RayBB<kEast> (kE4));
+    ascii_board.fill(RayBB<kEast>(kE4));
     ascii_board[kE4] = 'x';
     std::cout << ascii_board << std::endl, ascii_board.flip();
     std::cout << ascii_board << std::endl, ascii_board.flip();
@@ -73,6 +73,14 @@ int main(int argc, char* argv[])
     {
         TestPawnAttacks(sq);
         TestKingAttacks(sq);
+    }
+    MoveList move_list;
+    move_list.push(MakeMove(kE1, kE4));
+    move_list.push(kMoveNone);
+    move_list.push(kMoveNull);
+    for (Move move : move_list)
+    {
+        std::cout << CoordinateString(FromSquare(move)) << "->" << CoordinateString(ToSquare(move)) << std::endl;
     }
     return 0;
 }

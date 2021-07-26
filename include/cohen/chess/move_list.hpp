@@ -43,60 +43,60 @@ namespace cohen::chess::move_list
         constexpr void push(Move) noexcept;
         constexpr Move pop() noexcept;
 
-        Move  lower[kMaxSize] = {};
-        Move* upper = lower;
+        Move  mem_array[kMaxSize] = {};
+        Move* stack_ptr = mem_array;
     };
 
     constexpr Move& MoveList::operator[](size_t index) noexcept
     {
         assert(0 <= index && index < size());
-        return lower[index];
+        return mem_array[index];
     }
 
     constexpr const Move& MoveList::operator[](size_t index) const noexcept
     {
         assert(0 <= index && index < size());
-        return lower[index];
+        return mem_array[index];
     }
 
     constexpr Move* MoveList::data() noexcept
     {
-        return lower;
+        return mem_array;
     }
 
     constexpr const Move* MoveList::data() const noexcept
     {
-        return lower;
+        return mem_array;
     }
 
     constexpr Move* MoveList::begin() noexcept
     {
-        return lower;
+        return mem_array;
     }
 
     constexpr const Move* MoveList::begin() const noexcept
     {
-        return lower;
+        return mem_array;
     }
 
     constexpr const Move* MoveList::cbegin() const noexcept
     {
-        return lower;
+        return mem_array;
     }
 
     constexpr Move* MoveList::end() noexcept
     {
-        return upper;
+        return stack_ptr;
     }
 
     constexpr const Move* MoveList::end() const noexcept
     {
-        return upper;
+        return stack_ptr;
     }
 
     constexpr const Move* MoveList::cend() const noexcept
     {
-        return upper;
+        return stack_ptr;
     }
 
     constexpr std::reverse_iterator<Move*> MoveList::rbegin() noexcept
@@ -131,12 +131,12 @@ namespace cohen::chess::move_list
 
     constexpr bool MoveList::empty() const noexcept
     {
-        return lower != upper;
+        return mem_array == stack_ptr;
     }
 
     constexpr size_t MoveList::size() const noexcept
     {
-        return upper - lower;
+        return stack_ptr - mem_array;
     }
 
     constexpr size_t MoveList::max_size() const noexcept
@@ -146,18 +146,19 @@ namespace cohen::chess::move_list
 
     constexpr void MoveList::clear() noexcept
     {
-        upper = lower;
+        stack_ptr = mem_array;
     }
 
     constexpr void MoveList::push(Move move) noexcept
     {
-        assert(upper - lower < kMaxSize);
-        *upper++ = move;
+        assert(size() < max_size());
+        *stack_ptr++ = move;
     }
 
     constexpr Move MoveList::pop() noexcept
     {
-        return *--upper;
+        assert(size() > 0);
+        return *--stack_ptr;
     }
 }
 
