@@ -43,12 +43,12 @@ namespace cohen::chess::type::move
 
     constexpr Square FromSquare(Move move) noexcept
     {
-        return move & 0x3F;
+        return move & 0b111111;
     }
 
     constexpr Square ToSquare(Move move) noexcept
     {
-        return (move >> 6) & 0x3F;
+        return (move >> 6) & 0b111111;
     }
 
     constexpr MoveType MoveTypeOf(Move move) noexcept

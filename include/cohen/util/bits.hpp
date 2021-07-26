@@ -55,8 +55,7 @@ namespace cohen::util::bits
         int count = 0;
         while (x)
         {
-            ++count;
-            x = FlipLSB(x);
+            ++count, x = FlipLSB(x);
         }
         return count;
     }
@@ -64,8 +63,8 @@ namespace cohen::util::bits
     inline constexpr std::array<uint8_t, 65536> kPopCountTable = []()
     {
         std::array<uint8_t, 65536> lookup_table = {};
-        auto range = std::views::iota(0, 65536) |
-                     std::views::transform(PopCountLSB<uint32_t>);
+        auto range = std::views::iota(0, 65536)
+                   | std::views::transform(PopCountLSB<uint32_t>);
         std::ranges::copy(range, std::begin(lookup_table));
         return lookup_table;
     }();
@@ -80,15 +79,15 @@ namespace cohen::util::bits
         }
         else if constexpr (kNumBits<T> <= kNumBits<uint32_t>)
         {
-            return kPopCountTable[(x >>  0) & 0xFFFF] +
-                   kPopCountTable[(x >> 16) & 0xFFFF];
+            return kPopCountTable[(x >>  0) & 0xFFFF]
+                 + kPopCountTable[(x >> 16) & 0xFFFF];
         }
         else
         {
-            return kPopCountTable[(x >>  0) & 0xFFFF] +
-                   kPopCountTable[(x >> 16) & 0xFFFF] +
-                   kPopCountTable[(x >> 32) & 0xFFFF] +
-                   kPopCountTable[(x >> 48) & 0xFFFF];
+            return kPopCountTable[(x >>  0) & 0xFFFF]
+                 + kPopCountTable[(x >> 16) & 0xFFFF]
+                 + kPopCountTable[(x >> 32) & 0xFFFF]
+                 + kPopCountTable[(x >> 48) & 0xFFFF];
         }
     }
 
@@ -169,6 +168,7 @@ namespace cohen::util::bits
     }
 
     inline constexpr uint64_t kDebruijn64 = 0x03F79D71B4CB0A89;
+
     inline constexpr std::array<int, 64> kDeBruijnIndex64 =
     {
          0, 47,  1, 56, 48, 27,  2, 60,

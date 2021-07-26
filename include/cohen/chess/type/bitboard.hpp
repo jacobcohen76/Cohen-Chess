@@ -188,7 +188,7 @@ namespace cohen::chess::type::bitboard
                    | std::views::transform([](Square sq) -> Bitboard
         {
             Bitboard ray_bb = kEmptyBB;
-            Square itr = sq++;
+            Square itr = sq;
             while (CanStep(itr, dir))
             {
                 ray_bb |= SquareBB(itr += dir);
@@ -239,14 +239,17 @@ namespace cohen::chess::type::bitboard
             case kEast:           return RayBB<kEast>           (sq);
             case kSouth:          return RayBB<kSouth>          (sq);
             case kWest:           return RayBB<kWest>           (sq);
+
             case kNorthEast:      return RayBB<kNorthEast>      (sq);
             case kSouthEast:      return RayBB<kSouthEast>      (sq);
             case kSouthWest:      return RayBB<kSouthWest>      (sq);
             case kNorthWest:      return RayBB<kNorthWest>      (sq);
+
             case kNorthNorth:     return RayBB<kNorthNorth>     (sq);
             case kEastEast:       return RayBB<kEastEast>       (sq);
             case kSouthSouth:     return RayBB<kSouthSouth>     (sq);
             case kWestWest:       return RayBB<kWestWest>       (sq);
+
             case kNorthNorthEast: return RayBB<kNorthNorthEast> (sq);
             case kNorthNorthWest: return RayBB<kNorthNorthWest> (sq);
             case kEastEastNorth:  return RayBB<kEastEastNorth>  (sq);
@@ -255,6 +258,7 @@ namespace cohen::chess::type::bitboard
             case kSouthSouthWest: return RayBB<kSouthSouthWest> (sq);
             case kWestWestNorth:  return RayBB<kWestWestNorth>  (sq);
             case kWestWestSouth:  return RayBB<kWestWestSouth>  (sq);
+
             default:              return RayBB<kDirectionNone>  (sq);
         }
     }
@@ -263,48 +267,42 @@ namespace cohen::chess::type::bitboard
     {
         assert(kA1 <= sq && sq < kSquareNB);
         Bitboard ray_bb = RayBB(sq, dir);
-        int blocker = (dir > 0) ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
-                                : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
+        int blocker = dir > 0 ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
+                              : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
         return ray_bb ^ RayBB(blocker, dir);
     }
 
-    constexpr Bitboard RuntimeBetweenBB(Square sq1, Square sq2) noexcept
+    constexpr Bitboard RuntimeBetweenBB(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return RayBB(sq1, RayBetween(sq1, sq2))
-             & RayBB(sq2, RayBetween(sq2, sq1));
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return RayBB(from, RayBetween(from, to))
+             & RayBB(to,   RayBetween(to, from));
     }
 
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenBitboardTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
-        std::generate(std::begin(between_table), std::end(between_table),
-        [sq1 = Square(kA1)]() mutable -> std::array<Bitboard, kSquareNB>
+        for (Square from = kA1; from < kSquareNB; ++from)
+        for (Square   to = kA2;   to < kSquareNB; ++to)
         {
-            std::array<Bitboard, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
-            [sq1, sq2 = Square(kA1)]() mutable -> Bitboard
-            {
-                return RuntimeBetweenBB(sq1, sq2++);
-            });
-            return ++sq1, sub_table;
-        });
+            between_table[from][to] = RuntimeBetweenBB(from, to);
+        }
         return between_table;
     }();
 
-    constexpr Bitboard LookupBetweenBB(Square sq1, Square sq2) noexcept
+    constexpr Bitboard LookupBetweenBB(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kBetweenBitboardTable[sq1][sq2];
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return kBetweenBitboardTable[from][to];
     }
 
-    constexpr Bitboard BetweenBB(Square sq1, Square sq2) noexcept
+    constexpr Bitboard BetweenBB(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return LookupBetweenBB(sq1, sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return LookupBetweenBB(from, to);
     }
 
     template <Direction dir>

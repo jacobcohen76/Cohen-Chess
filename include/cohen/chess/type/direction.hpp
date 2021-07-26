@@ -82,6 +82,11 @@ namespace cohen::chess::type::direction
     constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kRayBetweenTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> ray_between_table = {};
+        for (Square from = kA1; from < kSquareNB; ++from)
+        for (Square   to = kA1;   to < kSquareNB; ++to)
+        {
+            
+        }
         for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
         {
             for (Square sq2 = kA1; sq2 < kSquareNB; ++sq2)
