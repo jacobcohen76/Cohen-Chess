@@ -85,17 +85,12 @@ namespace cohen::chess::type::direction
         for (Square from = kA1; from < kSquareNB; ++from)
         for (Square   to = kA1;   to < kSquareNB; ++to)
         {
-            
-        }
-        for (Square sq1 = kA1; sq1 < kSquareNB; ++sq1)
-        {
-            for (Square sq2 = kA1; sq2 < kSquareNB; ++sq2)
+            if (from != to)
             {
-                if (sq1 == sq2)                ray_between_table[sq1][sq2] = kDirectionNone;
-                else if (OnSameRank(sq1, sq2)) ray_between_table[sq1][sq2] = (sq1 < sq2) ? kEast      : kWest;
-                else if (OnSameFile(sq1, sq2)) ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorth     : kSouth;
-                else if (OnSameDiag(sq1, sq2)) ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorthEast : kSouthWest;
-                else if (OnSameAnti(sq1, sq2)) ray_between_table[sq1][sq2] = (sq1 < sq2) ? kNorthWest : kSouthEast;
+                if (OnSameRank(from, to)) ray_between_table[from][to] = from < to ? kEast      : kWest;
+                if (OnSameFile(from, to)) ray_between_table[from][to] = from < to ? kNorth     : kSouth;
+                if (OnSameDiag(from, to)) ray_between_table[from][to] = from < to ? kNorthEast : kSouthWest;
+                if (OnSameAnti(from, to)) ray_between_table[from][to] = from < to ? kNorthWest : kSouthEast;
             }
         }
         return ray_between_table;

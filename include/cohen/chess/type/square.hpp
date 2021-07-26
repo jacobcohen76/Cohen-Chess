@@ -117,120 +117,102 @@ namespace cohen::chess::type::square
         return MakeSquare(RelativeRank(kRank6, side), ep_file);
     }
 
-    constexpr int RuntimeSquareRankDistance(Square sq1, Square sq2) noexcept
+    constexpr int RuntimeSquareRankDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        const auto diff = RankOf(sq1) - RankOf(sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        const auto diff = RankOf(from) - RankOf(to);
         return diff < 0 ? -diff : +diff;
     }
 
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareRankDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
-        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        for (Square from = kA1; from < kSquareNB; ++from)
+        for (Square   to = kA1;   to < kSquareNB; ++to)
         {
-            std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
-            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
-            {
-                return RuntimeSquareRankDistance(sq1, sq2++);
-            });
-            return ++sq1, sub_table;
-        });
+            dist_table[from][to] = RuntimeSquareRankDistance(from, to);
+        }
         return dist_table;
     }();
 
-    constexpr int LookupSquareRankDistance(Square sq1, Square sq2) noexcept
+    constexpr int LookupSquareRankDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kSquareRankDistanceTable[sq1][sq2];
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return kSquareRankDistanceTable[from][to];
     }
 
-    constexpr int SquareRankDistance(Square sq1, Square sq2) noexcept
+    constexpr int SquareRankDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return LookupSquareRankDistance(sq1, sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return LookupSquareRankDistance(from, to);
     }
 
-    constexpr int RuntimeSquareFileDistance(Square sq1, Square sq2) noexcept
+    constexpr int RuntimeSquareFileDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        const auto diff = FileOf(sq1) - FileOf(sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        const auto diff = FileOf(from) - FileOf(to);
         return diff < 0 ? -diff : +diff;
     }
 
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareFileDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
-        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        for (Square from = kA1; from < kSquareNB; ++from)
+        for (Square   to = kA1;   to < kSquareNB; ++to)
         {
-            std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
-            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
-            {
-                return RuntimeSquareFileDistance(sq1, sq2++);
-            });
-            return ++sq1, sub_table;
-        });
+            dist_table[from][to] = RuntimeSquareFileDistance(from, to);
+        }
         return dist_table;
     }();
 
-    constexpr int LookupSquareFileDistance(Square sq1, Square sq2) noexcept
+    constexpr int LookupSquareFileDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kSquareFileDistanceTable[sq1][sq2];
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return kSquareFileDistanceTable[from][to];
     }
 
-    constexpr int SquareFileDistance(Square sq1, Square sq2) noexcept
+    constexpr int SquareFileDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return LookupSquareFileDistance(sq1, sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return LookupSquareFileDistance(from, to);
     }
 
-    constexpr int RuntimeSquareDistance(Square sq1, Square sq2) noexcept
+    constexpr int RuntimeSquareDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return SquareRankDistance(sq1, sq2) + SquareFileDistance(sq1, sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return SquareRankDistance(from, to) + SquareFileDistance(from, to);
     }
 
     inline constexpr std::array<std::array<int8_t, kSquareNB>, kSquareNB> kSquareDistanceTable = []()
     {
         std::array<std::array<int8_t, kSquareNB>, kSquareNB> dist_table = {};
-        std::generate(std::begin(dist_table), std::end(dist_table),
-        [sq1 = Square{kA1}]() mutable -> std::array<int8_t, kSquareNB>
+        for (Square from = kA1; from < kSquareNB; ++from)
+        for (Square   to = kA1;   to < kSquareNB; ++to)
         {
-            std::array<int8_t, kSquareNB> sub_table = {};
-            std::generate(std::begin(sub_table), std::end(sub_table),
-            [sq1, sq2 = Square{kA1}]() mutable -> int8_t
-            {
-                return RuntimeSquareDistance(sq1, sq2++);
-            });
-            return ++sq1, sub_table;
-        });
+            dist_table[from][to] = RuntimeSquareDistance(from, to);
+        }
         return dist_table;
     }();
 
-    constexpr int LookupSquareDistance(Square sq1, Square sq2) noexcept
+    constexpr int LookupSquareDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return kSquareDistanceTable[sq1][sq2];
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return kSquareDistanceTable[from][to];
     }
 
-    constexpr int SquareDistance(Square sq1, Square sq2) noexcept
+    constexpr int SquareDistance(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return LookupSquareDistance(sq1, sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return LookupSquareDistance(from, to);
     }
 
     constexpr bool IsNormalSquare(Square sq) noexcept
@@ -238,32 +220,32 @@ namespace cohen::chess::type::square
         return kA1 <= sq && sq < kSquareNB;
     }
 
-    constexpr bool OnSameRank(Square sq1, Square sq2) noexcept
+    constexpr bool OnSameRank(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return RankOf(sq1 ^ sq2) == 0;
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return RankOf(from ^ to) == 0;
     }
 
-    constexpr bool OnSameFile(Square sq1, Square sq2) noexcept
+    constexpr bool OnSameFile(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return FileOf(sq1 ^ sq2) == 0;
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return FileOf(from ^ to) == 0;
     }
 
-    constexpr bool OnSameDiag(Square sq1, Square sq2) noexcept
+    constexpr bool OnSameDiag(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return (sq2 - sq1) % 9 == 0;
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return (from - to) % 9 == 0;
     }
 
-    constexpr bool OnSameAnti(Square sq1, Square sq2) noexcept
+    constexpr bool OnSameAnti(Square from, Square to) noexcept
     {
-        assert(kA1 <= sq1 && sq1 < kSquareNB);
-        assert(kA1 <= sq2 && sq2 < kSquareNB);
-        return RankOf(sq1) + FileOf(sq1) == RankOf(sq2) + FileOf(sq2);
+        assert(kA1 <= from && from < kSquareNB);
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return RankOf(from) + FileOf(to) == RankOf(from) + FileOf(to);
     }
 }
 
