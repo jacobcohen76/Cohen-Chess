@@ -41,8 +41,8 @@ namespace cohen::chess::board
         constexpr Bitboard king() const noexcept;
         constexpr Bitboard occ() const noexcept;
 
-        constexpr Bitboard knight(Color) const noexcept;
         constexpr Bitboard pawn(Color) const noexcept;
+        constexpr Bitboard knight(Color) const noexcept;
         constexpr Bitboard bishop(Color) const noexcept;
         constexpr Bitboard rook(Color) const noexcept;
         constexpr Bitboard queen(Color) const noexcept;
