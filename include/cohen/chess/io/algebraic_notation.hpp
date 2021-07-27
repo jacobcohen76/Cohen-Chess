@@ -77,14 +77,14 @@ namespace cohen::chess::io::algebraic_notation
 
     constexpr bool IsPieceTypeChar(char token) noexcept
     {
-        return token == PieceTypeChar(kPieceTypeNone) ||
-               token == PieceTypeChar(kPawn)          ||
-               token == PieceTypeChar(kKnight)        ||
-               token == PieceTypeChar(kBishop)        ||
-               token == PieceTypeChar(kRook)          ||
-               token == PieceTypeChar(kQueen)         ||
-               token == PieceTypeChar(kKing)          ||
-               token == PieceTypeChar(kPieceTypeAll);
+        return token == PieceTypeChar(kPieceTypeNone)
+            || token == PieceTypeChar(kPawn)
+            || token == PieceTypeChar(kKnight)
+            || token == PieceTypeChar(kBishop)
+            || token == PieceTypeChar(kRook)
+            || token == PieceTypeChar(kQueen)
+            || token == PieceTypeChar(kKing)
+            || token == PieceTypeChar(kPieceTypeAll);
     }
 
     constexpr PieceType CharToPieceType(char token) noexcept
@@ -118,18 +118,18 @@ namespace cohen::chess::io::algebraic_notation
 
     constexpr bool IsPieceChar(char token) noexcept
     {
-        return token == PieceChar(kWhitePawn)   ||
-               token == PieceChar(kWhiteKnight) ||
-               token == PieceChar(kWhiteBishop) ||
-               token == PieceChar(kWhiteRook)   ||
-               token == PieceChar(kWhiteQueen)  ||
-               token == PieceChar(kWhiteKing)   ||
-               token == PieceChar(kBlackPawn)   ||
-               token == PieceChar(kBlackKnight) ||
-               token == PieceChar(kBlackBishop) ||
-               token == PieceChar(kBlackRook)   ||
-               token == PieceChar(kBlackQueen)  ||
-               token == PieceChar(kBlackKing);
+        return token == PieceChar(kWhitePawn)
+            || token == PieceChar(kWhiteKnight)
+            || token == PieceChar(kWhiteBishop)
+            || token == PieceChar(kWhiteRook)
+            || token == PieceChar(kWhiteQueen)
+            || token == PieceChar(kWhiteKing)
+            || token == PieceChar(kBlackPawn)
+            || token == PieceChar(kBlackKnight)
+            || token == PieceChar(kBlackBishop)
+            || token == PieceChar(kBlackRook)
+            || token == PieceChar(kBlackQueen)
+            || token == PieceChar(kBlackKing);
     }
 
     constexpr Piece CharToPiece(char token) noexcept

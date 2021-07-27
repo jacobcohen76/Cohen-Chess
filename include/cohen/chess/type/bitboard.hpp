@@ -235,22 +235,22 @@ namespace cohen::chess::type::bitboard
     {
         switch (dir)
         {
-            case kNorth:          return RayBB<kNorth>          (sq);
-            case kEast:           return RayBB<kEast>           (sq);
-            case kSouth:          return RayBB<kSouth>          (sq);
-            case kWest:           return RayBB<kWest>           (sq);
+            case kNorth:          return RayBB<kNorth>         (sq);
+            case kEast:           return RayBB<kEast>          (sq);
+            case kSouth:          return RayBB<kSouth>         (sq);
+            case kWest:           return RayBB<kWest>          (sq);
 
-            case kNorthEast:      return RayBB<kNorthEast>      (sq);
-            case kSouthEast:      return RayBB<kSouthEast>      (sq);
-            case kSouthWest:      return RayBB<kSouthWest>      (sq);
-            case kNorthWest:      return RayBB<kNorthWest>      (sq);
+            case kNorthEast:      return RayBB<kNorthEast>     (sq);
+            case kSouthEast:      return RayBB<kSouthEast>     (sq);
+            case kSouthWest:      return RayBB<kSouthWest>     (sq);
+            case kNorthWest:      return RayBB<kNorthWest>     (sq);
 
-            case kNorthNorth:     return RayBB<kNorthNorth>     (sq);
-            case kEastEast:       return RayBB<kEastEast>       (sq);
-            case kSouthSouth:     return RayBB<kSouthSouth>     (sq);
-            case kWestWest:       return RayBB<kWestWest>       (sq);
+            case kNorthNorth:     return RayBB<kNorthNorth>    (sq);
+            case kEastEast:       return RayBB<kEastEast>      (sq);
+            case kSouthSouth:     return RayBB<kSouthSouth>    (sq);
+            case kWestWest:       return RayBB<kWestWest>      (sq);
 
-            default:              return RayBB<kDirectionNone>  (sq);
+            default:              return RayBB<kDirectionNone> (sq);
         }
     }
 

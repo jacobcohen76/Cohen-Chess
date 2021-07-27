@@ -74,7 +74,10 @@ int main(int argc, char* argv[])
         TestPawnAttacks(sq);
         TestKingAttacks(sq);
     }
+    Board board = {};
+    SetFenPosition("rnbqkbnr/pppppppp/8/8/8/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1", board);
     MoveList move_list;
+    GenMoves(board, move_list);
     move_list.push(MakeMove(kE1, kE4));
     move_list.push(kMoveNone);
     move_list.push(kMoveNull);
@@ -82,5 +85,6 @@ int main(int argc, char* argv[])
     {
         std::cout << CoordinateString(FromSquare(move)) << "->" << CoordinateString(ToSquare(move)) << std::endl;
     }
+    std::cout << AsciiBoard(board) << std::endl;
     return 0;
 }

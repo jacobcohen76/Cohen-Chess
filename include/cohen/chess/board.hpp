@@ -28,9 +28,28 @@ namespace cohen::chess::board
 
     struct Board
     {
-        constexpr Bitboard bitboard(Piece) const noexcept;
         constexpr Piece on(Square) const noexcept;
         constexpr bool empty(Square) const noexcept;
+
+        constexpr Bitboard bitboard(Piece) const noexcept;
+
+        constexpr Bitboard pawn() const noexcept;
+        constexpr Bitboard knight() const noexcept;
+        constexpr Bitboard bishop() const noexcept;
+        constexpr Bitboard rook() const noexcept;
+        constexpr Bitboard queen() const noexcept;
+        constexpr Bitboard king() const noexcept;
+        constexpr Bitboard occ() const noexcept;
+
+        constexpr Bitboard knight(Color) const noexcept;
+        constexpr Bitboard pawn(Color) const noexcept;
+        constexpr Bitboard bishop(Color) const noexcept;
+        constexpr Bitboard rook(Color) const noexcept;
+        constexpr Bitboard queen(Color) const noexcept;
+        constexpr Bitboard king(Color) const noexcept;
+        constexpr Bitboard occ(Color) const noexcept;
+
+        constexpr BoardState state() const noexcept;
 
         constexpr Key zobrist_key() const noexcept;
         constexpr Key pawn_key() const noexcept;
@@ -68,6 +87,89 @@ namespace cohen::chess::board
     {
         assert(kPieceNone <= piece && piece < kPieceNB);
         return bitboards[piece];
+    }
+
+    constexpr Bitboard Board::pawn() const noexcept
+    {
+        return bitboards[kWhitePawn]
+             | bitboards[kBlackPawn];
+    }
+
+    constexpr Bitboard Board::knight() const noexcept
+    {
+        return bitboards[kWhiteKnight]
+             | bitboards[kBlackKnight];
+    }
+
+    constexpr Bitboard Board::bishop() const noexcept
+    {
+        return bitboards[kWhiteBishop]
+             | bitboards[kBlackBishop];
+    }
+
+    constexpr Bitboard Board::rook() const noexcept
+    {
+        return bitboards[kWhiteRook]
+             | bitboards[kBlackRook];
+    }
+
+    constexpr Bitboard Board::queen() const noexcept
+    {
+        return bitboards[kWhiteQueen]
+             | bitboards[kBlackQueen];
+    }
+
+    constexpr Bitboard Board::king() const noexcept
+    {
+        return bitboards[kWhiteKing]
+             | bitboards[kBlackKing];
+    }
+
+    constexpr Bitboard Board::occ() const noexcept
+    {
+        return bitboards[kOccupancy];
+    }
+
+    constexpr Bitboard Board::pawn(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kPawn)];
+    }
+
+    constexpr Bitboard Board::knight(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kKnight)];
+    }
+
+    constexpr Bitboard Board::bishop(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kBishop)];
+    }
+
+    constexpr Bitboard Board::rook(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kRook)];
+    }
+
+    constexpr Bitboard Board::queen(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kQueen)];
+    }
+
+    constexpr Bitboard Board::king(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kKing)];
+    }
+
+    constexpr Bitboard Board::occ(Color side) const noexcept
+    {
+        assert(side == kWhite || side == kBlack);
+        return bitboards[MakePiece(side, kPieceAll)];
     }
 
     constexpr Piece Board::on(Square sq) const noexcept

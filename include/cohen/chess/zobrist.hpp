@@ -18,7 +18,7 @@
 
 namespace cohen::chess::zobrist
 {
-    inline constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristPieceSquareKeyTable = [](Functor<Key()> auto&& rand_fn)
     {
         std::array<std::array<Key, kSquareNB>, kPieceNB> pcsq_table = {};
         std::ranges::generate(pcsq_table[kWhitePawn],   rand_fn);
@@ -43,7 +43,7 @@ namespace cohen::chess::zobrist
         return kZobristPieceSquareKeyTable[pc][sq];
     }
 
-    inline constexpr auto kZobristCastlingKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristCastlingKeyTable = [](Functor<Key()> auto&& rand_fn)
     {
         std::array<Key, kCastlingNB> castling_table = {};
         castling_table[kWhiteOO]  = rand_fn();
@@ -69,7 +69,7 @@ namespace cohen::chess::zobrist
         return kZobristCastlingKeyTable[castling];
     }
 
-    inline constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto rand_fn)
+    inline constexpr auto kZobristEnPassantFileKeyTable = [](Functor<Key()> auto&& rand_fn)
     {
         std::array<Key, kFileNB + 1> ep_table = {};
         std::ranges::generate(ep_table, rand_fn);
