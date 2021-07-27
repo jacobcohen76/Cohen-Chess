@@ -64,7 +64,7 @@ namespace cohen::chess::io::fen
     {
         int token;
         Castling castling = kCastlingNone;
-        while (token = is.get(), !std::isspace(token) && token != '-')
+        while (token = is.get(), not std::isspace(token) && token != '-')
         {
             Castling bit = StandardFenCastlingBit(token);
             if (bit == kCastlingNone)
@@ -82,7 +82,7 @@ namespace cohen::chess::io::fen
     inline std::istream& SetFenEnPassantTarget(std::istream& is, Board& board)
     {
         std::string token;
-        if (is >> token, !IsCoordinateString(token))
+        if (is >> token, not IsCoordinateString(token))
             throw ParseError("unexpected token");
         board.set_ep_file(token == "-" ? kFileNB : CharToFile(token[0]));
         return is;
