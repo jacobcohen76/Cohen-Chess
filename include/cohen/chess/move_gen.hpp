@@ -62,7 +62,10 @@ namespace cohen::chess::move_gen
         }
         else
         {
-            FillMoveList(move_list, board.bitboard(kWhiteRook), std::bind_front(BlackMagicRookAttacks, board.bitboard(kOccupancy)));
+            FillMoveList(move_list, board.rook(kWhite), [&board](Square sq)
+            {
+                return BlackMagicRookAttacks(board.occ(), sq) & ~board.occ();
+            });
         }
     }
 }

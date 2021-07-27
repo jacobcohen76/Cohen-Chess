@@ -49,8 +49,6 @@ namespace cohen::chess::board
         constexpr Bitboard king(Color) const noexcept;
         constexpr Bitboard occ(Color) const noexcept;
 
-        constexpr BoardState state() const noexcept;
-
         constexpr Key zobrist_key() const noexcept;
         constexpr Key pawn_key() const noexcept;
         constexpr Bitboard checks() const noexcept;
@@ -169,7 +167,7 @@ namespace cohen::chess::board
     constexpr Bitboard Board::occ(Color side) const noexcept
     {
         assert(side == kWhite || side == kBlack);
-        return bitboards[MakePiece(side, kPieceAll)];
+        return bitboards[MakePiece(side, kPieceTypeAll)];
     }
 
     constexpr Piece Board::on(Square sq) const noexcept

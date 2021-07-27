@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         TestKingAttacks(sq);
     }
     Board board = {};
-    SetFenPosition("rnbqkbnr/pppppppp/8/8/8/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1", board);
+    SetFenPosition("rnbqkbnr/pppppppp/8/8/3R4/8/1PPPPPPP/2BQKBNR w KQkq - 0 1", board);
     MoveList move_list;
     GenMoves(board, move_list);
     move_list.push(MakeMove(kE1, kE4));
