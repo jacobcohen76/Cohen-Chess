@@ -13,62 +13,44 @@ namespace cohen::chess::type::direction
 
     enum DirectionConstant : Direction
     {
-        kNorth          = +8,
-        kEast           = +1,
-        kSouth          = -kNorth,
-        kWest           = -kEast,
+        kNorth         = +8,
+        kEast          = +1,
+        kSouth         = -kNorth,
+        kWest          = -kEast,
 
-        kNorthEast      = kNorth + kEast,
-        kSouthEast      = kSouth + kEast,
-        kSouthWest      = kSouth + kWest,
-        kNorthWest      = kNorth + kWest,
+        kNorthEast     =  kNorth + kEast,
+        kSouthEast     =  kSouth + kEast,
+        kSouthWest     =  kSouth + kWest,
+        kNorthWest     =  kNorth + kWest,
 
-        kNorthNorth     = kNorth + kNorth,
-        kEastEast       = kEast  + kEast,
-        kSouthSouth     = kSouth + kSouth,
-        kWestWest       = kWest  + kWest,
+        kNorthNorth    =  kNorth + kNorth,
+        kEastEast      =  kEast  + kEast,
+        kSouthSouth    =  kSouth + kSouth,
+        kWestWest      =  kWest  + kWest,
 
-        kNorthNorthEast = kNorthNorth + kEast,
-        kNorthNorthWest = kNorthNorth + kWest,
-        kEastEastNorth  = kEastEast   + kNorth,
-        kEastEastSouth  = kEastEast   + kSouth,
-        kSouthSouthEast = kSouthSouth + kEast,
-        kSouthSouthWest = kSouthSouth + kWest,
-        kWestWestNorth  = kWestWest   + kNorth,
-        kWestWestSouth  = kWestWest   + kSouth,
-
-        kDirectionNone  = 0,
+        kDirectionNone = 0,
     };
 
     constexpr int Magnitude(Direction dir) noexcept
     {
         switch (dir)
         {
-            case kNorth:          return 1;
-            case kEast:           return 1;
-            case kSouth:          return 1;
-            case kWest:           return 1;
+            case kNorth:         return 1;
+            case kEast:          return 1;
+            case kSouth:         return 1;
+            case kWest:          return 1;
 
-            case kNorthEast:      return 2;
-            case kSouthEast:      return 2;
-            case kSouthWest:      return 2;
-            case kNorthWest:      return 2;
+            case kNorthEast:     return 2;
+            case kSouthEast:     return 2;
+            case kSouthWest:     return 2;
+            case kNorthWest:     return 2;
 
-            case kNorthNorth:     return 2;
-            case kEastEast:       return 2;
-            case kSouthSouth:     return 2;
-            case kWestWest:       return 2;
+            case kNorthNorth:    return 2;
+            case kEastEast:      return 2;
+            case kSouthSouth:    return 2;
+            case kWestWest:      return 2;
 
-            case kNorthNorthEast: return 3;
-            case kNorthNorthWest: return 3;
-            case kEastEastNorth:  return 3;
-            case kEastEastSouth:  return 3;
-            case kSouthSouthEast: return 3;
-            case kSouthSouthWest: return 3;
-            case kWestWestNorth:  return 3;
-            case kWestWestSouth:  return 3;
-
-            default:              return 0;
+            default:             return 0;
         }
     }
 
@@ -120,14 +102,6 @@ namespace cohen::chess
     using cohen::chess::type::direction::kEastEast;
     using cohen::chess::type::direction::kSouthSouth;
     using cohen::chess::type::direction::kWestWest;
-    using cohen::chess::type::direction::kNorthNorthEast;
-    using cohen::chess::type::direction::kNorthNorthWest;
-    using cohen::chess::type::direction::kEastEastNorth;
-    using cohen::chess::type::direction::kEastEastSouth;
-    using cohen::chess::type::direction::kSouthSouthEast;
-    using cohen::chess::type::direction::kSouthSouthWest;
-    using cohen::chess::type::direction::kWestWestNorth;
-    using cohen::chess::type::direction::kWestWestSouth;
     using cohen::chess::type::direction::kDirectionNone;
 
     using cohen::chess::type::direction::RayBetween;

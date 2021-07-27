@@ -12,7 +12,7 @@ namespace cohen::chess::move_gen
     constexpr void FillMoveList(MoveList& move_list,
                                 Bitboard  to_set,
                                 Square    from,
-                                MoveType  type) noexcept
+                                MoveType  type = kQuietMove) noexcept
     {
         while (to_set)
         {
@@ -21,9 +21,32 @@ namespace cohen::chess::move_gen
         }
     }
 
-    constexpr void GenMoves(const Board& board, MoveList& move_list) noexcept
+    constexpr void GenInSingleCheckMoves(const Board& board,
+                                         MoveList&    moves) noexcept
+    {
+
+    }
+
+    constexpr void GenInDoubleCheckMoves(const Board& board,
+                                         MoveList&    moves) noexcept
     {
         
+    }
+
+    constexpr void GenMoves(const Board& board, MoveList& moves) noexcept
+    {
+        Bitboard checks = board.checks();
+        if (checks)
+        {
+            if (FlipLSB(checks))
+                GenInDoubleCheckMoves(board, moves);
+            else
+                GenInSingleCheckMoves(board, moves);
+        }
+        else
+        {
+            
+        }
     }
 }
 

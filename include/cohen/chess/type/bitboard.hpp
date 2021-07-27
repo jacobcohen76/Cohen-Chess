@@ -250,15 +250,6 @@ namespace cohen::chess::type::bitboard
             case kSouthSouth:     return RayBB<kSouthSouth>     (sq);
             case kWestWest:       return RayBB<kWestWest>       (sq);
 
-            case kNorthNorthEast: return RayBB<kNorthNorthEast> (sq);
-            case kNorthNorthWest: return RayBB<kNorthNorthWest> (sq);
-            case kEastEastNorth:  return RayBB<kEastEastNorth>  (sq);
-            case kEastEastSouth:  return RayBB<kEastEastSouth>  (sq);
-            case kSouthSouthEast: return RayBB<kSouthSouthEast> (sq);
-            case kSouthSouthWest: return RayBB<kSouthSouthWest> (sq);
-            case kWestWestNorth:  return RayBB<kWestWestNorth>  (sq);
-            case kWestWestSouth:  return RayBB<kWestWestSouth>  (sq);
-
             default:              return RayBB<kDirectionNone>  (sq);
         }
     }
@@ -308,25 +299,15 @@ namespace cohen::chess::type::bitboard
     template <Direction dir>
     inline constexpr Bitboard kShiftMask = kUniverseBB;
 
-    template <> inline constexpr Bitboard kShiftMask<kEast>           = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kNorthEast>      = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kSouthEast>      = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kNorthNorthEast> = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kSouthSouthEast> = ~FileBB(kFileH);
+    template <> inline constexpr Bitboard kShiftMask<kEast>      = ~FileBB(kFileH);
+    template <> inline constexpr Bitboard kShiftMask<kNorthEast> = ~FileBB(kFileH);
+    template <> inline constexpr Bitboard kShiftMask<kSouthEast> = ~FileBB(kFileH);
+    template <> inline constexpr Bitboard kShiftMask<kEastEast>  = ~FileBB(kFileH) & ~FileBB(kFileG);
 
-    template <> inline constexpr Bitboard kShiftMask<kEastEast>       = ~FileBB(kFileH) & ~FileBB(kFileG);
-    template <> inline constexpr Bitboard kShiftMask<kEastEastNorth>  = ~FileBB(kFileH) & ~FileBB(kFileG);
-    template <> inline constexpr Bitboard kShiftMask<kEastEastSouth>  = ~FileBB(kFileH) & ~FileBB(kFileG);
-
-    template <> inline constexpr Bitboard kShiftMask<kWest>           = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kNorthWest>      = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kSouthWest>      = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kNorthNorthWest> = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kSouthSouthWest> = ~FileBB(kFileA);
-
-    template <> inline constexpr Bitboard kShiftMask<kWestWest>       = ~FileBB(kFileA) & ~FileBB(kFileB);
-    template <> inline constexpr Bitboard kShiftMask<kWestWestNorth>  = ~FileBB(kFileA) & ~FileBB(kFileB);
-    template <> inline constexpr Bitboard kShiftMask<kWestWestSouth>  = ~FileBB(kFileA) & ~FileBB(kFileB);
+    template <> inline constexpr Bitboard kShiftMask<kWest>      = ~FileBB(kFileA);
+    template <> inline constexpr Bitboard kShiftMask<kNorthWest> = ~FileBB(kFileA);
+    template <> inline constexpr Bitboard kShiftMask<kSouthWest> = ~FileBB(kFileA);
+    template <> inline constexpr Bitboard kShiftMask<kWestWest>  = ~FileBB(kFileA) & ~FileBB(kFileB);
 
     template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb) noexcept

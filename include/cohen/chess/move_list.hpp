@@ -9,8 +9,7 @@ namespace cohen::chess::move_list
 {
     struct MoveList
     {
-        static constexpr size_t kMaxSize = 256;
-
+    public:
         constexpr MoveList() noexcept = default;
 
         constexpr Move& operator[](size_t) noexcept;
@@ -42,6 +41,9 @@ namespace cohen::chess::move_list
         constexpr void clear() noexcept;
         constexpr void push(Move) noexcept;
         constexpr Move pop() noexcept;
+
+    private:
+        static constexpr size_t kMaxSize = 256;
 
         Move  mem_array[kMaxSize] = {};
         Move* stack_ptr = mem_array;
