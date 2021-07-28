@@ -32,6 +32,7 @@ release: main
 
 main:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.out
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(SRC)/$@.cpp -o $(BIN)/$@.asm -S
 
 clean:
 	rm -rf $(BIN) *.o

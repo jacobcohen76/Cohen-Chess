@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-namespace cohen::io::parse
+namespace cohen::chess::io::parse
 {
     struct ParseError : public std::runtime_error
     {
@@ -13,9 +13,9 @@ namespace cohen::io::parse
     };
 }
 
-namespace cohen
+namespace cohen::chess
 {
-    using io::parse::ParseError;
+    using cohen::chess::io::parse::ParseError;
 }
 
 #endif

@@ -45,7 +45,7 @@ namespace cohen::chess::move_list
     private:
         static constexpr size_t kMaxSize = 256;
 
-        Move  mem_array[kMaxSize] = {};
+        Move  mem_array[kMaxSize];
         Move* stack_ptr = mem_array;
     };
 
@@ -133,7 +133,7 @@ namespace cohen::chess::move_list
 
     constexpr bool MoveList::empty() const noexcept
     {
-        return mem_array == stack_ptr;
+        return stack_ptr == mem_array;
     }
 
     constexpr size_t MoveList::size() const noexcept
@@ -159,7 +159,7 @@ namespace cohen::chess::move_list
 
     constexpr Move MoveList::pop() noexcept
     {
-        assert(size() > 0);
+        assert(not empty());
         return *--stack_ptr;
     }
 }

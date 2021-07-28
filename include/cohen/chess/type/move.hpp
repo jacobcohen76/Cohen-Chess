@@ -13,47 +13,40 @@ namespace cohen::chess::type::move
 
     enum MoveTypeConstant : MoveType
     {
-        kQuietMove = 0x0000,
-        kPromotion = 0x4000,
-        kEnPassant = 0x8000,
-        kCastling  = 0xC000,
+        kQuietMove = 0b0000000000000000,
+        kPromotion = 0b0100000000000000,
+        kEnPassant = 0b1000000000000000,
+        kCastling  = 0b1100000000000000,
     };
 
     using Move = uint16_t;
 
     enum MoveConstant : Move
     {
-        kMoveNone = 0x0000,
-        kMoveNull = 0xFFFF,
+        kMoveNone = 0b0000000000000000,
+        kMoveNull = 0b1111111111111111,
     };
 
-    constexpr Move MakeMove(Square from, Square to) noexcept
+    constexpr Move MakeMove(Square from, Square to, MoveType type = kQuietMove) noexcept
     {
         assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   && to   < kSquareNB);
-        return (to << 6) | from;
-    }
-
-    constexpr Move MakeMove(Square from, Square to, MoveType type) noexcept
-    {
-        assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   && to   < kSquareNB);
-        return MakeMove(from, to) | type;
+        assert(kA1 <= to   &&   to < kSquareNB);
+        return type | from | (to << 6);
     }
 
     constexpr Square FromSquare(Move move) noexcept
     {
-        return move & 0b111111;
+        return move & 0b0000000000111111;
     }
 
     constexpr Square ToSquare(Move move) noexcept
     {
-        return (move >> 6) & 0b111111;
+        return (move >> 6) & 0b0000000000111111;
     }
 
     constexpr MoveType MoveTypeOf(Move move) noexcept
     {
-        return move & 0xC000;
+        return move & 0b1100000000000000;
     }
 
     constexpr PieceType PromotedTo(Move move) noexcept
