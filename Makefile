@@ -17,8 +17,8 @@ CXXFLAGS   += -O3 -march=native
 
 all: release
 
-clang: CC        = clang-11
-clang: CXX       = clang++-11
+clang: CC        =  clang-11
+clang: CXX       =  clang++-11
 clang: CXXFLAGS += -stdlib=libstdc++
 clang: CXXFLAGS += -fconstexpr-steps=2147483647
 clang: all
