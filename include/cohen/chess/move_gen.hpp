@@ -27,13 +27,13 @@ namespace cohen::chess::move_gen
     constexpr void FillMoveList(
         MoveList&                        move_list,
         Bitboard                         from_set,
-        Functor<Bitboard(Square)> auto&& to_fn,
+        Functor<Bitboard(Square)> auto&& gen_fn,
         MoveType                         type = kQuietMove) noexcept
     {
         while (from_set)
         {
             Square   from   = PopLSB(from_set);
-            Bitboard to_set =  to_fn(from);
+            Bitboard to_set = gen_fn(from);
             while (to_set)
             {
                 Square to = PopLSB(to_set);
@@ -42,24 +42,34 @@ namespace cohen::chess::move_gen
         }
     }
 
-    template <Functor<Bitboard(Bitboard, Square)> auto moves_fn>
-    constexpr Functor<Bitboard(Square)> auto SlidingMoves(const Board& board) noexcept
+    template <Functor<Bitboard(Bitboard, Square)> auto gen_fn>
+    constexpr Functor<Bitboard(Square)> auto BindGen(
+        Bitboard occ,
+        Bitboard mask = kUniverseBB) noexcept
     {
-        return [&board](Square sq) -> Bitboard
+        return [occ, mask](Square sq) -> Bitboard
         {
-            return moves_fn(board.occ(), sq);
+            return gen_fn(occ, sq) & mask;
+        };
+    }
+
+    template <Functor<Bitboard(Color, Square)> auto gen_fn>
+    constexpr Functor<Bitboard(Square)> auto BindGen(
+        Color    side,
+        Bitboard mask = kUniverseBB) noexcept
+    {
+        return [side, mask](Square sq) -> Bitboard
+        {
+            return gen_fn(side, sq) & mask;
         };
     }
 
     constexpr void GenMoves(const Board& board, MoveList& move_list) noexcept
     {
         Color side = board.side();
-        // FillMoveList(move_list, board.rook(side), [&](Square sq)
-        // {
-        //     return BlackMagicRookAttacks(board.occ(), sq) & ~board.occ(side);
-        // });
-        FillMoveList(move_list, board.rook(side),   SlidingMoves<BlackMagicRookAttacks>(board));
-        FillMoveList(move_list, board.bishop(side), SlidingMoves<BlackMagicBishopAttacks>(board));
+        FillMoveList(move_list, board.rooks(side),   BindGen<FancyMagicRookAttacks>(board.occ(), ~board.occ(side)));
+        FillMoveList(move_list, board.bishops(side), BindGen<FancyMagicBishopAttacks>(board.occ(), ~board.occ(side)));
+        FillMoveList(move_list, board.pawns(side),   BindGen<PawnAttacks>(side, board.occ(side ^ kBlack)));
     }
 }
 

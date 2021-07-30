@@ -64,11 +64,12 @@ void Init()
 //     std::cout << ascii_board << std::endl;
 // }
 
+
 int main(int argc, char* argv[])
 {
     Init();
     Board board = {};
-    SetFenPosition("rnbqkbnr/pppppppp/8/8/3R4/8/2PPPPPP/2BQKBNR w KQkq - 0 1", board);
+    SetFenPosition("rnbqkbnr/pppppppp/8/8/3R4/pppppppp/2PPPPPP/2BQKBNR w KQkq - 0 1", board);
     MoveList move_list;
     GenMoves(board, move_list);
     for (Move move : move_list)
@@ -76,5 +77,6 @@ int main(int argc, char* argv[])
         std::cout << CoordinateString(FromSquare(move)) << "->" << CoordinateString(ToSquare(move)) << std::endl;
     }
     std::cout << AsciiBoard(board) << std::endl;
+    std::cout << AsciiBoard(board.pawns(kBlack), 'p') << std::endl;
     return 0;
 }
