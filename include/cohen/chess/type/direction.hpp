@@ -89,20 +89,7 @@ namespace cohen::chess::type::direction
 namespace cohen::chess
 {
     using cohen::chess::type::direction::Direction;
-
-    using cohen::chess::type::direction::kNorth;
-    using cohen::chess::type::direction::kEast;
-    using cohen::chess::type::direction::kSouth;
-    using cohen::chess::type::direction::kWest;
-    using cohen::chess::type::direction::kNorthEast;
-    using cohen::chess::type::direction::kSouthEast;
-    using cohen::chess::type::direction::kSouthWest;
-    using cohen::chess::type::direction::kNorthWest;
-    using cohen::chess::type::direction::kNorthNorth;
-    using cohen::chess::type::direction::kEastEast;
-    using cohen::chess::type::direction::kSouthSouth;
-    using cohen::chess::type::direction::kWestWest;
-    using cohen::chess::type::direction::kDirectionNone;
+    using enum cohen::chess::type::direction::DirectionConstant;
 
     using cohen::chess::type::direction::RayBetween;
     using cohen::chess::type::direction::Magnitude;

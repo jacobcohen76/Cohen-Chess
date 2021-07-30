@@ -29,10 +29,10 @@ namespace cohen::chess::type::rank
         return rank ^ 0b111;
     }
 
-    constexpr Rank RelativeRank(Rank rank, Color side) noexcept
+    constexpr Rank RelativeRank(Color side, Rank rank) noexcept
     {
-        assert(kRank1 <= rank && rank < kRankNB);
         assert(side == kWhite || side == kBlack);
+        assert(kRank1 <= rank && rank < kRankNB);
         return rank ^ (side * 0b111);
     }
 }
@@ -40,16 +40,7 @@ namespace cohen::chess::type::rank
 namespace cohen
 {
     using cohen::chess::type::rank::Rank;
-
-    using cohen::chess::type::rank::kRank1;
-    using cohen::chess::type::rank::kRank2;
-    using cohen::chess::type::rank::kRank3;
-    using cohen::chess::type::rank::kRank4;
-    using cohen::chess::type::rank::kRank5;
-    using cohen::chess::type::rank::kRank6;
-    using cohen::chess::type::rank::kRank7;
-    using cohen::chess::type::rank::kRank8;
-    using cohen::chess::type::rank::kRankNB;
+    using enum cohen::chess::type::rank::RankConstant;
 
     using cohen::chess::type::rank::MirrorRank;
     using cohen::chess::type::rank::RelativeRank;

@@ -19,8 +19,8 @@ namespace cohen::chess::io::ascii_board
     public:
         constexpr AsciiBoard() noexcept = default;
         constexpr explicit AsciiBoard(Color) noexcept;
-        constexpr explicit AsciiBoard(const Board&, Color) noexcept;
         constexpr explicit AsciiBoard(Bitboard, char, Color) noexcept;
+        constexpr explicit AsciiBoard(const Board&, Color) noexcept;
 
         constexpr char& operator[](Square) noexcept;
         constexpr const char& operator[](Square) const noexcept;
@@ -50,8 +50,8 @@ namespace cohen::chess::io::ascii_board
         constexpr Color side() const noexcept;
 
         constexpr void clear() noexcept;
-        constexpr void fill(const Board&) noexcept;
         constexpr void fill(Bitboard, char) noexcept;
+        constexpr void fill(const Board&) noexcept;
         constexpr void flip() noexcept;
 
     private:
@@ -67,10 +67,12 @@ namespace cohen::chess::io::ascii_board
             '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', ' ', '.', '\n',
         };
 
-        static constexpr size_t index(Square sq, Color side) noexcept
+        static constexpr size_t index(Color side, Square sq) noexcept
         {
-            Rank rank = RelativeRank(RankOf(sq), side ^ kBlack);
-            File file = RelativeFile(FileOf(sq), side);
+            assert(side == kWhite || side == kBlack);
+            assert(kA1 <= sq && sq < kSquareNB);
+            Rank rank = RelativeRank(not side, RankOf(sq));
+            File file = RelativeFile(    side, FileOf(sq));
             return 16 * rank + 2 * file;
         }
 
@@ -81,13 +83,6 @@ namespace cohen::chess::io::ascii_board
     constexpr AsciiBoard::AsciiBoard(Color side) noexcept
         : side_{side} {}
 
-    constexpr AsciiBoard::AsciiBoard(const Board& board,
-                                     Color        side = kWhite) noexcept
-        : side_{side}
-    {
-        fill(board);
-    }
-
     constexpr AsciiBoard::AsciiBoard(Bitboard bitset,
                                      char     value = '1',
                                      Color    side  = kWhite) noexcept
@@ -96,16 +91,23 @@ namespace cohen::chess::io::ascii_board
         fill(bitset, value);
     }
 
+    constexpr AsciiBoard::AsciiBoard(const Board& board,
+                                     Color        side = kWhite) noexcept
+        : side_{side}
+    {
+        fill(board);
+    }
+
     constexpr char& AsciiBoard::operator[](Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return data_[index(sq, side_)];
+        return data_[index(side_, sq)];
     }
 
     constexpr const char& AsciiBoard::operator[](Square sq) const noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return data_[index(sq, side_)];
+        return data_[index(side_, sq)];
     }
 
     constexpr char* AsciiBoard::data() noexcept
@@ -209,7 +211,7 @@ namespace cohen::chess::io::ascii_board
         {
             if (board.on(sq))
             {
-                data_[index(sq, side_)] = PieceChar(board.on(sq));
+                data_[index(side_, sq)] = PieceChar(board.on(sq));
             }
         }
     }
@@ -218,7 +220,7 @@ namespace cohen::chess::io::ascii_board
     {
         while (bitset)
         {
-            data_[index(PopLSB(bitset), side_)] = value;
+            data_[index(side_, PopLSB(bitset))] = value;
         }
     }
 
@@ -227,7 +229,7 @@ namespace cohen::chess::io::ascii_board
         std::array<char, 128> flipped = kInitialData;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            flipped[index(sq, side_ ^ kBlack)] = data_[index(sq, side_)];
+            flipped[index(not side_, sq)] = data_[index(side_, sq)];
         }
         data_  = flipped;
         side_ ^= kBlack;

@@ -17,9 +17,7 @@ namespace cohen::chess::type::key
 namespace cohen::chess
 {
     using cohen::chess::type::key::Key;
-    
-    using cohen::chess::type::key::kKeyNone;
-    using cohen::chess::type::key::kKeyAll;
+    using enum cohen::chess::type::key::KeyConstant;
 }
 
 #endif

@@ -232,7 +232,7 @@ namespace cohen::chess::board
     constexpr Square Board::ep_target() const noexcept
     {
         return state.ep_file == kFileNB ? kSquareNB
-            : EnPassantTarget(state.ep_file, state.side);
+            : EnPassantTarget(state.side, state.ep_file);
     }
 
     constexpr void Board::put(Piece piece, Square sq) noexcept

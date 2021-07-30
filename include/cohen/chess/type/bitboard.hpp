@@ -368,16 +368,7 @@ namespace cohen::chess::type::bitboard
 namespace cohen::chess
 {
     using cohen::chess::type::bitboard::Bitboard;
-
-    using cohen::chess::type::bitboard::kEmptyBB;
-    using cohen::chess::type::bitboard::kUniverseBB;
-    using cohen::chess::type::bitboard::kDarkSquaresBB;
-    using cohen::chess::type::bitboard::kLightSquaresBB;
-    using cohen::chess::type::bitboard::kRankEdgesBB;
-    using cohen::chess::type::bitboard::kFileEdgesBB;
-    using cohen::chess::type::bitboard::kMainDiagBB;
-    using cohen::chess::type::bitboard::kMainAntiBB;
-    using cohen::chess::type::bitboard::kEdgesBB;
+    using enum cohen::chess::type::bitboard::BitboardConstant;
 
     using cohen::chess::type::bitboard::SquareBB;
     using cohen::chess::type::bitboard::RankBB;

@@ -63,16 +63,10 @@ namespace cohen::chess::type::move
 namespace cohen::chess
 {
     using cohen::chess::type::move::MoveType;
-
-    using cohen::chess::type::move::kQuietMove;
-    using cohen::chess::type::move::kPromotion;
-    using cohen::chess::type::move::kEnPassant;
-    using cohen::chess::type::move::kCastling;
+    using enum cohen::chess::type::move::MoveTypeConstant;
 
     using cohen::chess::type::move::Move;
-
-    using cohen::chess::type::move::kMoveNone;
-    using cohen::chess::type::move::kMoveNull;
+    using enum cohen::chess::type::move::MoveConstant;
 
     using cohen::chess::type::move::MakeMove;
     using cohen::chess::type::move::FromSquare;

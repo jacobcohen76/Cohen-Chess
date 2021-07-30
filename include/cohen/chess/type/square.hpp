@@ -89,32 +89,32 @@ namespace cohen::chess::type::square
         return sq ^ 0b111111;
     }
 
-    constexpr Square RelativeSquare(Square sq, Color side) noexcept
+    constexpr Square RelativeSquare(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b111111);
     }
 
-    constexpr Square RelativeSquareRank(Square sq, Color side) noexcept
+    constexpr Square RelativeSquareRank(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b111000);
     }
 
-    constexpr Square RelativeSquareFile(Square sq, Color side) noexcept
+    constexpr Square RelativeSquareFile(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
+        assert(kA1 <= sq && sq < kSquareNB);
         return sq ^ (side * 0b000111);
     }
 
-    constexpr Square EnPassantTarget(File ep_file, Color side) noexcept
+    constexpr Square EnPassantTarget(Color side, File ep_file) noexcept
     {
+        assert(side == kWhite || side == kBlack);
         assert(kFileA <= ep_file && ep_file < kFileNB);
-        assert(side == kWhite || kBlack);
-        return MakeSquare(RelativeRank(kRank6, side), ep_file);
+        return MakeSquare(RelativeRank(side, kRank6), ep_file);
     }
 
     constexpr int RuntimeSquareRankDistance(Square from, Square to) noexcept
@@ -252,73 +252,7 @@ namespace cohen::chess::type::square
 namespace cohen::chess
 {
     using cohen::chess::type::square::Square;
-
-    using cohen::chess::type::square::kA1;
-    using cohen::chess::type::square::kB1;
-    using cohen::chess::type::square::kC1;
-    using cohen::chess::type::square::kD1;
-    using cohen::chess::type::square::kE1;
-    using cohen::chess::type::square::kF1;
-    using cohen::chess::type::square::kG1;
-    using cohen::chess::type::square::kH1;
-    using cohen::chess::type::square::kA2;
-    using cohen::chess::type::square::kB2;
-    using cohen::chess::type::square::kC2;
-    using cohen::chess::type::square::kD2;
-    using cohen::chess::type::square::kE2;
-    using cohen::chess::type::square::kF2;
-    using cohen::chess::type::square::kG2;
-    using cohen::chess::type::square::kH2;
-    using cohen::chess::type::square::kA3;
-    using cohen::chess::type::square::kB3;
-    using cohen::chess::type::square::kC3;
-    using cohen::chess::type::square::kD3;
-    using cohen::chess::type::square::kE3;
-    using cohen::chess::type::square::kF3;
-    using cohen::chess::type::square::kG3;
-    using cohen::chess::type::square::kH3;
-    using cohen::chess::type::square::kA4;
-    using cohen::chess::type::square::kB4;
-    using cohen::chess::type::square::kC4;
-    using cohen::chess::type::square::kD4;
-    using cohen::chess::type::square::kE4;
-    using cohen::chess::type::square::kF4;
-    using cohen::chess::type::square::kG4;
-    using cohen::chess::type::square::kH4;
-    using cohen::chess::type::square::kA5;
-    using cohen::chess::type::square::kB5;
-    using cohen::chess::type::square::kC5;
-    using cohen::chess::type::square::kD5;
-    using cohen::chess::type::square::kE5;
-    using cohen::chess::type::square::kF5;
-    using cohen::chess::type::square::kG5;
-    using cohen::chess::type::square::kH5;
-    using cohen::chess::type::square::kA6;
-    using cohen::chess::type::square::kB6;
-    using cohen::chess::type::square::kC6;
-    using cohen::chess::type::square::kD6;
-    using cohen::chess::type::square::kE6;
-    using cohen::chess::type::square::kF6;
-    using cohen::chess::type::square::kG6;
-    using cohen::chess::type::square::kH6;
-    using cohen::chess::type::square::kA7;
-    using cohen::chess::type::square::kB7;
-    using cohen::chess::type::square::kC7;
-    using cohen::chess::type::square::kD7;
-    using cohen::chess::type::square::kE7;
-    using cohen::chess::type::square::kF7;
-    using cohen::chess::type::square::kG7;
-    using cohen::chess::type::square::kH7;
-    using cohen::chess::type::square::kA8;
-    using cohen::chess::type::square::kB8;
-    using cohen::chess::type::square::kC8;
-    using cohen::chess::type::square::kD8;
-    using cohen::chess::type::square::kE8;
-    using cohen::chess::type::square::kF8;
-    using cohen::chess::type::square::kG8;
-    using cohen::chess::type::square::kH8;
-    using cohen::chess::type::square::kSquareNone;
-    using cohen::chess::type::square::kSquareNB;
+    using enum cohen::chess::type::square::SquareConstant;
 
     using cohen::chess::type::square::MakeSquare;
     using cohen::chess::type::square::RankOf;

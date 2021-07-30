@@ -52,18 +52,7 @@ namespace cohen::chess::type::castling
 namespace cohen::chess
 {
     using cohen::chess::type::castling::Castling;
-
-    using cohen::chess::type::castling::kCastlingNone;
-    using cohen::chess::type::castling::kCastlingAll;
-    using cohen::chess::type::castling::kWhiteOO;
-    using cohen::chess::type::castling::kWhiteOOO;
-    using cohen::chess::type::castling::kCastlingWhite;
-    using cohen::chess::type::castling::kBlackOO;
-    using cohen::chess::type::castling::kBlackOOO;
-    using cohen::chess::type::castling::kCastlingBlack;
-    using cohen::chess::type::castling::kQueenSide;
-    using cohen::chess::type::castling::kKingSide;
-    using cohen::chess::type::castling::kCastlingNB;
+    using enum cohen::chess::type::castling::CastlingConstant;
 
     using cohen::chess::type::castling::CastlingSide;
     using cohen::chess::type::castling::CastlingQueenSide;
