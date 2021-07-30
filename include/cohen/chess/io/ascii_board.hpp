@@ -79,7 +79,7 @@ namespace cohen::chess::io::ascii_board
     };
 
     constexpr AsciiBoard::AsciiBoard(Color side) noexcept
-        : side_{side} {};
+        : side_{side} {}
 
     constexpr AsciiBoard::AsciiBoard(const Board& board,
                                      Color        side = kWhite) noexcept

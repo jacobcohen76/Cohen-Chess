@@ -28,9 +28,6 @@ namespace cohen::chess::board
 
     struct Board
     {
-        constexpr Piece on(Square) const noexcept;
-        constexpr bool empty(Square) const noexcept;
-
         constexpr Bitboard bitboard(Piece) const noexcept;
 
         constexpr Bitboard pawn() const noexcept;
@@ -48,6 +45,9 @@ namespace cohen::chess::board
         constexpr Bitboard queen(Color) const noexcept;
         constexpr Bitboard king(Color) const noexcept;
         constexpr Bitboard occ(Color) const noexcept;
+
+        constexpr Piece on(Square) const noexcept;
+        constexpr bool empty(Square) const noexcept;
 
         constexpr Key zobrist_key() const noexcept;
         constexpr Key pawn_key() const noexcept;
@@ -69,6 +69,8 @@ namespace cohen::chess::board
 
         constexpr void make(Move) noexcept;
         constexpr void unmake(Move, const BoardState&) noexcept;
+
+        constexpr void set_state(BoardState) noexcept;
 
         constexpr void set_side(Color) noexcept;
         constexpr void set_ep_file(File) noexcept;

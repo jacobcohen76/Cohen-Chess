@@ -12,7 +12,7 @@ CPPFLAGS    = -I$(INCLUDE)
 CFLAGS      =
 
 CXXFLAGS    = -std=c++20
-CXXFLAGS   += -Wall
+CXXFLAGS   += -Wall -Wextra -Wpedantic -Wshadow -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2  -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast
 CXXFLAGS   += -O3 -march=native
 
 all: release

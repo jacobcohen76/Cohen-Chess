@@ -25,6 +25,6 @@ namespace cohen::util::random
 namespace cohen
 {
     using cohen::util::random::LinearCongruentialGenerator;
-};
+}
 
 #endif

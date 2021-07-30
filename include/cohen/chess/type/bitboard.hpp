@@ -43,8 +43,8 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeSquareBB);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(RuntimeSquareBB);
         std::ranges::copy(range, std::begin(square_table));
         return square_table;
     }();
@@ -71,8 +71,8 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
-        auto range = std::views::iota(Rank{kRank1}, Rank{kRankNB})
-                   | std::views::transform(RuntimeRankBB);
+        const auto range = std::views::iota(Rank{kRank1}, Rank{kRankNB})
+                         | std::views::transform(RuntimeRankBB);
         std::ranges::copy(range, std::begin(rank_table));
         return rank_table;
     }();
@@ -99,8 +99,8 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
-        auto range = std::views::iota(File{kFileA}, File{kFileNB})
-                   | std::views::transform(RuntimeFileBB);
+        const auto range = std::views::iota(File{kFileA}, File{kFileNB})
+                         | std::views::transform(RuntimeFileBB);
         std::ranges::copy(range, std::begin(file_table));
         return file_table;
     }();
@@ -184,8 +184,8 @@ namespace cohen::chess::type::bitboard
     {
         static_assert(dir != kDirectionNone);
         std::array<Bitboard, kSquareNB> ray_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform([](Square sq) -> Bitboard
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform([](Square sq) -> Bitboard
         {
             Bitboard ray_bb = kEmptyBB;
             Square itr = sq;
@@ -257,9 +257,9 @@ namespace cohen::chess::type::bitboard
     constexpr Bitboard RayBB(Bitboard occ, Square sq, Direction dir) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        Bitboard ray_bb = RayBB(sq, dir);
-        int blocker = dir > 0 ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
-                              : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
+        const Bitboard ray_bb = RayBB(sq, dir);
+        const int blocker = dir > 0 ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
+                                    : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
         return ray_bb ^ RayBB(blocker, dir);
     }
 

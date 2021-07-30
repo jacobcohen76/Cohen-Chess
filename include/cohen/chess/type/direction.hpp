@@ -107,6 +107,6 @@ namespace cohen::chess
     using cohen::chess::type::direction::RayBetween;
     using cohen::chess::type::direction::Magnitude;
     using cohen::chess::type::direction::CanStep;
-};
+}
 
 #endif

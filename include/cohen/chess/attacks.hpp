@@ -39,10 +39,10 @@ namespace cohen::chess::attacks
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kColorNB> pawn_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(SquareBB);
-        auto white_range = range | std::views::transform(SetwisePawnAttacks<kWhite>);
-        auto black_range = range | std::views::transform(SetwisePawnAttacks<kBlack>);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(SquareBB);
+        const auto white_range = range | std::views::transform(SetwisePawnAttacks<kWhite>);
+        const auto black_range = range | std::views::transform(SetwisePawnAttacks<kBlack>);
         std::ranges::copy(white_range, std::begin(pawn_table[kWhite]));
         std::ranges::copy(black_range, std::begin(pawn_table[kBlack]));
         return pawn_table;
@@ -79,8 +79,8 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> knight_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeKnightAttacks);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(RuntimeKnightAttacks);
         std::ranges::copy(range, std::begin(knight_table));
         return knight_table;
     }();
@@ -99,7 +99,7 @@ namespace cohen::chess::attacks
 
     constexpr Bitboard SetwiseKingAttacks(Bitboard kings) noexcept
     {
-        Bitboard attacks = ShiftBB<kWest>(kings) | ShiftBB<kEast>(kings);
+        const Bitboard attacks = ShiftBB<kWest>(kings) | ShiftBB<kEast>(kings);
         return ShiftBB<kNorth>(kings | attacks)
              | ShiftBB<kSouth>(kings | attacks)
              | attacks;
@@ -114,8 +114,8 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> king_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeKingAttacks);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(RuntimeKingAttacks);
         std::ranges::copy(range, std::begin(king_table));
         return king_table;
     }();
