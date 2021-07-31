@@ -79,36 +79,10 @@ namespace cohen::chess::type::piece
 namespace cohen::chess
 {
     using cohen::chess::type::piece::PieceType;
-
-    using cohen::chess::type::piece::kPieceTypeNone;
-    using cohen::chess::type::piece::kPawn;
-    using cohen::chess::type::piece::kKnight;
-    using cohen::chess::type::piece::kBishop;
-    using cohen::chess::type::piece::kRook;
-    using cohen::chess::type::piece::kQueen;
-    using cohen::chess::type::piece::kKing;
-    using cohen::chess::type::piece::kPieceTypeAll;
-    using cohen::chess::type::piece::kPieceTypeNB;
+    using enum cohen::chess::type::piece::PieceTypeConstant;
 
     using cohen::chess::type::piece::Piece;
-
-    using cohen::chess::type::piece::kWhitePawn;
-    using cohen::chess::type::piece::kWhiteKnight;
-    using cohen::chess::type::piece::kWhiteBishop;
-    using cohen::chess::type::piece::kWhiteRook;
-    using cohen::chess::type::piece::kWhiteQueen;
-    using cohen::chess::type::piece::kWhiteKing;
-    using cohen::chess::type::piece::kWhiteAll;
-    using cohen::chess::type::piece::kBlackPawn;
-    using cohen::chess::type::piece::kBlackKnight;
-    using cohen::chess::type::piece::kBlackBishop;
-    using cohen::chess::type::piece::kBlackRook;
-    using cohen::chess::type::piece::kBlackQueen;
-    using cohen::chess::type::piece::kBlackKing;
-    using cohen::chess::type::piece::kBlackAll;
-    using cohen::chess::type::piece::kPieceNone;
-    using cohen::chess::type::piece::kOccupancy;
-    using cohen::chess::type::piece::kPieceNB;
+    using enum cohen::chess::type::piece::PieceConstant;
 
     using cohen::chess::type::piece::MakePiece;
     using cohen::chess::type::piece::PieceTypeOf;

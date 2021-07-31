@@ -36,10 +36,10 @@ namespace cohen::chess::type::anti
         return kAntiF - anti;
     }
 
-    constexpr Anti RelativeAnti(Anti anti, Color side) noexcept
+    constexpr Anti RelativeAnti(Color side, Anti anti) noexcept
     {
-        assert(kAnti1 <= anti && anti < kAntiNB);
         assert(side == kWhite || side == kBlack);
+        assert(kAnti1 <= anti && anti < kAntiNB);
         return side ? anti : MirrorAnti(anti);
     }
 }
@@ -47,23 +47,7 @@ namespace cohen::chess::type::anti
 namespace cohen::chess
 {
     using cohen::chess::type::anti::Anti;
-
-    using cohen::chess::type::anti::kAnti1;
-    using cohen::chess::type::anti::kAnti2;
-    using cohen::chess::type::anti::kAnti3;
-    using cohen::chess::type::anti::kAnti4;
-    using cohen::chess::type::anti::kAnti5;
-    using cohen::chess::type::anti::kAnti6;
-    using cohen::chess::type::anti::kAnti7;
-    using cohen::chess::type::anti::kAnti8;
-    using cohen::chess::type::anti::kAnti9;
-    using cohen::chess::type::anti::kAntiA;
-    using cohen::chess::type::anti::kAntiB;
-    using cohen::chess::type::anti::kAntiC;
-    using cohen::chess::type::anti::kAntiD;
-    using cohen::chess::type::anti::kAntiE;
-    using cohen::chess::type::anti::kAntiF;
-    using cohen::chess::type::anti::kAntiNB;
+    using enum cohen::chess::type::anti::AntiConstant;
 
     using cohen::chess::type::anti::MirrorAnti;
     using cohen::chess::type::anti::RelativeAnti;

@@ -22,18 +22,18 @@ namespace cohen::chess::attacks
             return ShiftBB<kSouthWest>(pawns) | ShiftBB<kSouthEast>(pawns);
     }
 
-    constexpr Bitboard SetwisePawnAttacks(Bitboard pawns, Color side) noexcept
+    constexpr Bitboard SetwisePawnAttacks(Color side, Bitboard pawns) noexcept
     {
         assert(side == kWhite || side == kBlack);
         return side == kWhite ? SetwisePawnAttacks<kWhite>(pawns)
                               : SetwisePawnAttacks<kBlack>(pawns);
     }
 
-    constexpr Bitboard RuntimePawnAttacks(Square sq, Color side) noexcept
+    constexpr Bitboard RuntimePawnAttacks(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
-        return SetwisePawnAttacks(SquareBB(sq), side);
+        assert(kA1 <= sq && sq < kSquareNB);
+        return SetwisePawnAttacks(side, SquareBB(sq));
     }
 
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
@@ -48,18 +48,18 @@ namespace cohen::chess::attacks
         return pawn_table;
     }();
 
-    constexpr Bitboard LookupPawnAttacks(Square sq, Color side) noexcept
+    constexpr Bitboard LookupPawnAttacks(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
+        assert(kA1 <= sq && sq < kSquareNB);
         return kPawnAttacksTable[side][sq];
     }
 
-    constexpr Bitboard PawnAttacks(Square sq, Color side) noexcept
+    constexpr Bitboard PawnAttacks(Color side, Square sq) noexcept
     {
-        assert(kA1 <= sq && sq < kSquareNB);
         assert(side == kWhite || side == kBlack);
-        return LookupPawnAttacks(sq, side);
+        assert(kA1 <= sq && sq < kSquareNB);
+        return LookupPawnAttacks(side, sq);
     }
 
     constexpr Bitboard SetwiseKnightAttacks(Bitboard knights) noexcept

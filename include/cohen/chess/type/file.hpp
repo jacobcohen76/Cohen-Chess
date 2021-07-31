@@ -29,10 +29,10 @@ namespace cohen::chess::type::file
         return file ^ 0b111;
     }
 
-    constexpr File RelativeFile(File file, Color side) noexcept
+    constexpr File RelativeFile(Color side, File file) noexcept
     {
-        assert(kFileA <= file && file < kFileNB);
         assert(side == kWhite || side == kBlack);
+        assert(kFileA <= file && file < kFileNB);
         return file ^ (side * 0b111);
     }
 }
@@ -40,16 +40,7 @@ namespace cohen::chess::type::file
 namespace cohen::chess
 {
     using cohen::chess::type::file::File;
-
-    using cohen::chess::type::file::kFileA;
-    using cohen::chess::type::file::kFileB;
-    using cohen::chess::type::file::kFileC;
-    using cohen::chess::type::file::kFileD;
-    using cohen::chess::type::file::kFileE;
-    using cohen::chess::type::file::kFileF;
-    using cohen::chess::type::file::kFileG;
-    using cohen::chess::type::file::kFileH;
-    using cohen::chess::type::file::kFileNB;
+    using enum cohen::chess::type::file::FileConstant;
 
     using cohen::chess::type::file::MirrorFile;
     using cohen::chess::type::file::RelativeFile;

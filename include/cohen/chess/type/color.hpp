@@ -18,10 +18,7 @@ namespace cohen::chess::type::color
 namespace cohen::chess
 {
     using cohen::chess::type::color::Color;
-
-    using cohen::chess::type::color::kWhite;
-    using cohen::chess::type::color::kBlack;
-    using cohen::chess::type::color::kColorNB;
+    using enum cohen::chess::type::color::ColorConstant;
 }
 
 #endif
