@@ -6,11 +6,11 @@
 using namespace cohen;
 using namespace cohen::chess;
 
-void Init()
-{
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr); std::cout.tie(nullptr);
-}
+// void Init()
+// {
+//     std::ios::sync_with_stdio(false);
+//     std::cin.tie(nullptr); std::cout.tie(nullptr);
+// }
 
 // void TestMagics()
 // {
@@ -66,15 +66,8 @@ void Init()
 
 int main(int argc, char* argv[])
 {
-    Init();
     Board board = {};
-    SetFenPosition("rnbqkbnr/pppppppp/8/8/3R4/8/2PPPPPP/2BQKBNR w KQkq - 0 1", board);
     MoveList move_list;
     GenMoves(board, move_list);
-    for (Move move : move_list)
-    {
-        std::cout << CoordinateString(FromSquare(move)) << "->" << CoordinateString(ToSquare(move)) << std::endl;
-    }
-    std::cout << AsciiBoard(board) << std::endl;
     return 0;
 }

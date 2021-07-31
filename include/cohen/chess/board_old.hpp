@@ -140,7 +140,7 @@ namespace cohen::chess::board
     constexpr Piece Board::capture(Square sq) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        Piece  pc = on(sq);
+        const Piece pc = on(sq);
         remove(pc, sq);
         return pc;
     }
