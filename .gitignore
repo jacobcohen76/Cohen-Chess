@@ -1,2 +1,4 @@
 .vscode
+.ccls
+compile_commands.json
 build
