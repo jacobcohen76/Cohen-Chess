@@ -145,8 +145,8 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicBishopMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeMagicBishopMask);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(RuntimeMagicBishopMask);
         std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
@@ -176,8 +176,8 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeMagicRookMask);
+        const auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
+                         | std::views::transform(RuntimeMagicRookMask);
         std::ranges::copy(range, std::begin(mask_table));
         return mask_table;
     }();
@@ -230,22 +230,22 @@ namespace cohen::chess::magics
         5, 4, 5, 5, 5, 5, 4, 5,
     };
 
-    inline constexpr auto kFancyMagicBishopTable = [](Key curr_offset)
+    inline constexpr auto kFancyMagicBishopTable = [](Key curr_pos)
     {
         std::array<FancyMagic, kSquareNB> magic_table = {};
-        for (Square sq = kA1; FancyMagic& fancy_magic : magic_table)
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            fancy_magic =
+            magic_table[sq] =
             {
-                .offset  = curr_offset,
-                .magic   = kFancyMagicBishopNumberTable[sq],
-                .mask    = MagicBishopMask(sq),
-                .shift   = kSquareNB - kFancyMagicBishopShiftTable[sq],
+                .offset = curr_pos,
+                .magic  = kFancyMagicBishopNumberTable[sq],
+                .mask   = MagicBishopMask(sq),
+                .shift  = kSquareNB - kFancyMagicBishopShiftTable[sq],
             };
-            curr_offset += MagicWidth(fancy_magic, MagicBishopMask(sq++));
+            curr_pos += MagicWidth(magic_table[sq], MagicBishopMask(sq));
         }
         return magic_table;
-    }(kKeyNone);
+    }(kKeyZero);
 
     inline constexpr std::array<Bitboard, kSquareNB> kFancyMagicRookNumberTable =
     {
@@ -271,19 +271,19 @@ namespace cohen::chess::magics
         11, 10, 10, 10, 10, 11, 10, 11,
     };
 
-    inline constexpr auto kFancyMagicRookTable = [](Key curr_offset)
+    inline constexpr auto kFancyMagicRookTable = [](Key curr_pos)
     {
         std::array<FancyMagic, kSquareNB> magic_table = {};
-        for (Square sq = kA1; FancyMagic& fancy_magic : magic_table)
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            fancy_magic =
+            magic_table[sq] =
             {
-                .offset  = curr_offset,
-                .magic   = kFancyMagicRookNumberTable[sq],
-                .mask    = MagicRookMask(sq),
-                .shift   = kSquareNB - kFancyMagicRookShiftTable[sq],
+                .offset = curr_pos,
+                .magic  = kFancyMagicRookNumberTable[sq],
+                .mask   = MagicRookMask(sq),
+                .shift  = kSquareNB - kFancyMagicRookShiftTable[sq],
             };
-            curr_offset += MagicWidth(fancy_magic, MagicRookMask(sq++));
+            curr_pos += MagicWidth(magic_table[sq], MagicRookMask(sq));
         }
         return magic_table;
     }(MagicWidth(kFancyMagicBishopTable, MagicBishopMask));
@@ -357,13 +357,13 @@ namespace cohen::chess::magics
     inline constexpr std::array<BishopBlackMagic, kSquareNB> kBlackMagicBishopTable = []()
     {
         std::array<BishopBlackMagic, kSquareNB> magic_table = {};
-        for (Square sq = kA1; BishopBlackMagic& black_magic : magic_table)
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            black_magic =
+            magic_table[sq] =
             {
                 .offset   =  kBlackMagicBishopOffsetTable[sq],
                 .magic    =  kBlackMagicBishopNumberTable[sq],
-                .not_mask = ~MagicBishopMask(sq++),
+                .not_mask = ~MagicBishopMask(sq),
             };
         }
         return magic_table;
@@ -398,13 +398,13 @@ namespace cohen::chess::magics
     inline constexpr std::array<RookBlackMagic, kSquareNB> kBlackMagicRookTable = []()
     {
         std::array<RookBlackMagic, kSquareNB> magic_table = {};
-        for (Square sq = kA1; RookBlackMagic& black_magic : magic_table)
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            black_magic =
+            magic_table[sq] =
             {
                 .offset   =  kBlackMagicRookOffsetTable[sq],
                 .magic    =  kBlackMagicRookNumberTable[sq],
-                .not_mask = ~MagicRookMask(sq++),
+                .not_mask = ~MagicRookMask(sq),
             };
         }
         return magic_table;

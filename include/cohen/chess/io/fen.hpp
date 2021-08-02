@@ -198,12 +198,27 @@ namespace cohen::chess::io::fen
         FormatFenPosition(oss, board);
         return oss.str();
     }
+
+    inline Board ParseFen(std::string fen_str)
+    {
+        Board board = {};
+
+        return board;
+    }
+
+    inline std::string FenString(Board board)
+    {
+
+        return "";
+    }
 }
 
 namespace cohen::chess
 {
     using cohen::chess::io::fen::SetFenPosition;
     using cohen::chess::io::fen::FormatFenPosition;
+    using cohen::chess::io::fen::ParseFen;
+    using cohen::chess::io::fen::FenString;
 }
 
 #endif
