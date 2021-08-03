@@ -64,7 +64,7 @@ namespace cohen::chess::attacks
 
     constexpr Bitboard SetwiseKnightAttacks(Bitboard knights) noexcept
     {
-        const Bitboard inner = ShiftBB<kWest>    (knights) | ShiftBB<kEast>    (knights);
+        const Bitboard inner = ShiftBB<kWest>(knights) | ShiftBB<kEast>(knights);
         const Bitboard outer = ShiftBB<kWestWest>(knights) | ShiftBB<kEastEast>(knights);
         return ShiftBB<kNorth>(outer) | ShiftBB<kNorthNorth>(inner)
              | ShiftBB<kSouth>(outer) | ShiftBB<kSouthSouth>(inner);
