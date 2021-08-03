@@ -69,10 +69,14 @@ namespace cohen::chess::type::direction
         {
             if (from != to)
             {
-                if (OnSameRank(from, to)) ray_between_table[from][to] = from < to ? kEast      : kWest;
-                if (OnSameFile(from, to)) ray_between_table[from][to] = from < to ? kNorth     : kSouth;
-                if (OnSameDiag(from, to)) ray_between_table[from][to] = from < to ? kNorthEast : kSouthWest;
-                if (OnSameAnti(from, to)) ray_between_table[from][to] = from < to ? kNorthWest : kSouthEast;
+                if (OnSameRank(from, to))
+                    ray_between_table[from][to] = from < to ? kEast : kWest;
+                if (OnSameFile(from, to))
+                    ray_between_table[from][to] = from < to ? kNorth : kSouth;
+                if (OnSameDiag(from, to))
+                    ray_between_table[from][to] = from < to ? kNorthEast : kSouthWest;
+                if (OnSameAnti(from, to))
+                    ray_between_table[from][to] = from < to ? kNorthWest : kSouthEast;
             }
         }
         return ray_between_table;
