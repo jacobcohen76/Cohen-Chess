@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 set(CMAKE_CXX_COMPILER g++-11)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS -fconstexpr-ops-limit=2147483647)
 project(Cohen-Chess)
 include_directories(include)
 add_subdirectory(src)

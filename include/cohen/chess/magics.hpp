@@ -25,10 +25,10 @@ namespace cohen::chess::magics
 
     template <Magic T, size_t table_size>
     constexpr void FillMagicAttackTable(
-        std::array<Bitboard, table_size>&               attacks_table,
-        const std::array<T, kSquareNB>&                 magic_table,
-        const Functor<Bitboard(Square)> auto&           mask_fn,
-        const Functor<Bitboard(Bitboard, Square)> auto& attacks_fn) noexcept
+        std::array<Bitboard, table_size>&          attacks_table,
+        const std::array<T, kSquareNB>&            magic_table,
+        Functor<Bitboard(Square)> auto&&           mask_fn,
+        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
     {
         for (Square sq = kA1; const T& magic : magic_table)
         {

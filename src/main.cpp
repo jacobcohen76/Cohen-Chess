@@ -9,9 +9,9 @@ using namespace cohen::chess::magics;
 
 void TestMagics()
 {
-    const auto assert_magic = [](const Functor<Bitboard(Bitboard, Square)> auto control,
-                                 const Functor<Bitboard(Bitboard, Square)> auto testing,
-                                 const Bitboard mask, const Square sq) -> void
+    const auto assert_magic = [](Functor<Bitboard(Bitboard, Square)> auto&& control,
+                                 Functor<Bitboard(Bitboard, Square)> auto&& testing,
+                                 Bitboard mask, Square sq) -> void
     {
         Bitboard occ = kEmptyBB;
         do
