@@ -437,6 +437,45 @@ namespace cohen::chess::magics
         assert(kA1 <= sq && sq < kSquareNB);
         return BlackMagicBishopAttacks(occ, sq) | BlackMagicRookAttacks(occ, sq);
     }
+
+    constexpr Bitboard* FillMagicAttackTable(
+        Bitboard*                                  data,
+        Functor<Bitboard(Square)> auto&&           mask_fn,
+        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
+    {
+        Bitboard* lower = nullptr;
+        Bitboard* upper = data;
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            lower = upper;
+            do
+            {
+                Bitboard attacks = attacks_fn(occ, sq);
+                if (std::find(lower, upper, attacks) == upper)
+                {
+                    *upper++ = attacks;
+                }
+            }
+            while (occ = CarryRipple(occ, mask));
+        }
+        return upper;
+    }
+
+    inline constexpr auto kMagicRookAttackTable = []()
+    {
+        std::array<Bitboard, 4900> attack_table = {};
+        FillMagicAttackTable(std::data(attack_table), MagicRookMask, RayRookAttacks);
+        return attack_table;
+    }();
+
+    inline constexpr auto kMagicBishopAttackTable = []()
+    {
+        std::array<Bitboard, 1428> attack_table = {};
+        FillMagicAttackTable(std::data(attack_table), MagicBishopMask, RayBishopAttacks);
+        return attack_table;
+    }();
 }
 
 namespace cohen::chess

@@ -17,6 +17,21 @@ namespace cohen::util::bits
     inline constexpr size_t kNumBits = sizeof(T) * 8;
 
     template <std::unsigned_integral T>
+    constexpr T CarryRipple(T x, T mask) noexcept
+    {
+        return (x - mask) & mask;
+    }
+
+    template <std::unsigned_integral T>
+    constexpr T Snoob(T x)
+    {
+        const T smallest = x & -x;
+        const T ripple   = x + smallest;
+        const T ones     = x ^ ripple;
+        return (ones >> 2) / smallest | ripple;
+    }
+
+    template <std::unsigned_integral T>
     constexpr T RotateLeft(T x, int s) noexcept
     {
         return std::rotl(x, s);
@@ -38,7 +53,7 @@ namespace cohen::util::bits
     constexpr int PopLSB(T& x) noexcept
     {
         assert(x != 0);
-        int lsb = BitScanForward(x);
+        const int lsb = BitScanForward(x);
         x = FlipLSB(x);
         return lsb;
     }
@@ -207,7 +222,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int DeBruijnCountTrailingOnes(T x) noexcept
     {
-        assert(x != ~T{0});
+        assert(~x != 0);
         return DeBruijnCountTrailingZeroes(~x);
     }
 
@@ -245,7 +260,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T>
     constexpr int DeBruijnCountLeadingOnes(T x) noexcept
     {
-        assert(x != ~T{0});
+        assert(~x != 0);
         return DeBruijnCountLeadingZeroes(~x);
     }
 
@@ -296,6 +311,8 @@ namespace cohen
 {
     using cohen::util::bits::kNumBits;
 
+    using cohen::util::bits::CarryRipple;
+    using cohen::util::bits::Snoob;
     using cohen::util::bits::RotateLeft;
     using cohen::util::bits::RotateRight;
     using cohen::util::bits::FlipLSB;

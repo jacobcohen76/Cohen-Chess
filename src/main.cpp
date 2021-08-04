@@ -34,5 +34,15 @@ void TestMagics()
 int main(int argc, char* argv[])
 {
     TestMagics();
+    std::cout << "kMagicRookAttackTable\n";
+    for (Bitboard attacks : kMagicRookAttackTable)
+    {
+        std::cout << AsciiBoard(attacks) << '\n';
+    }
+    std::cout << "kMagicBishopAttackTable\n";
+    for (Bitboard attacks : kMagicBishopAttackTable)
+    {
+        std::cout << AsciiBoard(attacks) << '\n';
+    }
     return 0;
 }
