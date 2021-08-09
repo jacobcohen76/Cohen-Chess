@@ -5,6 +5,7 @@
 #include <cassert>
 #include <iostream>
 
+#include <cohen/chess/io/algebraic_notation.hpp>
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/color.hpp>
 #include <cohen/chess/type/file.hpp>

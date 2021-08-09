@@ -54,10 +54,14 @@ namespace cohen::chess::zobrist
         {
             if (FlipLSB(cr))
             {
-                if (kWhiteOO  & cr) castling_table[cr] ^= castling_table[kWhiteOO];
-                if (kWhiteOOO & cr) castling_table[cr] ^= castling_table[kWhiteOOO];
-                if (kBlackOO  & cr) castling_table[cr] ^= castling_table[kBlackOO];
-                if (kBlackOOO & cr) castling_table[cr] ^= castling_table[kBlackOOO];
+                if (kWhiteOO  & cr)
+                    castling_table[cr] ^= castling_table[kWhiteOO];
+                if (kWhiteOOO & cr)
+                    castling_table[cr] ^= castling_table[kWhiteOOO];
+                if (kBlackOO  & cr)
+                    castling_table[cr] ^= castling_table[kBlackOO];
+                if (kBlackOOO & cr)
+                    castling_table[cr] ^= castling_table[kBlackOOO];
             }
         }
         return castling_table;

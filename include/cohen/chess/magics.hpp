@@ -438,9 +438,9 @@ namespace cohen::chess::magics
         return BlackMagicBishopAttacks(occ, sq) | BlackMagicRookAttacks(occ, sq);
     }
 
-    constexpr Bitboard* FillMagicAttackTable(
+    constexpr Bitboard* FillByteMagicAttackTable(
         Bitboard*                                  data,
-        Functor<Bitboard(Square)> auto&&           mask_fn,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
         Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
     {
         Bitboard* lower = nullptr;
