@@ -319,8 +319,8 @@ namespace cohen::chess::magics
     template <int shift>
     struct BlackMagic
     {
-        Key      offset;
-        Bitboard magic, not_mask;
+        Key      magic, offset;
+        Bitboard not_mask;
 
         constexpr Key key(Bitboard occ) const noexcept
         {
@@ -361,8 +361,8 @@ namespace cohen::chess::magics
         {
             magic_table[sq] =
             {
-                .offset   =  kBlackMagicBishopOffsetTable[sq],
                 .magic    =  kBlackMagicBishopNumberTable[sq],
+                .offset   =  kBlackMagicBishopOffsetTable[sq],
                 .not_mask = ~MagicBishopMask(sq),
             };
         }
@@ -402,8 +402,8 @@ namespace cohen::chess::magics
         {
             magic_table[sq] =
             {
-                .offset   =  kBlackMagicRookOffsetTable[sq],
                 .magic    =  kBlackMagicRookNumberTable[sq],
+                .offset   =  kBlackMagicRookOffsetTable[sq],
                 .not_mask = ~MagicRookMask(sq),
             };
         }
