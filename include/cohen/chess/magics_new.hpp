@@ -83,13 +83,35 @@ namespace cohen::chess::magics
         return LookupMagicRookMask(sq);
     }
 
-    constexpr Bitboard* FillMagicAttackTable(
-        Bitboard*                                  data,
+    constexpr Bitboard* FillPureMagicAttackTable(
+        Bitboard*                                  attack_table,
+        std::input_iterator                 auto   magic_itr,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
+        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
+    {
+        Bitboard* max_itr = nullptr;
+        for (Square sq = kA1; sq < kSquareNB; ++sq, ++magic_itr)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            do
+            {
+                Key occ_key = magic_itr->key(occ);
+                attack_table[occ_key] = attacks_fn(occ, sq);
+                max_itr = std::max(max_itr, attack_table + occ_key);
+            }
+            while (occ = CarryRipple(occ, mask));
+        }
+        return max_itr + 1;
+    }
+
+    constexpr Bitboard* FillByteMagicAttackTable(
+        Bitboard*                                  table_data,
         Functor<Bitboard(Square)>           auto&& mask_fn,
         Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
     {
         Bitboard* lower = nullptr;
-        Bitboard* upper = data;
+        Bitboard* upper = table_data;
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Bitboard mask = mask_fn(sq);
