@@ -5,7 +5,6 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
-#include <ranges>
 
 #include <cohen/chess/type/anti.hpp>
 #include <cohen/chess/type/diag.hpp>
@@ -43,9 +42,10 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kSquareNB> kSquareBitboardTable = []()
     {
         std::array<Bitboard, kSquareNB> square_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeSquareBB);
-        std::ranges::copy(range, std::data(square_table));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            square_table[sq] = RuntimeSquareBB(sq);
+        }
         return square_table;
     }();
 
@@ -71,9 +71,10 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kRankNB> kRankBitboardTable = []()
     {
         std::array<Bitboard, kRankNB> rank_table = {};
-        auto range = std::views::iota(Rank{kRank1}, Rank{kRankNB})
-                   | std::views::transform(RuntimeRankBB);
-        std::ranges::copy(range, std::data(rank_table));
+        for (Rank rank = kRank1; rank < kRankNB; ++rank)
+        {
+            rank_table[rank] = RuntimeRankBB(rank);
+        }
         return rank_table;
     }();
 
@@ -99,9 +100,10 @@ namespace cohen::chess::type::bitboard
     inline constexpr std::array<Bitboard, kFileNB> kFileBitboardTable = []()
     {
         std::array<Bitboard, kFileNB> file_table = {};
-        auto range = std::views::iota(File{kFileA}, File{kFileNB})
-                   | std::views::transform(RuntimeFileBB);
-        std::ranges::copy(range, std::data(file_table));
+        for (File file = kFileA; file < kFileNB; ++file)
+        {
+            file_table[file] = RuntimeFileBB(file);
+        }
         return file_table;
     }();
 
@@ -184,8 +186,7 @@ namespace cohen::chess::type::bitboard
     {
         static_assert(dir != kDirectionNone);
         std::array<Bitboard, kSquareNB> ray_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform([](Square sq) -> Bitboard
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Bitboard ray_bb = kEmptyBB;
             Square itr = sq;
@@ -193,9 +194,8 @@ namespace cohen::chess::type::bitboard
             {
                 ray_bb |= SquareBB(itr += dir);
             }
-            return ray_bb;
-        });
-        std::ranges::copy(range, std::data(ray_table));
+            ray_table[sq] = ray_bb;
+        }
         return ray_table;
     }();
 
@@ -235,22 +235,22 @@ namespace cohen::chess::type::bitboard
     {
         switch (dir)
         {
-            case kNorth:          return RayBB<kNorth>         (sq);
-            case kEast:           return RayBB<kEast>          (sq);
-            case kSouth:          return RayBB<kSouth>         (sq);
-            case kWest:           return RayBB<kWest>          (sq);
+            case kNorth:      return RayBB<kNorth>         (sq);
+            case kEast:       return RayBB<kEast>          (sq);
+            case kSouth:      return RayBB<kSouth>         (sq);
+            case kWest:       return RayBB<kWest>          (sq);
 
-            case kNorthEast:      return RayBB<kNorthEast>     (sq);
-            case kSouthEast:      return RayBB<kSouthEast>     (sq);
-            case kSouthWest:      return RayBB<kSouthWest>     (sq);
-            case kNorthWest:      return RayBB<kNorthWest>     (sq);
+            case kNorthEast:  return RayBB<kNorthEast>     (sq);
+            case kSouthEast:  return RayBB<kSouthEast>     (sq);
+            case kSouthWest:  return RayBB<kSouthWest>     (sq);
+            case kNorthWest:  return RayBB<kNorthWest>     (sq);
 
-            case kNorthNorth:     return RayBB<kNorthNorth>    (sq);
-            case kEastEast:       return RayBB<kEastEast>      (sq);
-            case kSouthSouth:     return RayBB<kSouthSouth>    (sq);
-            case kWestWest:       return RayBB<kWestWest>      (sq);
+            case kNorthNorth: return RayBB<kNorthNorth>    (sq);
+            case kEastEast:   return RayBB<kEastEast>      (sq);
+            case kSouthSouth: return RayBB<kSouthSouth>    (sq);
+            case kWestWest:   return RayBB<kWestWest>      (sq);
 
-            default:              return RayBB<kDirectionNone> (sq);
+            default:          return RayBB<kDirectionNone> (sq);
         }
     }
 

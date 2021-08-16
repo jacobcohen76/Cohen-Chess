@@ -11,7 +11,9 @@ namespace cohen::chess::type::key
     {
         kKeyNone = 0x0000000000000000,
         kKeyZero = 0x0000000000000000,
+        kKeyMin  = 0x0000000000000000,
         kKeyAll  = 0xFFFFFFFFFFFFFFFF,
+        kKeyMax  = 0xFFFFFFFFFFFFFFFF,
     };
 }
 

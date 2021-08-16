@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <ranges>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/color.hpp>
@@ -39,12 +38,11 @@ namespace cohen::chess::attacks
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kColorNB> kPawnAttacksTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kColorNB> pawn_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(SquareBB);
-        auto white_range = range | std::views::transform(SetwisePawnAttacks<kWhite>);
-        auto black_range = range | std::views::transform(SetwisePawnAttacks<kBlack>);
-        std::ranges::copy(white_range, std::data(pawn_table[kWhite]));
-        std::ranges::copy(black_range, std::data(pawn_table[kBlack]));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            pawn_table[kWhite][sq] = RuntimePawnAttacks(kWhite, sq);
+            pawn_table[kBlack][sq] = RuntimePawnAttacks(kBlack, sq);
+        }
         return pawn_table;
     }();
 
@@ -79,9 +77,10 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKnightAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> knight_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeKnightAttacks);
-        std::ranges::copy(range, std::data(knight_table));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            knight_table[sq] = RuntimeKnightAttacks(sq);
+        }
         return knight_table;
     }();
 
@@ -114,9 +113,10 @@ namespace cohen::chess::attacks
     inline constexpr std::array<Bitboard, kSquareNB> kKingAttacksTable = []()
     {
         std::array<Bitboard, kSquareNB> king_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeKingAttacks);
-        std::ranges::copy(range, std::data(king_table));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            king_table[sq] = RuntimeKingAttacks(sq);
+        }
         return king_table;
     }();
 

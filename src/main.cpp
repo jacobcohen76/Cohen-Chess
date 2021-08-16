@@ -33,7 +33,7 @@ void TestMagics()
 
 int main(int argc, char* argv[])
 {
-    TestMagics();
+    // TestMagics()
     std::cout << "kMagicRookAttackTable\n";
     for (Bitboard attacks : kMagicRookAttackTable)
     {

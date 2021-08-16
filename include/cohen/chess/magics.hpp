@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <ranges>
 #include <span>
 
 #include <cohen/chess/type/bitboard.hpp>
@@ -40,6 +39,32 @@ namespace cohen::chess::magics
             }
             while ((occ = (occ - mask) & mask)); ++sq;
         }
+    }
+
+    constexpr Bitboard* FillMagicAttackTable(
+        Bitboard*                                  attack_table,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
+        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
+    {
+        Bitboard* lower = nullptr;
+        Bitboard* upper = attack_table;
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            lower = upper;
+            do
+            {
+                Bitboard  attacks = attacks_fn(occ, sq);
+                Bitboard* found   = std::find(lower, upper, attacks);
+                if (found == upper)
+                {
+                    *upper++ = attacks;
+                }
+            }
+            while ((occ = CarryRipple(occ, mask)));
+        }
+        return upper;
     }
 
     constexpr Key MagicMinKey(const Magic auto& magic, Bitboard mask) noexcept
@@ -145,9 +170,10 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicBishopMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeMagicBishopMask);
-        std::ranges::copy(range, std::data(mask_table));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            mask_table[sq] = RuntimeMagicBishopMask(sq);
+        }
         return mask_table;
     }();
 
@@ -176,9 +202,10 @@ namespace cohen::chess::magics
     inline constexpr std::array<Bitboard, kSquareNB> kMagicRookMaskTable = []()
     {
         std::array<Bitboard, kSquareNB> mask_table = {};
-        auto range = std::views::iota(Square{kA1}, Square{kSquareNB})
-                   | std::views::transform(RuntimeMagicRookMask);
-        std::ranges::copy(range, std::data(mask_table));
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            mask_table[sq] = RuntimeMagicRookMask(sq);
+        }
         return mask_table;
     }();
 
@@ -292,7 +319,8 @@ namespace cohen::chess::magics
     {
         constexpr Key kBishopMaxKey = MagicMaxKey(kFancyMagicBishopTable, MagicBishopMask);
         constexpr Key kRookMaxKey   = MagicMaxKey(kFancyMagicRookTable,   MagicRookMask);
-        std::array<Bitboard, std::max(kBishopMaxKey, kRookMaxKey) + 1> attack_table = {};
+        constexpr Key kTableSize    = std::max(kBishopMaxKey, kRookMaxKey) + 1;
+        std::array<Bitboard, kTableSize> attack_table = {};
         FillMagicAttackTable(attack_table, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
         FillMagicAttackTable(attack_table, kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
         return attack_table;
@@ -458,7 +486,7 @@ namespace cohen::chess::magics
                     *upper++ = attacks;
                 }
             }
-            while (occ = CarryRipple(occ, mask));
+            while ((occ = CarryRipple(occ, mask)));
         }
         return upper;
     }

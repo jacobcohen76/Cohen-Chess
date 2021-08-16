@@ -6,7 +6,6 @@
 #include <cassert>
 #include <concepts>
 #include <cstdint>
-#include <ranges>
 
 namespace cohen::util::bits
 {
@@ -14,7 +13,7 @@ namespace cohen::util::bits
     template <std::unsigned_integral T> constexpr int BitScanForward(T) noexcept;
 
     template <typename T>
-    inline constexpr size_t kNumBits = sizeof(T) * 8;
+    inline constexpr std::size_t kNumBits = sizeof(T) * 8;
 
     template <std::unsigned_integral T>
     constexpr T CarryRipple(T x, T mask) noexcept
@@ -78,9 +77,10 @@ namespace cohen::util::bits
     inline constexpr std::array<uint8_t, 65536> kPopCountTable = []()
     {
         std::array<uint8_t, 65536> lookup_table = {};
-        auto range = std::views::iota(0, 65536)
-                   | std::views::transform(PopCountLSB<uint32_t>);
-        std::ranges::copy(range, std::begin(lookup_table));
+        for (uint32_t x = 0; x < lookup_table.size(); ++x)
+        {
+            lookup_table[x] = PopCountLSB(x);
+        }
         return lookup_table;
     }();
 
