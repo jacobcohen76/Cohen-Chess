@@ -30,7 +30,7 @@ namespace cohen::chess::type::move
     constexpr Move MakeMove(Square from, Square to, MoveType type = kQuietMove) noexcept
     {
         assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   &&   to < kSquareNB);
+        assert(kA1 <= to   && to   < kSquareNB);
         return type | from | (to << 6);
     }
 

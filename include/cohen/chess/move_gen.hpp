@@ -66,10 +66,10 @@ namespace cohen::chess::move_gen
 
     constexpr void GenMoves(const Board& board, MoveList& move_list) noexcept
     {
-        Color side = board.side();
-        FillMoveList(move_list, board.rooks(side),   BindGen<FancyMagicRookAttacks>(board.occ(), ~board.occ(side)));
-        FillMoveList(move_list, board.bishops(side), BindGen<FancyMagicBishopAttacks>(board.occ(), ~board.occ(side)));
-        FillMoveList(move_list, board.pawns(side),   BindGen<PawnAttacks>(side, board.occ(side ^ kBlack)));
+        // Color side = board.side();
+        // FillMoveList(move_list, board.rooks(side),   BindGen<FancyMagicRookAttacks>(board.occ(), ~board.occ(side)));
+        // FillMoveList(move_list, board.bishops(side), BindGen<FancyMagicBishopAttacks>(board.occ(), ~board.occ(side)));
+        // FillMoveList(move_list, board.pawns(side),   BindGen<PawnAttacks>(side, board.occ(side ^ kBlack)));
     }
 }
 

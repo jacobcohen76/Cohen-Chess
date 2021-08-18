@@ -1,7 +1,7 @@
 #ifndef COHEN_UTIL_RANDOM_HPP_INCLUDED
 #define COHEN_UTIL_RANDOM_HPP_INCLUDED
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace cohen::util::random
 {

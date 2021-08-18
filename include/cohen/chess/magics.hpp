@@ -1,123 +1,84 @@
 #ifndef COHEN_CHESS_MAGICS_HPP_INCLUDED
 #define COHEN_CHESS_MAGICS_HPP_INCLUDED
 
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <span>
+#include <concepts>
+#include <ranges>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/key.hpp>
 #include <cohen/chess/type/square.hpp>
 #include <cohen/chess/attacks.hpp>
-
 #include <cohen/util/bits.hpp>
 #include <cohen/util/functor.hpp>
 
 namespace cohen::chess::magics
 {
     template <typename T>
-    concept Magic = requires(T magic, Bitboard occ)
+    concept Magic = requires(const T magic, Bitboard occ)
     {
         { magic.key(occ) } -> std::same_as<Key>;
     };
 
-    template <Magic T, size_t table_size>
-    constexpr void FillMagicAttackTable(
-        std::array<Bitboard, table_size>&          attacks_table,
-        const std::array<T, kSquareNB>&            magic_table,
-        Functor<Bitboard(Square)> auto&&           mask_fn,
-        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
-    {
-        for (Square sq = kA1; const T& magic : magic_table)
-        {
-            Bitboard mask = mask_fn(sq);
-            Bitboard  occ = kEmptyBB;
-            do
-            {
-                attacks_table[magic.key(occ)] = attacks_fn(occ, sq);
-            }
-            while ((occ = (occ - mask) & mask)); ++sq;
-        }
-    }
+    template <typename T>
+    concept RangeOfMagic = std::ranges::range<T> && Magic<std::ranges::range_value_t<T>>;
 
-    constexpr Bitboard* FillMagicAttackTable(
-        Bitboard*                                  attack_table,
-        Functor<Bitboard(Square)>           auto&& mask_fn,
-        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
-    {
-        Bitboard* lower = nullptr;
-        Bitboard* upper = attack_table;
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
-        {
-            Bitboard mask = mask_fn(sq);
-            Bitboard occ  = kEmptyBB;
-            lower = upper;
-            do
-            {
-                Bitboard  attacks = attacks_fn(occ, sq);
-                Bitboard* found   = std::find(lower, upper, attacks);
-                if (found == upper)
-                {
-                    *upper++ = attacks;
-                }
-            }
-            while ((occ = CarryRipple(occ, mask)));
-        }
-        return upper;
-    }
-
-    constexpr Key MagicMinKey(const Magic auto& magic, Bitboard mask) noexcept
+    constexpr Key MagicMinKey(Magic auto&& magic, Bitboard mask) noexcept
     {
         Key  min_key = kKeyAll;
         Bitboard occ = kEmptyBB;
         do
         {
-            min_key = std::min(min_key, magic.key(occ));
+            Key key = magic.key(occ);
+            min_key = std::min(min_key, key);
         }
-        while ((occ = (occ - mask) & mask));
+        while ((occ = CarryRipple(occ, mask)));
         return min_key;
     }
 
-    template <Magic T>
-    constexpr Key MagicMinKey(const std::array<T, kSquareNB>&       magic_table,
-                              const Functor<Bitboard(Square)> auto& mask_fn) noexcept
+    constexpr Key MagicMinKey(
+        RangeOfMagic              auto&& range,
+        Functor<Bitboard(Square)> auto&& mask_fn) noexcept
     {
-        Key min_key = kKeyNone;
-        for (Square sq = kA1; const T& magic : magic_table)
+        Key min_key = kKeyAll;
+        for (Square sq = kA1; Magic auto&& magic : range)
         {
-            min_key = std::min(min_key, MagicMinKey(magic, mask_fn(sq++)));
+            Bitboard mask = mask_fn(sq++);
+            Key key = MagicMinKey(magic, mask);
+            min_key = std::min(min_key, key);
         }
         return min_key;
     }
 
-    constexpr Key MagicMaxKey(const Magic auto& magic, Bitboard mask) noexcept
+    constexpr Key MagicMaxKey(Magic auto&& magic, Bitboard mask) noexcept
     {
-        Key  max_key = kKeyNone;
+        Key  max_key = kKeyZero;
         Bitboard occ = kEmptyBB;
         do
         {
-            max_key = std::max(max_key, magic.key(occ));
+            Key key = magic.key(occ);
+            max_key = std::max(max_key, key);
         }
-        while ((occ = (occ - mask) & mask));
+        while ((occ = CarryRipple(occ, mask)));
         return max_key;
     }
 
-    template <Magic T>
-    constexpr Key MagicMaxKey(const std::array<T, kSquareNB>&       magic_table,
-                              const Functor<Bitboard(Square)> auto& mask_fn) noexcept
+    constexpr Key MagicMaxKey(
+        RangeOfMagic              auto&& range,
+        Functor<Bitboard(Square)> auto&& mask_fn) noexcept
     {
-        Key max_key = kKeyNone;
-        for (Square sq = kA1; const T& magic : magic_table)
+        Key max_key = kKeyZero;
+        for (Square sq = kA1; Magic auto&& magic : range)
         {
-            max_key = std::max(max_key, MagicMaxKey(magic, mask_fn(sq++)));
+            Bitboard mask = mask_fn(sq++);
+            Key key = MagicMaxKey(magic, mask);
+            max_key = std::max(max_key, key);
         }
         return max_key;
     }
 
-    constexpr std::pair<Key, Key> MagicKeyRange(const Magic auto& magic, Bitboard mask) noexcept
+    constexpr std::pair<Key, Key> MagicKeyRange(Magic auto&& magic, Bitboard mask) noexcept
     {
-        Key  min_key = kKeyAll, max_key = kKeyNone;
+        Key  min_key = kKeyAll, max_key = kKeyZero;
         Bitboard occ = kEmptyBB;
         do
         {
@@ -125,35 +86,36 @@ namespace cohen::chess::magics
             min_key = std::min(min_key, key);
             max_key = std::max(max_key, key);
         }
-        while ((occ = (occ - mask) & mask));
+        while ((occ = CarryRipple(occ, mask)));
         return {min_key, max_key};
     }
 
-    template <Magic T>
-    constexpr std::pair<Key, Key> MagicKeyRange(const std::array<T, kSquareNB>&       magic_table,
-                                                const Functor<Bitboard(Square)> auto& mask_fn) noexcept
+    constexpr std::pair<Key, Key> MagicKeyRange(
+        RangeOfMagic              auto&& range,
+        Functor<Bitboard(Square)> auto&& mask_fn) noexcept
     {
         Key min_key = kKeyAll, max_key = kKeyNone;
-        for (Square sq = kA1; const T& magic : magic_table)
+        for (Square sq = kA1; Magic auto&& magic : range)
         {
-            auto [sq_min_key, sq_max_key] = MagicKeyRange(magic, mask_fn(sq++));
-            min_key = std::min(min_key, sq_min_key);
-            max_key = std::max(max_key, sq_max_key);
+            Bitboard mask = mask_fn(sq++);
+            auto [curr_min, curr_max] = MagicKeyRange(magic, mask);
+            min_key = std::min(min_key, curr_min);
+            max_key = std::max(max_key, curr_max);
         }
         return {min_key, max_key};
     }
 
-    constexpr Key MagicWidth(const Magic auto& magic, Bitboard mask) noexcept
+    constexpr Key MagicKeyWidth(Magic auto&& magic, Bitboard mask) noexcept
     {
         auto [min_key, max_key] = MagicKeyRange(magic, mask);
         return max_key - min_key + 1;
     }
 
-    template <Magic T>
-    constexpr Key MagicWidth(const std::array<T, kSquareNB>&       magic_table,
-                             const Functor<Bitboard(Square)> auto& mask_fn) noexcept
+    constexpr Key MagicKeyWidth(
+        RangeOfMagic              auto&& range,
+        Functor<Bitboard(Square)> auto&& mask_fn) noexcept
     {
-        auto [min_key, max_key] = MagicKeyRange(magic_table, mask_fn);
+        auto [min_key, max_key] = MagicKeyRange(range, mask_fn);
         return max_key - min_key + 1;
     }
 
@@ -221,15 +183,137 @@ namespace cohen::chess::magics
         return LookupMagicRookMask(sq);
     }
 
+    constexpr Bitboard* FillMagicAttackTable(
+        Bitboard*                                  attack_table,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
+        Functor<Bitboard(Square, Bitboard)> auto&& attacks_fn) noexcept
+    {
+        Bitboard* lower = nullptr;
+        Bitboard* upper = attack_table;
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            lower = upper;
+            do
+            {
+                Bitboard  attacks = attacks_fn(sq, occ);
+                Bitboard* found   = std::find(lower, upper, attacks);
+                if (found == upper)
+                {
+                    *upper++ = attacks;
+                }
+            }
+            while ((occ = CarryRipple(occ, mask)));
+        }
+        return upper;
+    }
+
+    constexpr Bitboard* FillMagicAttackTable(
+        Bitboard*                                  attack_table,
+        RangeOfMagic                        auto&& range,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
+        Functor<Bitboard(Square, Bitboard)> auto&& attacks_fn) noexcept
+    {
+        Bitboard* upper = attack_table;
+        for (Square sq = kA1; Magic auto&& magic : range)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            do
+            {
+                Key key = magic.key(occ);
+                attack_table[key] = attacks_fn(sq, occ);
+                upper = std::max(upper, attack_table + key + 1);
+            }
+            while ((occ = CarryRipple(occ, mask))); ++sq;
+        }
+        return upper;
+    }
+
+    constexpr uint8_t* FillMagicOffsetTable(
+        uint8_t*                                   offset_table,
+        const Bitboard*                            attack_table,
+        RangeOfMagic                        auto&& range,
+        Functor<Bitboard(Square)>           auto&& mask_fn,
+        Functor<Bitboard(Square, Bitboard)> auto&& attacks_fn) noexcept
+    {
+        const Bitboard* lower = nullptr;
+        const Bitboard* upper = attack_table;
+        for (Square sq = kA1; Magic auto&& magic : range)
+        {
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
+            lower = upper;
+            do
+            {
+                const Key key = magic.key(occ);
+                const Bitboard  attacks = attacks_fn(sq, occ);
+                const Bitboard* found   = std::find(lower, upper, attacks);
+                offset_table[key] = found - lower;
+                if (found == upper)
+                {
+                    ++upper;
+                }
+            }
+            while ((occ = CarryRipple(occ, mask))); ++sq;
+        }
+        return offset_table + (upper - attack_table);
+    }
+
+    inline constexpr auto kByteMagicBishopAttackTable = []()
+    {
+        constexpr Key kTableSize = 1428;
+        std::array<Bitboard, kTableSize> attack_table = {};
+        Bitboard* data = std::data(attack_table);
+        FillMagicAttackTable(data, MagicBishopMask, RayBishopAttacks);
+        return attack_table;
+    }();
+
+    inline constexpr auto kByteMagicRookAttackTable = []()
+    {
+        constexpr Key kTableSize = 4900;
+        std::array<Bitboard, kTableSize> attack_table = {};
+        Bitboard* data = std::data(attack_table);
+        FillMagicAttackTable(data, MagicRookMask, RayRookAttacks);
+        return attack_table;
+    }();
+
+    inline constexpr auto kByteMagicBishopPointerTable = []()
+    {
+        std::array<const Bitboard*, kSquareNB> ptr_table = {};
+        const Bitboard* lower = std::data(kByteMagicBishopAttackTable);
+        const Bitboard* upper = lower + std::size(kByteMagicBishopAttackTable);
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard attacks = RayBishopAttacks(sq, kEmptyBB);
+            ptr_table[sq] = lower = std::find(lower, upper, attacks);
+        }
+        return ptr_table;
+    }();
+
+    inline constexpr auto kByteMagicRookPointerTable = []()
+    {
+        std::array<const Bitboard*, kSquareNB> ptr_table = {};
+        const Bitboard* lower = std::data(kByteMagicRookAttackTable);
+        const Bitboard* upper = lower + std::size(kByteMagicRookAttackTable);
+        for (Square sq = kA1; sq < kSquareNB; ++sq)
+        {
+            Bitboard attacks = RayRookAttacks(sq, kEmptyBB);
+            ptr_table[sq] = lower = std::find(lower, upper, attacks);
+        }
+        return ptr_table;
+    }();
+
     struct FancyMagic
     {
-        Key      offset;
-        Bitboard magic, mask;
+        Key      magic, offset;
+        Bitboard mask;
         int      shift;
 
         constexpr Key key(Bitboard occ) const noexcept
         {
-            return ((occ & mask) * magic >> shift) + offset;
+            return (magic * (occ & mask) >> shift) + offset;
         }
     };
 
@@ -264,12 +348,12 @@ namespace cohen::chess::magics
         {
             magic_table[sq] =
             {
-                .offset = curr_pos,
                 .magic  = kFancyMagicBishopNumberTable[sq],
+                .offset = curr_pos,
                 .mask   = MagicBishopMask(sq),
                 .shift  = kSquareNB - kFancyMagicBishopShiftTable[sq],
             };
-            curr_pos += MagicWidth(magic_table[sq], MagicBishopMask(sq));
+            curr_pos += MagicKeyWidth(magic_table[sq], MagicBishopMask(sq));
         }
         return magic_table;
     }(kKeyZero);
@@ -305,15 +389,15 @@ namespace cohen::chess::magics
         {
             magic_table[sq] =
             {
-                .offset = curr_pos,
                 .magic  = kFancyMagicRookNumberTable[sq],
+                .offset = curr_pos,
                 .mask   = MagicRookMask(sq),
                 .shift  = kSquareNB - kFancyMagicRookShiftTable[sq],
             };
-            curr_pos += MagicWidth(magic_table[sq], MagicRookMask(sq));
+            curr_pos += MagicKeyWidth(magic_table[sq], MagicRookMask(sq));
         }
         return magic_table;
-    }(MagicWidth(kFancyMagicBishopTable, MagicBishopMask));
+    }(MagicKeyWidth(kFancyMagicBishopTable, MagicBishopMask));
 
     inline constexpr auto kFancyMagicAttackTable = []()
     {
@@ -321,27 +405,68 @@ namespace cohen::chess::magics
         constexpr Key kRookMaxKey   = MagicMaxKey(kFancyMagicRookTable,   MagicRookMask);
         constexpr Key kTableSize    = std::max(kBishopMaxKey, kRookMaxKey) + 1;
         std::array<Bitboard, kTableSize> attack_table = {};
-        FillMagicAttackTable(attack_table, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
-        FillMagicAttackTable(attack_table, kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        Bitboard* data = std::data(attack_table);
+        FillMagicAttackTable(data, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicAttackTable(data, kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
         return attack_table;
     }();
 
-    constexpr Bitboard FancyMagicBishopAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard FancyMagicBishopAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kFancyMagicAttackTable[kFancyMagicBishopTable[sq].key(occ)];
+        const FancyMagic& magic = kFancyMagicBishopTable[sq];
+        return kFancyMagicAttackTable[magic.key(occ)];
     }
 
-    constexpr Bitboard FancyMagicRookAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard FancyMagicRookAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kFancyMagicAttackTable[kFancyMagicRookTable[sq].key(occ)];
+        const FancyMagic& magic = kFancyMagicRookTable[sq];
+        return kFancyMagicAttackTable[magic.key(occ)];
     }
 
-    constexpr Bitboard FancyMagicQueenAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard FancyMagicQueenAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return FancyMagicBishopAttacks(occ, sq) | FancyMagicRookAttacks(occ, sq);
+        return FancyMagicBishopAttacks(sq, occ) | FancyMagicRookAttacks(sq, occ);
+    }
+
+    inline constexpr auto kFancyMagicOffsetTable = []()
+    {
+        constexpr Key kBishopMaxKey = MagicMaxKey(kFancyMagicBishopTable, MagicBishopMask);
+        constexpr Key kRookMaxKey   = MagicMaxKey(kFancyMagicRookTable,   MagicRookMask);
+        constexpr Key kTableSize    = std::max(kBishopMaxKey, kRookMaxKey) + 1;
+        std::array<uint8_t, kTableSize> offset_table = {};
+        uint8_t* data = std::data(offset_table);
+        const Bitboard* kBishopAttackData = std::data(kByteMagicBishopAttackTable);
+        const Bitboard* kRookAttackData   = std::data(kByteMagicRookAttackTable);
+        FillMagicOffsetTable(data, kBishopAttackData, kFancyMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicOffsetTable(data, kRookAttackData,   kFancyMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        return offset_table;
+    }();
+
+    constexpr Bitboard FancyByteMagicBishopAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard*   ptr     = kByteMagicBishopPointerTable[sq];
+        const FancyMagic& magic   = kFancyMagicBishopTable[sq];
+        const uint8_t     offset  = kFancyMagicOffsetTable[magic.key(occ)];
+        return ptr[offset];
+    }
+
+    constexpr Bitboard FancyByteMagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard*   ptr     = kByteMagicRookPointerTable[sq];
+        const FancyMagic& magic   = kFancyMagicRookTable[sq];
+        const uint8_t     offset  = kFancyMagicOffsetTable[magic.key(occ)];
+        return ptr[offset];
+    }
+
+    constexpr Bitboard FancyByteMagicQueenAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return FancyByteMagicBishopAttacks(sq, occ) | FancyByteMagicRookAttacks(sq, occ);
     }
 
     template <int shift>
@@ -352,7 +477,7 @@ namespace cohen::chess::magics
 
         constexpr Key key(Bitboard occ) const noexcept
         {
-            return ((occ | not_mask) * magic >> (kSquareNB - shift)) + offset;
+            return (magic * (occ | not_mask) >> (kSquareNB - shift)) + offset;
         }
     };
 
@@ -382,7 +507,7 @@ namespace cohen::chess::magics
         86749, 69558, 61589, 62533, 64387, 26581, 76355, 11140,
     };
 
-    inline constexpr std::array<BishopBlackMagic, kSquareNB> kBlackMagicBishopTable = []()
+    inline constexpr auto kBlackMagicBishopTable = []()
     {
         std::array<BishopBlackMagic, kSquareNB> magic_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -423,7 +548,7 @@ namespace cohen::chess::magics
         41547,  4750,  6014, 41529, 84192, 33433,  8555,  1009,
     };
 
-    inline constexpr std::array<RookBlackMagic, kSquareNB> kBlackMagicRookTable = []()
+    inline constexpr auto kBlackMagicRookTable = []()
     {
         std::array<RookBlackMagic, kSquareNB> magic_table = {};
         for (Square sq = kA1; sq < kSquareNB; ++sq)
@@ -442,87 +567,77 @@ namespace cohen::chess::magics
     {
         constexpr Key kBishopMaxKey = MagicMaxKey(kBlackMagicBishopTable, MagicBishopMask);
         constexpr Key kRookMaxKey   = MagicMaxKey(kBlackMagicRookTable,   MagicRookMask);
-        std::array<Bitboard, std::max(kBishopMaxKey, kRookMaxKey) + 1> attack_table = {};
-        FillMagicAttackTable(attack_table, kBlackMagicBishopTable, MagicBishopMask, RayBishopAttacks);
-        FillMagicAttackTable(attack_table, kBlackMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        constexpr Key kTableSize    = std::max(kBishopMaxKey, kRookMaxKey) + 1;
+        std::array<Bitboard, kTableSize> attack_table = {};
+        Bitboard* data = std::data(attack_table);
+        FillMagicAttackTable(data, kBlackMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicAttackTable(data, kBlackMagicRookTable,   MagicRookMask,   RayRookAttacks);
         return attack_table;
     }();
 
-    constexpr Bitboard BlackMagicBishopAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard BlackMagicBishopAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kBlackMagicAttackTable[kBlackMagicBishopTable[sq].key(occ)];
+        const BishopBlackMagic& magic = kBlackMagicBishopTable[sq];
+        return kBlackMagicAttackTable[magic.key(occ)];
     }
 
-    constexpr Bitboard BlackMagicRookAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard BlackMagicRookAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return kBlackMagicAttackTable[kBlackMagicRookTable[sq].key(occ)];
+        const RookBlackMagic& magic = kBlackMagicRookTable[sq];
+        return kBlackMagicAttackTable[magic.key(occ)];
     }
 
-    constexpr Bitboard BlackMagicQueenAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard BlackMagicQueenAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return BlackMagicBishopAttacks(occ, sq) | BlackMagicRookAttacks(occ, sq);
+        return BlackMagicBishopAttacks(sq, occ) | BlackMagicRookAttacks(sq, occ);
     }
 
-    constexpr Bitboard* FillByteMagicAttackTable(
-        Bitboard*                                  data,
-        Functor<Bitboard(Square)>           auto&& mask_fn,
-        Functor<Bitboard(Bitboard, Square)> auto&& attacks_fn) noexcept
+    inline constexpr auto kBlackMagicOffsetTable = []()
     {
-        Bitboard* lower = nullptr;
-        Bitboard* upper = data;
-        for (Square sq = kA1; sq < kSquareNB; ++sq)
-        {
-            Bitboard mask = mask_fn(sq);
-            Bitboard occ  = kEmptyBB;
-            lower = upper;
-            do
-            {
-                Bitboard attacks = attacks_fn(occ, sq);
-                if (std::find(lower, upper, attacks) == upper)
-                {
-                    *upper++ = attacks;
-                }
-            }
-            while ((occ = CarryRipple(occ, mask)));
-        }
-        return upper;
-    }
-
-    inline constexpr auto kMagicRookAttackTable = []()
-    {
-        std::array<Bitboard, 4900> attack_table = {};
-        FillMagicAttackTable(std::data(attack_table), MagicRookMask, RayRookAttacks);
-        return attack_table;
+        constexpr Key kBishopMaxKey = MagicMaxKey(kBlackMagicBishopTable, MagicBishopMask);
+        constexpr Key kRookMaxKey   = MagicMaxKey(kBlackMagicRookTable,   MagicRookMask);
+        constexpr Key kTableSize    = std::max(kBishopMaxKey, kRookMaxKey) + 1;
+        std::array<uint8_t, kTableSize> offset_table = {};
+        uint8_t* data = std::data(offset_table);
+        const Bitboard* kBishopAttackData = std::data(kByteMagicBishopAttackTable);
+        const Bitboard* kRookAttackData   = std::data(kByteMagicRookAttackTable);
+        FillMagicOffsetTable(data, kBishopAttackData, kBlackMagicBishopTable, MagicBishopMask, RayBishopAttacks);
+        FillMagicOffsetTable(data, kRookAttackData,   kBlackMagicRookTable,   MagicRookMask,   RayRookAttacks);
+        return offset_table;
     }();
 
-    inline constexpr auto kMagicBishopAttackTable = []()
+    constexpr Bitboard BlackByteMagicBishopAttacks(Square sq, Bitboard occ) noexcept
     {
-        std::array<Bitboard, 1428> attack_table = {};
-        FillMagicAttackTable(std::data(attack_table), MagicBishopMask, RayBishopAttacks);
-        return attack_table;
-    }();
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard*         ptr    = kByteMagicBishopPointerTable[sq];
+        const BishopBlackMagic& magic  = kBlackMagicBishopTable[sq];
+        const uint8_t           offset = kBlackMagicOffsetTable[magic.key(occ)];
+        return ptr[offset];
+    }
+
+    constexpr Bitboard BlackByteMagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const Bitboard*       ptr    = kByteMagicRookPointerTable[sq];
+        const RookBlackMagic& magic  = kBlackMagicRookTable[sq];
+        const uint8_t         offset = kBlackMagicOffsetTable[magic.key(occ)];
+        return ptr[offset];
+    }
+
+    constexpr Bitboard BlackByteMagicQueenAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return BlackByteMagicBishopAttacks(sq, occ) | BlackByteMagicRookAttacks(sq, occ);
+    }
 }
 
 namespace cohen::chess
 {
-    using cohen::chess::magics::MagicMinKey;
-    using cohen::chess::magics::MagicMaxKey;
-    using cohen::chess::magics::MagicKeyRange;
-    using cohen::chess::magics::MagicWidth;
-
     using cohen::chess::magics::MagicBishopMask;
     using cohen::chess::magics::MagicRookMask;
-
-    using cohen::chess::magics::FancyMagicBishopAttacks;
-    using cohen::chess::magics::FancyMagicRookAttacks;
-    using cohen::chess::magics::FancyMagicQueenAttacks;
-
-    using cohen::chess::magics::BlackMagicBishopAttacks;
-    using cohen::chess::magics::BlackMagicRookAttacks;
-    using cohen::chess::magics::BlackMagicQueenAttacks;
 }
 
 #endif

@@ -1,11 +1,12 @@
 #ifndef COHEN_UTIL_BITS_HPP_INCLUDED
 #define COHEN_UTIL_BITS_HPP_INCLUDED
 
+#include <assert.h>
+#include <stdint.h>
+
 #include <array>
 #include <bit>
-#include <cassert>
 #include <concepts>
-#include <cstdint>
 
 namespace cohen::util::bits
 {

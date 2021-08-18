@@ -132,24 +132,24 @@ namespace cohen::chess::attacks
         return LookupKingAttacks(sq);
     }
 
-    constexpr Bitboard RayBishopAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard RayBishopAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return RayBB<kNorthWest>(occ, sq) | RayBB<kNorthEast>(occ, sq)
-             | RayBB<kSouthWest>(occ, sq) | RayBB<kSouthEast>(occ, sq);
+        return RayBB<kNorthWest>(sq, occ) | RayBB<kNorthEast>(sq, occ)
+             | RayBB<kSouthWest>(sq, occ) | RayBB<kSouthEast>(sq, occ);
     }
 
-    constexpr Bitboard RayRookAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard RayRookAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return RayBB<kNorth>(occ, sq) | RayBB<kEast>(occ, sq)
-             | RayBB<kSouth>(occ, sq) | RayBB<kWest>(occ, sq);
+        return RayBB<kNorth>(sq, occ) | RayBB<kEast>(sq, occ)
+             | RayBB<kSouth>(sq, occ) | RayBB<kWest>(sq, occ);
     }
 
-    constexpr Bitboard RayQueenAttacks(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard RayQueenAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        return RayBishopAttacks(occ, sq) | RayRookAttacks(occ, sq);
+        return RayBishopAttacks(sq, occ) | RayRookAttacks(sq, occ);
     }
 }
 

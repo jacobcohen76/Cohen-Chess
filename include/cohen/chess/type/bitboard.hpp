@@ -1,10 +1,12 @@
 #ifndef COHEN_CHESS_TYPE_BITBOARD_HPP_INCLUDED
 #define COHEN_CHESS_TYPE_BITBOARD_HPP_INCLUDED
 
+#include <assert.h>
+#include <stdint.h>
+
 #include <algorithm>
 #include <array>
-#include <cassert>
-#include <cstdint>
+#include <ranges>
 
 #include <cohen/chess/type/anti.hpp>
 #include <cohen/chess/type/diag.hpp>
@@ -181,101 +183,82 @@ namespace cohen::chess::type::bitboard
         return LookupAntiBB(anti);
     }
 
-    template <Direction dir>
-    inline constexpr std::array<Bitboard, kSquareNB> kRayBitboardTable = []()
+    inline constexpr std::array<std::array<Bitboard, kSquareNB>, kDirNB> kRayBitboardTable = []()
     {
-        static_assert(dir != kDirectionNone);
-        std::array<Bitboard, kSquareNB> ray_table = {};
+        std::array<std::array<Bitboard, kSquareNB>, kDirNB> ray_table = {};
+        for (Direction dir = kDirNone; dir < kDirNB; ++dir)
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
             Bitboard ray_bb = kEmptyBB;
             Square itr = sq;
+            Square vec = SquareVector(dir);
             while (CanStep(itr, dir))
             {
-                ray_bb |= SquareBB(itr += dir);
+                ray_bb |= SquareBB(itr += vec);
             }
-            ray_table[sq] = ray_bb;
+            ray_table[dir][sq] = ray_bb;
         }
         return ray_table;
     }();
 
+    constexpr Bitboard RayBB(Direction dir, Square sq) noexcept
+    {
+        assert(kDirNone <= dir && dir < kDirNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        return kRayBitboardTable[dir][sq];
+    }
+
+    constexpr Bitboard RayBB(Direction dir, Square sq, Bitboard occ) noexcept
+    {
+        assert(kDirNone <= dir && dir < kDirNB);
+        assert(kA1 <= sq && sq < kSquareNB);
+        Square vec = SquareVector(dir);
+        Bitboard ray_bb = RayBB(dir, sq);
+        int blocker = vec > 0 ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
+                              : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
+        return ray_bb ^ RayBB(dir, blocker);
+    }
+
     template <Direction dir>
     constexpr Bitboard RayBB(Square sq) noexcept
     {
+        static_assert(kDirNone <= dir && dir < kDirNB);
         assert(kA1 <= sq && sq < kSquareNB);
-        return kRayBitboardTable<dir>[sq];
-    }
-
-    template <>
-    constexpr Bitboard RayBB<kDirectionNone>(Square sq) noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        return kEmptyBB;
+        return kRayBitboardTable[dir][sq];
     }
 
     template <Direction dir>
-    constexpr Bitboard RayBB(Bitboard occ, Square sq) noexcept
+    constexpr Bitboard RayBB(Square sq, Bitboard occ) noexcept
     {
+        static_assert(kDirNone <= dir && dir < kDirNB);
         assert(kA1 <= sq && sq < kSquareNB);
-        if constexpr (dir > 0)
+        if constexpr (SquareVector(dir) > 0)
         {
-            const Bitboard ray_bb = RayBB<dir>(sq);
-            const int blocker = BitScanForward((occ & ray_bb) | SquareBB(kH8));
+            Bitboard ray_bb = RayBB<dir>(sq);
+            int blocker = BitScanForward((occ & ray_bb) | SquareBB(kH8));
             return ray_bb ^ RayBB<dir>(blocker);
         }
         else
         {
-            const Bitboard ray_bb = RayBB<dir>(sq);
-            const int blocker = BitScanReverse((occ & ray_bb) | SquareBB(kA1));
+            Bitboard ray_bb = RayBB<dir>(sq);
+            int blocker = BitScanReverse((occ & ray_bb) | SquareBB(kA1));
             return ray_bb ^ RayBB<dir>(blocker);
         }
-    }
-
-    constexpr Bitboard RayBB(Square sq, Direction dir) noexcept
-    {
-        switch (dir)
-        {
-            case kNorth:      return RayBB<kNorth>         (sq);
-            case kEast:       return RayBB<kEast>          (sq);
-            case kSouth:      return RayBB<kSouth>         (sq);
-            case kWest:       return RayBB<kWest>          (sq);
-
-            case kNorthEast:  return RayBB<kNorthEast>     (sq);
-            case kSouthEast:  return RayBB<kSouthEast>     (sq);
-            case kSouthWest:  return RayBB<kSouthWest>     (sq);
-            case kNorthWest:  return RayBB<kNorthWest>     (sq);
-
-            case kNorthNorth: return RayBB<kNorthNorth>    (sq);
-            case kEastEast:   return RayBB<kEastEast>      (sq);
-            case kSouthSouth: return RayBB<kSouthSouth>    (sq);
-            case kWestWest:   return RayBB<kWestWest>      (sq);
-
-            default:          return RayBB<kDirectionNone> (sq);
-        }
-    }
-
-    constexpr Bitboard RayBB(Bitboard occ, Square sq, Direction dir) noexcept
-    {
-        assert(kA1 <= sq && sq < kSquareNB);
-        const Bitboard ray_bb = RayBB(sq, dir);
-        const int blocker = dir > 0 ? BitScanForward((occ & ray_bb) | SquareBB(kH8))
-                                    : BitScanReverse((occ & ray_bb) | SquareBB(kA1));
-        return ray_bb ^ RayBB(blocker, dir);
     }
 
     constexpr Bitboard RuntimeBetweenBB(Square from, Square to) noexcept
     {
         assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   &&   to < kSquareNB);
-        return RayBB(from, RayBetween(from, to))
-             & RayBB(to,   RayBetween(to, from));
+        assert(kA1 <= to   && to   < kSquareNB);
+        return RayBB(RayBetween(from, to), from)
+             & RayBB(RayBetween(to, from), to);
     }
 
     inline constexpr std::array<std::array<Bitboard, kSquareNB>, kSquareNB> kBetweenBitboardTable = []()
     {
         std::array<std::array<Bitboard, kSquareNB>, kSquareNB> between_table = {};
         for (Square from = kA1; from < kSquareNB; ++from)
-        for (Square   to = kA2;   to < kSquareNB; ++to)
+        for (Square to   = kA2; to   < kSquareNB; ++to)
         {
             between_table[from][to] = RuntimeBetweenBB(from, to);
         }
@@ -285,37 +268,62 @@ namespace cohen::chess::type::bitboard
     constexpr Bitboard LookupBetweenBB(Square from, Square to) noexcept
     {
         assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   &&   to < kSquareNB);
+        assert(kA1 <= to   && to   < kSquareNB);
         return kBetweenBitboardTable[from][to];
     }
 
     constexpr Bitboard BetweenBB(Square from, Square to) noexcept
     {
         assert(kA1 <= from && from < kSquareNB);
-        assert(kA1 <= to   &&   to < kSquareNB);
+        assert(kA1 <= to   && to   < kSquareNB);
         return LookupBetweenBB(from, to);
     }
 
-    template <Direction dir>
-    inline constexpr Bitboard kShiftMask = kUniverseBB;
+    inline constexpr std::array<Bitboard, kDirNB> kShiftMaskTable = []()
+    {
+        std::array<Bitboard, kDirNB> mask_table = {};
+        std::ranges::fill(mask_table, kUniverseBB);
 
-    template <> inline constexpr Bitboard kShiftMask<kEast>      = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kNorthEast> = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kSouthEast> = ~FileBB(kFileH);
-    template <> inline constexpr Bitboard kShiftMask<kEastEast>  = ~FileBB(kFileH) & ~FileBB(kFileG);
+        mask_table[kEast]      = ~FileBB(kFileH);
+        mask_table[kNorthEast] = ~FileBB(kFileH);
+        mask_table[kSouthEast] = ~FileBB(kFileH);
+        mask_table[kEastEast]  = ~FileBB(kFileH) & ~FileBB(kFileG);
 
-    template <> inline constexpr Bitboard kShiftMask<kWest>      = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kNorthWest> = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kSouthWest> = ~FileBB(kFileA);
-    template <> inline constexpr Bitboard kShiftMask<kWestWest>  = ~FileBB(kFileA) & ~FileBB(kFileB);
+        mask_table[kWest]      = ~FileBB(kFileA);
+        mask_table[kNorthWest] = ~FileBB(kFileA);
+        mask_table[kSouthWest] = ~FileBB(kFileA);
+        mask_table[kWestWest]  = ~FileBB(kFileA) & ~FileBB(kFileH);
+
+        return mask_table;
+    }();
+
+    constexpr Bitboard ShiftMask(Direction dir) noexcept
+    {
+        assert(kDirNone <= dir && dir < kDirNB);
+        return kShiftMaskTable[dir];
+    }
+
+    constexpr Bitboard ShfitBB(Direction dir, Bitboard bb) noexcept
+    {
+        assert(kDirNone <= dir && dir < kDirNB);
+        const Square   kVec  = SquareVector(dir);
+        const Bitboard kMask = ShiftMask(dir);
+        if (kVec > 0)
+            return (bb & kMask) << +kVec;
+        else
+            return (bb & kMask) >> -kVec;
+    }
 
     template <Direction dir>
     constexpr Bitboard ShiftBB(Bitboard bb) noexcept
     {
-        if constexpr (dir > 0)
-            return (bb & kShiftMask<dir>) << +dir;
+        static_assert(kDirNone <= dir && dir < kDirNB);
+        constexpr Square   kVec  = SquareVector(dir);
+        constexpr Bitboard kMask = ShiftMask(dir);
+        if constexpr (kVec > 0)
+            return (bb & kMask) << +kVec;
         else
-            return (bb & kShiftMask<dir>) >> -dir;
+            return (bb & kMask) >> -kVec;
     }
 
     constexpr Bitboard MirrorBitboardRank(Bitboard bb) noexcept
@@ -377,6 +385,7 @@ namespace cohen::chess
     using cohen::chess::type::bitboard::AntiBB;
     using cohen::chess::type::bitboard::RayBB;
     using cohen::chess::type::bitboard::BetweenBB;
+    using cohen::chess::type::bitboard::ShiftMask;
     using cohen::chess::type::bitboard::ShiftBB;
     using cohen::chess::type::bitboard::MirrorBitboardRank;
     using cohen::chess::type::bitboard::MirrorBitboardFile;
