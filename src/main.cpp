@@ -8,6 +8,13 @@ using namespace cohen;
 using namespace cohen::chess;
 using namespace cohen::chess::magics;
 
+#include <stack>
+
+void test()
+{
+    std::stack<std::tuple<int, int, int>> stack({{1, 2, 3}});
+}
+
 void TestMagics()
 {
     constexpr auto assert_magic = [](Square sq, Bitboard mask,
@@ -33,8 +40,6 @@ void TestMagics()
         assert_magic(sq, MagicRookMask(sq),   RayRookAttacks,   BlackByteMagicRookAttacks);
     }
 }
-
-constexpr auto kValue = magics::BlackByteMagicBishopAttacks(kA1, kEmptyBB);
 
 int main(int argc, char* argv[])
 {

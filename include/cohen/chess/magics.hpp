@@ -448,18 +448,18 @@ namespace cohen::chess::magics
     constexpr Bitboard FancyByteMagicBishopAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        const Bitboard*   ptr     = kByteMagicBishopPointerTable[sq];
-        const FancyMagic& magic   = kFancyMagicBishopTable[sq];
-        const uint8_t     offset  = kFancyMagicOffsetTable[magic.key(occ)];
+        const Bitboard*   ptr    = kByteMagicBishopPointerTable[sq];
+        const FancyMagic& magic  = kFancyMagicBishopTable[sq];
+        const uint8_t     offset = kFancyMagicOffsetTable[magic.key(occ)];
         return ptr[offset];
     }
 
     constexpr Bitboard FancyByteMagicRookAttacks(Square sq, Bitboard occ) noexcept
     {
         assert(kA1 <= sq && sq < kSquareNB);
-        const Bitboard*   ptr     = kByteMagicRookPointerTable[sq];
-        const FancyMagic& magic   = kFancyMagicRookTable[sq];
-        const uint8_t     offset  = kFancyMagicOffsetTable[magic.key(occ)];
+        const Bitboard*   ptr    = kByteMagicRookPointerTable[sq];
+        const FancyMagic& magic  = kFancyMagicRookTable[sq];
+        const uint8_t     offset = kFancyMagicOffsetTable[magic.key(occ)];
         return ptr[offset];
     }
 
@@ -632,12 +632,33 @@ namespace cohen::chess::magics
         assert(kA1 <= sq && sq < kSquareNB);
         return BlackByteMagicBishopAttacks(sq, occ) | BlackByteMagicRookAttacks(sq, occ);
     }
+
+    constexpr Bitboard MagicBishopAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return BlackByteMagicBishopAttacks(sq, occ);
+    }
+
+    constexpr Bitboard MagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return BlackByteMagicRookAttacks(sq, occ);
+    }
+
+    constexpr Bitboard MagicQueenAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        return MagicBishopAttacks(sq, occ) | MagicRookAttacks(sq, occ);
+    }
 }
 
 namespace cohen::chess
 {
     using cohen::chess::magics::MagicBishopMask;
     using cohen::chess::magics::MagicRookMask;
+    using cohen::chess::magics::MagicBishopAttacks;
+    using cohen::chess::magics::MagicRookAttacks;
+    using cohen::chess::magics::MagicQueenAttacks;
 }
 
 #endif
