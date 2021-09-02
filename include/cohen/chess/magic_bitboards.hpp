@@ -83,7 +83,7 @@ namespace cohen::chess::magic_bitboards
     }
 
     template <Magic MagicType>
-    constexpr void FillMagicTable(
+    constexpr void FillMagicAttackTable(
         Bitboard*                                   table,
         Functor<MagicType(Square)>           auto&& magic_fn,
         Functor< Bitboard(Square)>           auto&& mask_fn,
@@ -104,13 +104,25 @@ namespace cohen::chess::magic_bitboards
     }
 
     template <Magic BishopType, Magic RookType>
-    constexpr void FillMagicTable(
+    constexpr void FillMagicAttackTable(
         Bitboard*                          table,
         Functor<BishopType(Square)> auto&& bishop_fn,
         Functor<  RookType(Square)> auto&& rook_fn) noexcept
     {
-        FillMagicTable(table, bishop_fn, MagicBishopMask, RayBishopAttacks);
-        FillMagicTable(table, rook_fn,   MagicRookMask,   RayRookAttacks);
+        FillMagicAttackTable<BishopType>(table, bishop_fn, MagicBishopMask, RayBishopAttacks);
+        FillMagicAttackTable<  RookType>(table, rook_fn,   MagicRookMask,   RayRookAttacks);
+    }
+
+    template <Magic BishopType, Magic RookType, Key table_size>
+    constexpr std::array<Bitboard, table_size> MakeMagicAttackTable(
+        std::array<BishopType, kSquareNB> bishop_table,
+        std::array<  RookType, kSquareNB> rook_table) noexcept
+    {
+        std::array<Bitboard, table_size> table = {};
+        const auto bishop_fn = [&](Square sq) { return bishop_table[sq]; };
+        const auto rook_fn   = [&](Square sq) { return rook_table[sq];   };
+        FillMagicAttackTable<BishopType, RookType>(std::data(table), bishop_fn, rook_fn);
+        return table;
     }
 
     struct FancyMagic
@@ -428,6 +440,9 @@ namespace cohen::chess::magic_bitboards
         BlackRookMagic{0xEE73FFFBFFBB77FE, ~MagicRookMask(kG8),  8555},
         BlackRookMagic{0x0002000308482882, ~MagicRookMask(kH8),  1009},
     };
+
+    inline constexpr auto kFancyMagicAttackTable = MakeMagicAttackTable<FancyMagic,       FancyMagic,     92859>(kFancyMagicBishopTable, kFancyMagicRookTable);
+    inline constexpr auto kBlackMagicAttackTable = MakeMagicAttackTable<BlackBishopMagic, BlackRookMagic, 88507>(kBlackMagicBishopTable, kBlackMagicRookTable);
 }
 
 #endif
