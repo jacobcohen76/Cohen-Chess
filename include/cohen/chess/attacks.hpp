@@ -1,9 +1,10 @@
 #ifndef COHEN_CHESS_ATTACKS_HPP_INCLUDED
 #define COHEN_CHESS_ATTACKS_HPP_INCLUDED
 
+#include <assert.h>
+
 #include <algorithm>
 #include <array>
-#include <cassert>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/color.hpp>

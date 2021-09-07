@@ -3,6 +3,7 @@
 
 #include "cohen/chess/type/square.hpp"
 #include <concepts>
+#include <span>
 
 #include <cohen/chess/type/bitboard.hpp>
 #include <cohen/chess/type/key.hpp>
@@ -82,47 +83,114 @@ namespace cohen::chess::magic_bitboards
         return LookupMagicRookMask(sq);
     }
 
-    template <Magic MagicType>
-    constexpr void FillMagicAttackTable(
-        Bitboard*                                   table,
-        Functor<MagicType(Square)>           auto&& magic_fn,
-        Functor< Bitboard(Square)>           auto&& mask_fn,
-        Functor< Bitboard(Square, Bitboard)> auto&& gen_fn) noexcept
+    template <typename GenType>
+    constexpr void FillMagicTable(
+        GenType*                                   table,
+        Functor<     Key(Square, Bitboard)> auto&& key_fn,
+        Functor< GenType(Square, Bitboard)> auto&& gen_fn,
+        Functor<Bitboard(Square)>           auto&& mask_fn) noexcept
     {
         for (Square sq = kA1; sq < kSquareNB; ++sq)
         {
-            MagicType magic = magic_fn(sq);
-            Bitboard  mask  = mask_fn(sq);
-            Bitboard  occ   = kEmptyBB;
+            Bitboard mask = mask_fn(sq);
+            Bitboard occ  = kEmptyBB;
             do
             {
-                Key key     = magic.key(occ);
-                table[key]  = gen_fn(sq, occ);
+                table[key_fn(sq, occ)] = gen_fn(sq, occ);
             }
             while ((occ = CarryRipple(occ, mask)));
         }
     }
 
-    template <Magic BishopType, Magic RookType>
+    template <Magic MagicType>
     constexpr void FillMagicAttackTable(
-        Bitboard*                          table,
-        Functor<BishopType(Square)> auto&& bishop_fn,
-        Functor<  RookType(Square)> auto&& rook_fn) noexcept
+        Bitboard*                                  attack_table,
+        std::span<MagicType, kSquareNB>            magic_table,
+        Functor<Bitboard(Square, Bitboard)> auto&& gen_fn,
+        Functor<Bitboard(Square)>           auto&& mask_fn) noexcept
     {
-        FillMagicAttackTable<BishopType>(table, bishop_fn, MagicBishopMask, RayBishopAttacks);
-        FillMagicAttackTable<  RookType>(table, rook_fn,   MagicRookMask,   RayRookAttacks);
+        const auto key_fn = [&](Square sq, Bitboard occ)
+        {
+            return magic_table[sq].key(occ);
+        };
+        FillMagicTable(attack_table, key_fn, gen_fn, mask_fn);
     }
 
-    template <Magic BishopType, Magic RookType, Key table_size>
-    constexpr std::array<Bitboard, table_size> MakeMagicAttackTable(
-        std::array<BishopType, kSquareNB> bishop_table,
-        std::array<  RookType, kSquareNB> rook_table) noexcept
+    template <uint8_t* offset_table, Magic MagicType>
+    constexpr void FillMagicAttackTable(
+        Bitboard*                                  attack_table,
+        std::span<MagicType, kSquareNB>            magic_table,
+        Functor<Bitboard(Square, Bitboard)> auto&& gen_fn,
+        Functor<Bitboard(Square)>           auto&& mask_fn) noexcept
     {
-        std::array<Bitboard, table_size> table = {};
-        const auto bishop_fn = [&](Square sq) { return bishop_table[sq]; };
-        const auto rook_fn   = [&](Square sq) { return rook_table[sq];   };
-        FillMagicAttackTable<BishopType, RookType>(std::data(table), bishop_fn, rook_fn);
-        return table;
+        const auto key_fn = [&](Square sq, Bitboard occ)
+        {
+            return magic_table[sq].key<offset_table>(occ);
+        };
+        FillMagicTable(attack_table, key_fn, gen_fn, mask_fn);
+    }
+
+    template <Key size, Magic BishopMagic, Magic RookMagic>
+    constexpr std::array<Bitboard, size> MakeMagicAttackTable(
+        const std::array<BishopMagic, kSquareNB>& bishop_table,
+        const std::array<  RookMagic, kSquareNB>& rook_table) noexcept
+    {
+        std::array<Bitboard, size> attack_table = {};
+        FillMagicAttackTable(std::data(attack_table), std::span{bishop_table}, RayBishopAttacks, MagicBishopMask);
+        FillMagicAttackTable(std::data(attack_table), std::span{rook_table},   RayRookAttacks,   MagicRookMask);
+        return attack_table;
+    }
+
+    template <Key size, uint8_t* offset_table, Magic BishopMagic, Magic RookMagic>
+    constexpr std::array<Bitboard, size> MakeMagicAttackTable(
+        const std::array<BishopMagic, kSquareNB>& bishop_table,
+        const std::array<  RookMagic, kSquareNB>& rook_table) noexcept
+    {
+        std::array<Bitboard, size> attack_table = {};
+        FillMagicAttackTable<offset_table>(std::data(attack_table), std::span{bishop_table}, RayBishopAttacks, MagicBishopMask);
+        FillMagicAttackTable<offset_table>(std::data(attack_table), std::span{rook_table},   RayRookAttacks,   MagicRookMask);
+        return attack_table;
+    }
+
+    template <Magic MagicType>
+    constexpr void FillMagicOffsetTable(
+        uint8_t*                                   offset_table,
+        std::span<MagicType, kSquareNB>            magic_table,
+        Functor<Bitboard(Square, Bitboard)> auto&& attacks_fn,
+        Functor<Bitboard(Square)>           auto&& mask_fn) noexcept
+    {
+        using GenBuff = std::array<Bitboard, 256>;
+        std::array<GenBuff, kSquareNB> gen_table = {};
+        std::array<uint8_t, kSquareNB> key_table = {};
+        auto key_fn = [&](Square sq, Bitboard occ)
+        {
+            return magic_table[sq].key(occ);
+        };
+        auto gen_fn = [&](Square sq, Bitboard occ) -> uint8_t
+        {
+            Bitboard attacks = attacks_fn(sq, occ);
+            auto& gen_buff = gen_table[sq];
+            auto* found = std::ranges::find(gen_buff, attacks);
+            if (found == std::end(gen_buff))
+            {
+                uint8_t& key  = key_table[sq];
+                gen_buff[key] = attacks;
+                return key++;
+            }
+            return found - std::begin(gen_buff);
+        };
+        FillMagicTable(offset_table, key_fn, gen_fn, mask_fn);
+    }
+
+    template <Key size, Magic BishopMagic, Magic RookMagic>
+    constexpr std::array<uint8_t, size> MakeMagicOffsetTable(
+        const std::array<BishopMagic, kSquareNB>& bishop_table,
+        const std::array<  RookMagic, kSquareNB>& rook_table) noexcept
+    {
+        std::array<uint8_t, size> offset_table = {};
+        FillMagicOffsetTable(std::data(offset_table), std::span{bishop_table}, RayBishopAttacks, MagicBishopMask);
+        FillMagicOffsetTable(std::data(offset_table), std::span{rook_table},   RayRookAttacks,   MagicRookMask);
+        return offset_table;
     }
 
     struct FancyMagic
@@ -169,75 +237,75 @@ namespace cohen::chess::magic_bitboards
     using ByteBlackBishopMagic = ByteMagic<BlackBishopMagic>;
     using ByteBlackRookMagic   = ByteMagic<BlackRookMagic>;
 
-    inline constexpr std::array<FancyMagic, kSquareNB> kFancyMagicBishopTable =
+    inline constexpr std::array<FancyMagic, kSquareNB> kFancyBishopMagicTable =
     {
-        FancyMagic{0xFFEDF9FD7CFCFFFF, MagicBishopMask(kA1),     0, kSquareNB -  5},
-        FancyMagic{0xFC0962854A77F576, MagicBishopMask(kB1),    32, kSquareNB -  4},
-        FancyMagic{0x405000A251180664, MagicBishopMask(kC1),    48, kSquareNB -  5},
-        FancyMagic{0x2AE2AA09600046CA, MagicBishopMask(kD1),    79, kSquareNB -  5},
-        FancyMagic{0x05920A10B4425210, MagicBishopMask(kE1),   110, kSquareNB -  5},
-        FancyMagic{0x4002091018015824, MagicBishopMask(kF1),   142, kSquareNB -  5},
-        FancyMagic{0xFC0A66C64A7EF576, MagicBishopMask(kG1),   174, kSquareNB -  4},
-        FancyMagic{0x7FFDFDFCBD79FFFF, MagicBishopMask(kH1),   190, kSquareNB -  5},
-        FancyMagic{0xFC0846A64A34FFF6, MagicBishopMask(kA2),   222, kSquareNB -  4},
-        FancyMagic{0xFC087A874A3CF7F6, MagicBishopMask(kB2),   238, kSquareNB -  4},
-        FancyMagic{0x402D444C41820061, MagicBishopMask(kC2),   254, kSquareNB -  5},
-        FancyMagic{0x40408820882C0020, MagicBishopMask(kD2),   286, kSquareNB -  5},
-        FancyMagic{0x0133520A1091A120, MagicBishopMask(kE2),   318, kSquareNB -  5},
-        FancyMagic{0x6E13011002302011, MagicBishopMask(kF2),   350, kSquareNB -  5},
-        FancyMagic{0xFC0864AE59B4FF76, MagicBishopMask(kG2),   382, kSquareNB -  4},
-        FancyMagic{0x3C0860AF4B35FF76, MagicBishopMask(kH2),   398, kSquareNB -  4},
-        FancyMagic{0x73C01AF56CF4CFFB, MagicBishopMask(kA3),   414, kSquareNB -  4},
-        FancyMagic{0x41A01CFAD64AAFFC, MagicBishopMask(kB3),   430, kSquareNB -  4},
-        FancyMagic{0x2018206402440228, MagicBishopMask(kC3),   446, kSquareNB -  7},
-        FancyMagic{0x9408041404321240, MagicBishopMask(kD3),   574, kSquareNB -  7},
-        FancyMagic{0x2352002402314002, MagicBishopMask(kE3),   702, kSquareNB -  7},
-        FancyMagic{0x1044400601102720, MagicBishopMask(kF3),   830, kSquareNB -  7},
-        FancyMagic{0x7C0C028F5B34FF76, MagicBishopMask(kG3),   958, kSquareNB -  4},
-        FancyMagic{0xFC0A028E5AB4DF76, MagicBishopMask(kH3),   974, kSquareNB -  4},
-        FancyMagic{0x161C400530108980, MagicBishopMask(kA4),   990, kSquareNB -  5},
-        FancyMagic{0xA510104014249085, MagicBishopMask(kB4),  1022, kSquareNB -  5},
-        FancyMagic{0x82148804D00FC030, MagicBishopMask(kC4),  1054, kSquareNB -  7},
-        FancyMagic{0x0022008008008013, MagicBishopMask(kD4),  1182, kSquareNB -  9},
-        FancyMagic{0x401E8C0049802005, MagicBishopMask(kE4),  1694, kSquareNB -  9},
-        FancyMagic{0x131C090114900280, MagicBishopMask(kF4),  2206, kSquareNB -  7},
-        FancyMagic{0xC488A10004014812, MagicBishopMask(kG4),  2334, kSquareNB -  5},
-        FancyMagic{0x1000610100440203, MagicBishopMask(kH4),  2366, kSquareNB -  5},
-        FancyMagic{0x0110020844204852, MagicBishopMask(kA5),  2398, kSquareNB -  5},
-        FancyMagic{0x6AE8882804201208, MagicBishopMask(kB5),  2430, kSquareNB -  5},
-        FancyMagic{0x086440E800300050, MagicBishopMask(kC5),  2462, kSquareNB -  7},
-        FancyMagic{0x0304440101300900, MagicBishopMask(kD5),  2590, kSquareNB -  9},
-        FancyMagic{0x4170840A400C0100, MagicBishopMask(kE5),  3102, kSquareNB -  9},
-        FancyMagic{0x06010206002C0900, MagicBishopMask(kF5),  3614, kSquareNB -  7},
-        FancyMagic{0x00082205888C028D, MagicBishopMask(kG5),  3742, kSquareNB -  5},
-        FancyMagic{0x0284C900401F040E, MagicBishopMask(kH5),  3774, kSquareNB -  5},
-        FancyMagic{0xDCEFD9B54BFCC09F, MagicBishopMask(kA6),  3806, kSquareNB -  4},
-        FancyMagic{0xF95FFA765AFD602B, MagicBishopMask(kB6),  3822, kSquareNB -  4},
-        FancyMagic{0x020201004800E103, MagicBishopMask(kC6),  3838, kSquareNB -  7},
-        FancyMagic{0x20601C2013000805, MagicBishopMask(kD6),  3966, kSquareNB -  7},
-        FancyMagic{0x204040210A000100, MagicBishopMask(kE6),  4094, kSquareNB -  7},
-        FancyMagic{0x3B50051007200100, MagicBishopMask(kF6),  4222, kSquareNB -  7},
-        FancyMagic{0x43FF9A5CF4CA0C01, MagicBishopMask(kG6),  4350, kSquareNB -  4},
-        FancyMagic{0x4BFFCD8E7C587601, MagicBishopMask(kH6),  4366, kSquareNB -  4},
-        FancyMagic{0xFC0FF2865334F576, MagicBishopMask(kA7),  4382, kSquareNB -  4},
-        FancyMagic{0xFC0BF6CE5924F576, MagicBishopMask(kB7),  4398, kSquareNB -  4},
-        FancyMagic{0x0008B11240D0A807, MagicBishopMask(kC7),  4414, kSquareNB -  5},
-        FancyMagic{0x150412A084040204, MagicBishopMask(kD7),  4445, kSquareNB -  5},
-        FancyMagic{0x339004517A0A0200, MagicBishopMask(kE7),  4477, kSquareNB -  5},
-        FancyMagic{0x4100601505720029, MagicBishopMask(kF7),  4509, kSquareNB -  5},
-        FancyMagic{0xC3FFB7DC36CA8C89, MagicBishopMask(kG7),  4541, kSquareNB -  4},
-        FancyMagic{0xC3FF8A54F4CA2C89, MagicBishopMask(kH7),  4557, kSquareNB -  4},
-        FancyMagic{0xFFFFFCFCFD79EDFF, MagicBishopMask(kA8),  4573, kSquareNB -  5},
-        FancyMagic{0xFC0863FCCB147576, MagicBishopMask(kB8),  4605, kSquareNB -  4},
-        FancyMagic{0x0211110132389020, MagicBishopMask(kC8),  4621, kSquareNB -  5},
-        FancyMagic{0x4294700222104405, MagicBishopMask(kD8),  4652, kSquareNB -  5},
-        FancyMagic{0x4460904820842420, MagicBishopMask(kE8),  4684, kSquareNB -  5},
-        FancyMagic{0x3280312554101160, MagicBishopMask(kF8),  4716, kSquareNB -  5},
-        FancyMagic{0xFC087E8E4BB2F736, MagicBishopMask(kG8),  4747, kSquareNB -  4},
-        FancyMagic{0x43FF9E4EF4CA2C89, MagicBishopMask(kH8),  4763, kSquareNB -  5},
+        FancyMagic{0xFFEDF9FD7CFCFFFF, MagicBishopMask(kA1),    0, kSquareNB - 5},
+        FancyMagic{0xFC0962854A77F576, MagicBishopMask(kB1),   32, kSquareNB - 4},
+        FancyMagic{0x405000A251180664, MagicBishopMask(kC1),   48, kSquareNB - 5},
+        FancyMagic{0x2AE2AA09600046CA, MagicBishopMask(kD1),   79, kSquareNB - 5},
+        FancyMagic{0x05920A10B4425210, MagicBishopMask(kE1),  110, kSquareNB - 5},
+        FancyMagic{0x4002091018015824, MagicBishopMask(kF1),  142, kSquareNB - 5},
+        FancyMagic{0xFC0A66C64A7EF576, MagicBishopMask(kG1),  174, kSquareNB - 4},
+        FancyMagic{0x7FFDFDFCBD79FFFF, MagicBishopMask(kH1),  190, kSquareNB - 5},
+        FancyMagic{0xFC0846A64A34FFF6, MagicBishopMask(kA2),  222, kSquareNB - 4},
+        FancyMagic{0xFC087A874A3CF7F6, MagicBishopMask(kB2),  238, kSquareNB - 4},
+        FancyMagic{0x402D444C41820061, MagicBishopMask(kC2),  254, kSquareNB - 5},
+        FancyMagic{0x40408820882C0020, MagicBishopMask(kD2),  286, kSquareNB - 5},
+        FancyMagic{0x0133520A1091A120, MagicBishopMask(kE2),  318, kSquareNB - 5},
+        FancyMagic{0x6E13011002302011, MagicBishopMask(kF2),  350, kSquareNB - 5},
+        FancyMagic{0xFC0864AE59B4FF76, MagicBishopMask(kG2),  382, kSquareNB - 4},
+        FancyMagic{0x3C0860AF4B35FF76, MagicBishopMask(kH2),  398, kSquareNB - 4},
+        FancyMagic{0x73C01AF56CF4CFFB, MagicBishopMask(kA3),  414, kSquareNB - 4},
+        FancyMagic{0x41A01CFAD64AAFFC, MagicBishopMask(kB3),  430, kSquareNB - 4},
+        FancyMagic{0x2018206402440228, MagicBishopMask(kC3),  446, kSquareNB - 7},
+        FancyMagic{0x9408041404321240, MagicBishopMask(kD3),  574, kSquareNB - 7},
+        FancyMagic{0x2352002402314002, MagicBishopMask(kE3),  702, kSquareNB - 7},
+        FancyMagic{0x1044400601102720, MagicBishopMask(kF3),  830, kSquareNB - 7},
+        FancyMagic{0x7C0C028F5B34FF76, MagicBishopMask(kG3),  958, kSquareNB - 4},
+        FancyMagic{0xFC0A028E5AB4DF76, MagicBishopMask(kH3),  974, kSquareNB - 4},
+        FancyMagic{0x161C400530108980, MagicBishopMask(kA4),  990, kSquareNB - 5},
+        FancyMagic{0xA510104014249085, MagicBishopMask(kB4), 1022, kSquareNB - 5},
+        FancyMagic{0x82148804D00FC030, MagicBishopMask(kC4), 1054, kSquareNB - 7},
+        FancyMagic{0x0022008008008013, MagicBishopMask(kD4), 1182, kSquareNB - 9},
+        FancyMagic{0x401E8C0049802005, MagicBishopMask(kE4), 1694, kSquareNB - 9},
+        FancyMagic{0x131C090114900280, MagicBishopMask(kF4), 2206, kSquareNB - 7},
+        FancyMagic{0xC488A10004014812, MagicBishopMask(kG4), 2334, kSquareNB - 5},
+        FancyMagic{0x1000610100440203, MagicBishopMask(kH4), 2366, kSquareNB - 5},
+        FancyMagic{0x0110020844204852, MagicBishopMask(kA5), 2398, kSquareNB - 5},
+        FancyMagic{0x6AE8882804201208, MagicBishopMask(kB5), 2430, kSquareNB - 5},
+        FancyMagic{0x086440E800300050, MagicBishopMask(kC5), 2462, kSquareNB - 7},
+        FancyMagic{0x0304440101300900, MagicBishopMask(kD5), 2590, kSquareNB - 9},
+        FancyMagic{0x4170840A400C0100, MagicBishopMask(kE5), 3102, kSquareNB - 9},
+        FancyMagic{0x06010206002C0900, MagicBishopMask(kF5), 3614, kSquareNB - 7},
+        FancyMagic{0x00082205888C028D, MagicBishopMask(kG5), 3742, kSquareNB - 5},
+        FancyMagic{0x0284C900401F040E, MagicBishopMask(kH5), 3774, kSquareNB - 5},
+        FancyMagic{0xDCEFD9B54BFCC09F, MagicBishopMask(kA6), 3806, kSquareNB - 4},
+        FancyMagic{0xF95FFA765AFD602B, MagicBishopMask(kB6), 3822, kSquareNB - 4},
+        FancyMagic{0x020201004800E103, MagicBishopMask(kC6), 3838, kSquareNB - 7},
+        FancyMagic{0x20601C2013000805, MagicBishopMask(kD6), 3966, kSquareNB - 7},
+        FancyMagic{0x204040210A000100, MagicBishopMask(kE6), 4094, kSquareNB - 7},
+        FancyMagic{0x3B50051007200100, MagicBishopMask(kF6), 4222, kSquareNB - 7},
+        FancyMagic{0x43FF9A5CF4CA0C01, MagicBishopMask(kG6), 4350, kSquareNB - 4},
+        FancyMagic{0x4BFFCD8E7C587601, MagicBishopMask(kH6), 4366, kSquareNB - 4},
+        FancyMagic{0xFC0FF2865334F576, MagicBishopMask(kA7), 4382, kSquareNB - 4},
+        FancyMagic{0xFC0BF6CE5924F576, MagicBishopMask(kB7), 4398, kSquareNB - 4},
+        FancyMagic{0x0008B11240D0A807, MagicBishopMask(kC7), 4414, kSquareNB - 5},
+        FancyMagic{0x150412A084040204, MagicBishopMask(kD7), 4445, kSquareNB - 5},
+        FancyMagic{0x339004517A0A0200, MagicBishopMask(kE7), 4477, kSquareNB - 5},
+        FancyMagic{0x4100601505720029, MagicBishopMask(kF7), 4509, kSquareNB - 5},
+        FancyMagic{0xC3FFB7DC36CA8C89, MagicBishopMask(kG7), 4541, kSquareNB - 4},
+        FancyMagic{0xC3FF8A54F4CA2C89, MagicBishopMask(kH7), 4557, kSquareNB - 4},
+        FancyMagic{0xFFFFFCFCFD79EDFF, MagicBishopMask(kA8), 4573, kSquareNB - 5},
+        FancyMagic{0xFC0863FCCB147576, MagicBishopMask(kB8), 4605, kSquareNB - 4},
+        FancyMagic{0x0211110132389020, MagicBishopMask(kC8), 4621, kSquareNB - 5},
+        FancyMagic{0x4294700222104405, MagicBishopMask(kD8), 4652, kSquareNB - 5},
+        FancyMagic{0x4460904820842420, MagicBishopMask(kE8), 4684, kSquareNB - 5},
+        FancyMagic{0x3280312554101160, MagicBishopMask(kF8), 4716, kSquareNB - 5},
+        FancyMagic{0xFC087E8E4BB2F736, MagicBishopMask(kG8), 4747, kSquareNB - 4},
+        FancyMagic{0x43FF9E4EF4CA2C89, MagicBishopMask(kH8), 4763, kSquareNB - 5},
     };
 
-    inline constexpr std::array<FancyMagic, kSquareNB> kFancyMagicRookTable =
+    inline constexpr std::array<FancyMagic, kSquareNB> kFancyRookMagicTable =
     {
         FancyMagic{0x0080042390400280, MagicRookMask(kA1),  4795, kSquareNB - 12},
         FancyMagic{0x50C0086002300042, MagicRookMask(kB1),  8891, kSquareNB - 11},
@@ -305,7 +373,27 @@ namespace cohen::chess::magic_bitboards
         FancyMagic{0x7645FFFECBFEA79E, MagicRookMask(kH8), 90811, kSquareNB - 11},
     };
 
-    inline constexpr std::array<BlackBishopMagic, kSquareNB> kBlackMagicBishopTable =
+    inline constexpr auto kFancyMagicAttackTable = MakeMagicAttackTable<92859>(
+        kFancyBishopMagicTable, kFancyRookMagicTable);
+
+    constexpr Bitboard FancyMagicBishopAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const FancyMagic& magic = kFancyBishopMagicTable[sq];
+        return kFancyMagicAttackTable[magic.key(occ)];
+    }
+
+    constexpr Bitboard FancyMagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const FancyMagic& magic = kFancyRookMagicTable[sq];
+        return kFancyMagicAttackTable[magic.key(occ)];
+    }
+
+    inline constexpr auto kFancyMagicOffsetTable = MakeMagicOffsetTable<92859>(
+        kFancyBishopMagicTable, kFancyRookMagicTable);
+
+    inline constexpr std::array<BlackBishopMagic, kSquareNB> kBlackBishopMagicTable =
     {
         BlackBishopMagic{0x107AC08050500BFF, ~MagicBishopMask(kA1), 66157},
         BlackBishopMagic{0x7FFFDFDFD823FFFD, ~MagicBishopMask(kB1), 71730},
@@ -373,7 +461,7 @@ namespace cohen::chess::magic_bitboards
         BlackBishopMagic{0x100000C05F582008, ~MagicBishopMask(kH8), 11140},
     };
 
-    inline constexpr std::array<BlackRookMagic, kSquareNB> kBlackMagicRookTable =
+    inline constexpr std::array<BlackRookMagic, kSquareNB> kBlackRookMagicTable =
     {
         BlackRookMagic{0x80280013FF84FFFF, ~MagicRookMask(kA1), 10890},
         BlackRookMagic{0x5FFBFEFDFEF67FFF, ~MagicRookMask(kB1), 56054},
@@ -441,8 +529,185 @@ namespace cohen::chess::magic_bitboards
         BlackRookMagic{0x0002000308482882, ~MagicRookMask(kH8),  1009},
     };
 
-    inline constexpr auto kFancyMagicAttackTable = MakeMagicAttackTable<FancyMagic,       FancyMagic,     92859>(kFancyMagicBishopTable, kFancyMagicRookTable);
-    inline constexpr auto kBlackMagicAttackTable = MakeMagicAttackTable<BlackBishopMagic, BlackRookMagic, 88507>(kBlackMagicBishopTable, kBlackMagicRookTable);
+    inline constexpr auto kBlackMagicAttackTable = MakeMagicAttackTable<88507>(
+        kBlackBishopMagicTable, kBlackRookMagicTable);
+
+    constexpr Bitboard BlackMagicBishopAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const BlackBishopMagic& magic = kBlackBishopMagicTable[sq];
+        return kBlackMagicAttackTable[magic.key(occ)];
+    }
+
+    constexpr Bitboard BlackMagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        assert(kA1 <= sq && sq < kSquareNB);
+        const BlackRookMagic& magic = kBlackRookMagicTable[sq];
+        return kBlackMagicAttackTable[magic.key(occ)];
+    }
+
+    inline constexpr std::array<ByteBlackBishopMagic, kSquareNB> kByteBlackBishopMagicTable =
+    {
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA1],    0},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB1],    7},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC1],   13},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD1],   23},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE1],   35},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF1],   47},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG1],   57},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH1],   63},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA2],   70},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB2],   76},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC2],   82},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD2],   92},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE2],  104},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF2],  116},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG2],  126},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH2],  132},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA3],  138},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB3],  148},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC3],  158},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD3],  198},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE3],  246},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF3],  294},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG3],  334},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH3],  344},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA4],  354},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB4],  366},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC4],  378},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD4],  426},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE4],  534},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF4],  642},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG4],  690},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH4],  702},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA5],  714},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB5],  726},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC5],  738},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD5],  786},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE5],  894},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF5], 1002},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG5], 1050},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH5], 1062},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA6], 1074},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB6], 1084},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC6], 1094},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD6], 1134},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE6], 1182},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF6], 1230},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG6], 1270},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH6], 1280},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA7], 1290},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB7], 1296},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC7], 1302},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD7], 1312},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE7], 1324},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF7], 1336},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG7], 1346},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH7], 1352},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kA8], 1358},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kB8], 1365},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kC8], 1371},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kD8], 1381},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kE8], 1393},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kF8], 1405},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kG8], 1415},
+        ByteBlackBishopMagic{kBlackBishopMagicTable[kH8], 1421},
+    };
+
+    inline constexpr std::array<ByteBlackRookMagic, kSquareNB> kByteBlackRookMagicTable =
+    {
+        ByteBlackRookMagic{kBlackRookMagicTable[kA1], 1428},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB1], 1477},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC1], 1519},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD1], 1589},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE1], 1673},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF1], 1757},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG1], 1827},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH1], 1869},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA2], 1918},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB2], 1960},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC2], 1996},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD2], 2056},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE2], 2128},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF2], 2200},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG2], 2260},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH2], 2296},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA3], 2338},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB3], 2408},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC3], 2468},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD3], 2568},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE3], 2688},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF3], 2808},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG3], 2908},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH3], 2968},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA4], 3038},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB4], 3122},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC4], 3194},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD4], 3314},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE4], 3458},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF4], 3602},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG4], 3722},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH4], 3794},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA5], 3878},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB5], 3962},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC5], 4034},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD5], 4154},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE5], 4298},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF5], 4442},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG5], 4562},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH5], 4634},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA6], 4718},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB6], 4788},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC6], 4848},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD6], 4948},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE6], 5068},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF6], 5188},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG6], 5288},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH6], 5348},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA7], 5418},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB7], 5460},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC7], 5496},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD7], 5556},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE7], 5628},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF7], 5700},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG7], 5760},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH7], 5796},
+        ByteBlackRookMagic{kBlackRookMagicTable[kA8], 5838},
+        ByteBlackRookMagic{kBlackRookMagicTable[kB8], 5887},
+        ByteBlackRookMagic{kBlackRookMagicTable[kC8], 5929},
+        ByteBlackRookMagic{kBlackRookMagicTable[kD8], 5999},
+        ByteBlackRookMagic{kBlackRookMagicTable[kE8], 6083},
+        ByteBlackRookMagic{kBlackRookMagicTable[kF8], 6167},
+        ByteBlackRookMagic{kBlackRookMagicTable[kG8], 6237},
+        ByteBlackRookMagic{kBlackRookMagicTable[kH8], 6279},
+    };
+
+    inline constexpr auto kBlackMagicOffsetTable = MakeMagicOffsetTable<88507>(
+        kBlackBishopMagicTable, kBlackRookMagicTable);
+
+    inline constexpr auto kByteBlackMagicAttackTable =
+        MakeMagicAttackTable<6328, std::data(kBlackMagicOffsetTable)>(
+            kByteBlackBishopMagicTable, kByteBlackRookMagicTable);
+
+    constexpr Bitboard ByteBlackMagicBishopAttacks(Square sq, Bitboard occ) noexcept
+    {
+        constexpr const uint8_t* offset_table = std::data(kBlackMagicOffsetTable);
+        const BlackBishopMagic& magic = kBlackBishopMagicTable[sq];
+        return kByteBlackMagicAttackTable[magic.key<offset_table>(occ)]
+    }
+
+    constexpr Bitboard ByteBlackMagicRookAttacks(Square sq, Bitboard occ) noexcept
+    {
+        constexpr const uint8_t* offset_table = std::data(kBlackMagicOffsetTable);
+        const BlackRookMagic& magic = kBlackRookMagicTable[sq];
+        return kByteBlackMagicAttackTable[magic.key<offset_table>(occ)]
+    }
 }
+
+// namespace cohen::chess
+// {
+//     using cohen::chess::magic_bitboards::MagicBishopMask;
+//     using cohen::chess::magic_bitboards::MagicRookMask;
+// }
 
 #endif
